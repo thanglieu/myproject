@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ article.title }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f8;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 30px auto;
+      gap: 20px;
+    }
+    .main-content {
+      flex: 3;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .main-content h1 {
+      margin-top: 0;
+      font-size: 28px;
+      color: #4CAF50;
+    }
+    .main-content .article-body {
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+    .sidebar {
+      flex: 1;
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      font-size: 14px;
+    }
+    .sidebar h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #4CAF50;
+    }
+    .sidebar p {
+      margin: 8px 0;
+    }
+    .topic-list span {
+      display: inline-block;
+      background: #e0f2e9;
+      color: #333;
+      padding: 4px 8px;
+      margin: 3px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Nội dung chính -->
+    <div class="main-content">
+      <h1>{{ article.title }}</h1>
+      <div class="article-body">
+        {{ article.content|safe }}
+      </div>
+    </div>
+
+    <!-- Thông tin phụ -->
+    <div class="sidebar">
+      <h3>Thông tin bài viết</h3>
+      <p><strong>Tác giả:</strong> {{ article.author.name }}</p>
+      <p><strong>Ngày đăng:</strong> {{ article.created_at|date:"d/m/Y H:i" }}</p>
+      <p><strong>Lượt thích:</strong> {{ article.like }}</p>
+      <p><strong>Chủ đề:</strong></p>
+      <div class="topic-list">
+        {% for t in article.topic.all %}
+          <span>{{ t.name }}</span>
+        {% empty %}
+          <span>Không có chủ đề</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tạo bài viết mới</title>
+  {{ form.media }}
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 40px; }
+    .container { max-width: 700px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align: center; margin-bottom: 20px; }
+    label { display: block; margin-bottom: 6px; font-weight: bold; }
+    input, textarea, select {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px;
+    }
+    button {
+      width: 100%; padding: 12px; background: #4CAF50; color: white;
+      border: none; border-radius: 4px; font-size: 16px; cursor: pointer;
+    }
+    button:hover { background: #45a049; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tạo bài viết mới</h1>
+    <form method="post">
+      {% csrf_token %}
+
+      <label for="id_title">Tiêu đề</label>
+      {{ form.title }}
+
+      <label for="id_topic">Chủ đề</label>
+      {{ form.topic }}
+
+      <label for="id_content">Nội dung</label>
+      {{ form.content }}
+
+      <!-- Nếu muốn cho nhập số like thì thêm -->
+      <!--
+      <label for="id_like">Lượt thích</label>
+      {{ form.like }}
+      -->
+
+      <button type="submit">Đăng bài</button>
+    </form>
+  </div>
+</body>
+</html>

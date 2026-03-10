@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang chủ</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
+    .container { max-width: 800px; margin: auto; }
+    .search-bar { text-align: right; margin-bottom: 20px; }
+    .search-bar input[type="text"] { padding: 6px; width: 200px; }
+    .search-bar select { padding: 6px; }
+    .search-bar button { padding: 6px 12px; background: #4CAF50; color: white; border: none; border-radius: 4px; }
+    .search-bar button:hover { background: #45a049; }
+    .post { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    .post h2 { margin: 0 0 10px; }
+    .post small { color: #666; }
+    .pagination { text-align: center; margin-top: 20px; }
+    .pagination a { margin: 0 5px; padding: 8px 12px; background: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }
+    .pagination a:hover { background: #45a049; }
+    .pagination span { margin: 0 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Danh sách bài viết mới nhất</h1>
+
+    <!-- Thanh tìm kiếm -->
+    <div class="search-bar">
+      <form method="get" action="">
+        {% csrf_token %}
+        <input type="text" name="keyword" placeholder="Nhập từ khóa...">
+        <button type="submit">Tìm kiếm</button>
+      </form>
+    </div>
+
+    {% for post in posts %}
+      <div class="post">
+        <h2>{{ post.title }}</h2>
+        <small>Đăng bởi {{ post.author.name }} vào {{ post.created_at|date:"d/m/Y H:i" }}</small>
+        <p>{{ post.content|truncatewords:50|safe }}</p>
+        <p><strong>Chủ đề:</strong>
+          {% for topic in post.topic.all %}
+            {{ topic.name }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+            Không có chủ đề
+          {% endfor %}
+        </p>
+      </div>
+    {% empty %}
+      <p>Chưa có bài viết nào.</p>
+    {% endfor %}
+
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">Trang trước</a>
+      {% endif %}
+
+      <span>Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Trang sau</a>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

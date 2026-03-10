@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Lỗi đăng ký</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .errorlist { color: red; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h1>Đăng ký thất bại</h1>
+
+  <p>Form không hợp lệ. Vui lòng kiểm tra các lỗi sau:</p>
+
+  <!-- Hiển thị lỗi chung -->
+  {% if form.non_field_errors %}
+    <div class="errorlist">
+      {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Hiển thị lỗi từng field -->
+  <ul>
+    {% for field in form %}
+      {% if field.errors %}
+        <li>
+          <strong>{{ field.label }}:</strong>
+          {% for error in field.errors %}
+            <span class="errorlist">{{ error }}</span>
+          {% endfor %}
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+
+  <p><a href="{% url 'register' %}">Quay lại trang đăng ký</a></p>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Lọc bài viết theo chủ đề</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f8;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      padding: 20px;
+      background: #4CAF50;
+      color: white;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 30px auto;
+      gap: 20px;
+    }
+    .sidebar {
+      width: 250px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: #4CAF50;
+    }
+    .sidebar label {
+      display: block;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+    .sidebar input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    .sidebar button {
+      margin-top: 15px;
+      padding: 8px 12px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .sidebar button:hover {
+      background: #45a049;
+    }
+    .content {
+      flex: 1;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .article {
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+    .article:last-child {
+      border-bottom: none;
+    }
+    .article h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #333;
+    }
+    .article p {
+      margin: 5px 0 0;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lọc bài viết theo chủ đề</h1>
+  <div class="container">
+    <!-- Form chọn Topic -->
+    <div class="sidebar">
+      <h2>Chủ đề</h2>
+      <form method="get" action="">
+        {% for topic in topics %}
+          <label>
+            <input type="checkbox" name="topics" value="{{ topic.id }}"
+                   {% if topic.id|stringformat:"s" in selected_topics %}checked{% endif %}>
+            {{ topic.name }}
+          </label>
+        {% endfor %}
+        <button type="submit">Lọc</button>
+      </form>
+    </div>
+
+    <!-- Danh sách Article -->
+    <div class="content">
+      {% for article in articles %}
+        <div class="article">
+          <h2>{{ article.title }}</h2>
+          <p>Đăng ngày {{ article.created_at|date:"d/m/Y H:i" }} | {{ article.like }} lượt thích</p>
+        </div>
+      {% empty %}
+        <p>Không có bài viết nào.</p>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

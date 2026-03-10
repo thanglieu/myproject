@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang cá nhân</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+    .sidebar {
+      width: 30%;
+      background: #f5f5f5;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .content {
+      width: 70%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .article {
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+    }
+    .article h3 {
+      margin: 0;
+    }
+    .article small {
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <!-- Bên trái: thông tin cá nhân -->
+  <div class="sidebar">
+    <h2>Thông tin cá nhân</h2>
+    <p><strong>Họ tên:</strong> {{ user.name }}</p>
+    <p><strong>Giới tính:</strong> {{ user.gender }}</p>
+    <p><strong>Ngày sinh:</strong> {{ user.birth }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Điểm:</strong> {{ user.mark }}</p>
+  </div>
+
+  <!-- Bên phải: danh sách bài viết -->
+  <div class="content">
+    <h2>Bài viết của {{ user.name }}</h2>
+    {% for article in user.article_set.all %}
+      <div class="article">
+        <h3>{{ article.title }}</h3>
+        <small>Likes: {{ article.like }}</small>
+        <p>{{ article.content|safe }}</p>
+        <p><strong>Chủ đề:</strong>
+          {% for topic in article.topic.all %}
+            {{ topic.name }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+      </div>
+    {% empty %}
+      <p>Chưa có bài viết nào.</p>
+    {% endfor %}
+  </div>
+</body>
+</html>
