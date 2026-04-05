@@ -2,63 +2,343 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Trang chủ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - Trang chủ</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; }
-    .container { max-width: 800px; margin: auto; }
-    .search-bar { text-align: right; margin-bottom: 20px; }
-    .search-bar input[type="text"] { padding: 6px; width: 200px; }
-    .search-bar select { padding: 6px; }
-    .search-bar button { padding: 6px 12px; background: #4CAF50; color: white; border: none; border-radius: 4px; }
-    .search-bar button:hover { background: #45a049; }
-    .post { background: #fff; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    .post h2 { margin: 0 0 10px; }
-    .post small { color: #666; }
-    .pagination { text-align: center; margin-top: 20px; }
-    .pagination a { margin: 0 5px; padding: 8px 12px; background: #4CAF50; color: white; text-decoration: none; border-radius: 4px; }
-    .pagination a:hover { background: #45a049; }
-    .pagination span { margin: 0 10px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* Header Navigation */
+    header {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      padding: 20px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo:hover {
+      opacity: 0.9;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header-nav button {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .header-nav button:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 32px;
+    }
+
+    /* Search Bar */
+    .search-section {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+    }
+
+    .search-form {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-form input[type="text"] {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    .search-form input[type="text"]:focus {
+      outline: none;
+      border-color: #4CAF50;
+    }
+
+    .search-form button {
+      padding: 12px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .search-form button:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+    }
+
+    /* Posts List */
+    .posts-list {
+      margin-bottom: 40px;
+    }
+
+    .post-card {
+      display: block;
+      background: white;
+      border: none;
+      border-left: 5px solid #4CAF50;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 20px;
+      text-decoration: none;
+      color: #333;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .post-card:hover {
+      transform: translateX(8px);
+      box-shadow: 0 6px 20px rgba(76,175,80,0.15);
+      border-left-color: #45a049;
+    }
+
+    .post-card h3 {
+      margin: 0 0 12px 0;
+      font-size: 22px;
+      color: #2c3e50;
+    }
+
+    .post-meta {
+      color: #7f8c8d;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .post-meta strong {
+      color: #4CAF50;
+    }
+
+    .post-topics {
+      margin-top: 10px;
+    }
+
+    .topic-tag {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      margin-right: 6px;
+      margin-top: 4px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #7f8c8d;
+    }
+
+    .empty-state p {
+      font-size: 18px;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .pagination a,
+    .pagination span {
+      padding: 10px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .pagination a {
+      background: #4CAF50;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .pagination a:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(76,175,80,0.3);
+    }
+
+    .pagination span {
+      background: #eceff1;
+      color: #2c3e50;
+      font-weight: 700;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      header {
+        padding: 15px 0;
+      }
+
+      .header-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .header-nav {
+        justify-content: center;
+        gap: 8px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .search-form {
+        flex-direction: column;
+      }
+
+      .search-form input[type="text"],
+      .search-form button {
+        width: 100%;
+      }
+
+      .post-card {
+        padding: 16px;
+      }
+
+      .post-card h3 {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Danh sách bài viết mới nhất</h1>
-
-    <!-- Thanh tìm kiếm -->
-    <div class="search-bar">
-      <form method="get" action="">
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo">📖 Blog</div>
+      <form method="get" action="" class="header-nav">
         {% csrf_token %}
-        <input type="text" name="keyword" placeholder="Nhập từ khóa...">
-        <button type="submit">Tìm kiếm</button>
+        <button type="submit" name="form" value="user">👤 Trang cá nhân</button>
+        <button type="submit" name="form" value="BXH">🏆 Xếp hạng</button>
+        <button type="submit" name="form" value="logout" style="background: rgba(255,100,100,0.3); border-color: rgba(255,100,100,0.6);">🚪 Đăng xuất</button>
+      </form>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1>📝 Danh sách bài viết mới nhất</h1>
+
+    <!-- Search Bar -->
+    <div class="search-section">
+      <form method="get" action="" class="search-form">
+        {% csrf_token %}
+        <input type="text" name="keyword" placeholder="🔍 Tìm kiếm bài viết...">
+        <button type="submit" name="form" value="search">Tìm kiếm</button>
+        <button type="submit" name="form" value="filter" style="background: #2196F3;">Lọc chủ đề</button>
+        <button type="submit" name="form" value="create" style="background: #ff9800;">✏️ Tạo bài</button>
       </form>
     </div>
 
-    {% for post in posts %}
-      <div class="post">
-        <h2>{{ post.title }}</h2>
-        <small>Đăng bởi {{ post.author.name }} vào {{ post.created_at|date:"d/m/Y H:i" }}</small>
-        <p>{{ post.content|truncatewords:50|safe }}</p>
-        <p><strong>Chủ đề:</strong>
-          {% for topic in post.topic.all %}
-            {{ topic.name }}{% if not forloop.last %}, {% endif %}
-          {% empty %}
-            Không có chủ đề
-          {% endfor %}
-        </p>
-      </div>
-    {% empty %}
-      <p>Chưa có bài viết nào.</p>
-    {% endfor %}
+    <!-- Posts -->
+    <div class="posts-list">
+      {% for post in posts %}
+        <a href="{% url 'article' post.id %}" class="post-card">
+          <h3>{{ post.title }}</h3>
+          <div class="post-meta">
+            <strong>{{ post.author.name }}</strong> • {{ post.created_at|date:"d/m/Y H:i" }}
+          </div>
+          {% if post.topic.all %}
+            <div class="post-topics">
+              {% for topic in post.topic.all %}
+              <!--  <span class="topic-tag">{{ topic.name }}</span> -->
+                <span class="topic-tag">{{ topic.name }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </a>
+      {% empty %}
+        <div class="empty-state">
+          <p>📭 Chưa có bài viết nào. Hãy là người đầu tiên viết bài!</p>
+        </div>
+      {% endfor %}
+    </div>
 
+    <!-- Pagination -->
     <div class="pagination">
       {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">Trang trước</a>
+        <a href="?page={{ page_obj.previous_page_number }}">← Trang trước</a>
       {% endif %}
 
-      <span>Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      <span>Trang {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}</span>
 
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Trang sau</a>
+        <a href="?page={{ page_obj.next_page_number }}">Trang sau →</a>
       {% endif %}
     </div>
   </div>

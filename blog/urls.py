@@ -21,16 +21,11 @@ urlpatterns = [
     path('register/', views.register, name='register'),
 
     # trang cá nhân
-    path('users/this-user', views.user_page, name='user_list'),
+    path('users/this-user', views.user_page, name='this_user'),
 
     # tạo bài viết mới
-    path('articles/new/', 
-        CreateView.as_view( 
-            model=Article, 
-            template_name='articles/create.html', 
-            fields=['title', 'content', 'topic'], 
-        ),
-    ),
+    path('articles/new/', views.create_article, name = 'create'),
+
 
     # danh sách User sắp xếp theo mark
     path('users/rank/',        
@@ -56,14 +51,13 @@ urlpatterns = [
     path('filter/', views.filter, name="filter"),
 
     # chi tiết bài viết
-    path('articles/<int:pk>/',        
-        DetailView.as_view( 
-            model=Article, 
-            template_name='articles/article.html', 
-            context_object_name='article',
-        ), 
-        name='article'
-    ),
+    path('articles/<int:article_id>/', views.article_detail, name='article'),
+    
+    # comments
+    path('articles/<int:article_id>/comment/', views.create_comment, name='create_comment'),
+    
+    # likes
+    path('articles/<int:article_id>/like/', views.like_article, name='like_article'),
 
     # chi tiết người dùng
     path('users/<int:pk>/',        
@@ -82,3 +76,17 @@ urlpatterns = [
         name='error'
     ),
 ]
+
+"""
+# tạo bài viết mới
+path('articles/new/', 
+    CreateView.as_view( 
+        model=Article, 
+        template_name='articles/create.html', 
+        fields=['title', 'content', 'topic','author'], 
+        success_url = reverse_lazy('home'),
+
+    ),
+    name = 'create'
+),
+"""

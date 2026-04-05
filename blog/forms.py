@@ -44,8 +44,20 @@ class ArticleForm(forms.ModelForm):
         fields = ['title', 'content', 'topic']
 
 
+class ArticleCreateForm(forms.Form):
+    title = forms.CharField(max_length=255)
+    content = forms.CharField(widget=CKEditorWidget())
+    topic = forms.ModelMultipleChoiceField(
+        queryset=Topic.objects.all(),
+        widget=forms.SelectMultiple,   # hoặc CheckboxSelectMultiple
+        required=False
+    )
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['like', 'article', 'content']
-
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Viết bình luận...'})
+        }

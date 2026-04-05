@@ -1,66 +1,283 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Danh sách người dùng</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 80%;
-            margin: 20px auto;
-        }
-        th, td {
-            border: 1px solid #333;
-            padding: 8px 12px;
-            text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        h1 {
-            text-align: center;
-        }
-        a {
-            text-decoration: none;
-            color: #007bff;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng xếp hạng - Blog</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      padding: 20px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .header-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .back-link {
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .back-link:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    /* Table Container */
+    .table-container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+    }
+
+    th {
+      padding: 18px 20px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+
+    tbody tr:hover {
+      background: #f9f9f9;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: 16px 20px;
+      font-size: 14px;
+      color: #2c3e50;
+    }
+
+    /* Special styling for rank column */
+    .rank-column {
+      font-weight: 600;
+      color: #4CAF50;
+      font-size: 16px;
+    }
+
+    /* Medal emoji for top 3 */
+    tr:nth-child(1) .rank-column {
+      font-size: 20px;
+    }
+
+    tr:nth-child(1) td:first-child::before {
+      content: "🥇 ";
+    }
+
+    tr:nth-child(2) td:first-child::before {
+      content: "🥈 ";
+    }
+
+    tr:nth-child(3) td:first-child::before {
+      content: "🥉 ";
+    }
+
+    /* User name link */
+    td a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    td a:hover {
+      color: #45a049;
+      text-decoration: underline;
+    }
+
+    /* Mark/Score styling */
+    .mark-cell {
+      font-weight: 700;
+      color: #ff9800;
+      font-size: 16px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 10px;
+      color: #7f8c8d;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      th, td {
+        padding: 12px 10px;
+        font-size: 13px;
+      }
+
+      th {
+        font-size: 12px;
+      }
+
+      .rank-column {
+        font-size: 14px;
+      }
+
+      .mark-cell {
+        font-size: 14px;
+      }
+
+      /* Hide some columns on mobile */
+      .gender-column {
+        display: none;
+      }
+
+      .email-column {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .header-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+
+      .container {
+        padding: 0 15px;
+      }
+
+      th, td {
+        padding: 10px 8px;
+        font-size: 12px;
+      }
+
+      th {
+        font-size: 11px;
+      }
+
+      .mark-cell {
+        font-size: 12px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Danh sách người dùng</h1>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo">📖 Blog</div>
+      <a href="{% url 'home' %}" class="back-link">← Trang chủ</a>
+    </div>
+  </header>
 
-    <table>
-        <thead>
+  <!-- Main Container -->
+  <div class="container">
+    <h1>🏆 Bảng xếp hạng người dùng</h1>
+
+    {% if users %}
+      <div class="table-container">
+        <table>
+          <thead>
             <tr>
-                <th>STT</th>
-                <th>Tên</th>
-                <th>Email</th>
-                <th>Giới tính</th>
-                <th>Điểm</th>
+              <th width="10%">#</th>
+              <th width="35%">👤 Tên người dùng</th>
+              <th class="email-column" width="30%">📧 Email</th>
+              <th class="gender-column" width="15%">⚧️ Giới tính</th>
+              <th width="10%">⭐ Điểm</th>
             </tr>
-        </thead>
-        <tbody>
+          </thead>
+          <tbody>
             {% for user in users %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
+              <tr>
+                <td class="rank-column">{{ forloop.counter }}</td>
                 <td>
-                    <a href="{% url 'user' user.pk %}">
-                        {{ user.username }}
-                    </a>
+                  <a href="{% url 'user' user.pk %}">{{ user.name }}</a>
                 </td>
-                <td>{{ user.email }}</td>
-                <td>{{ user.gender }}</td>
-                <td>{{ user.mark }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="5">Không có người dùng nào.</td>
-            </tr>
+                <td class="email-column">{{ user.email }}</td>
+                <td class="gender-column">{{ user.gender|default:"—" }}</td>
+                <td class="mark-cell">{{ user.mark }} ⭐</td>
+              </tr>
             {% endfor %}
-        </tbody>
-    </table>
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>📭 Không có người dùng nào</p>
+      </div>
+    {% endif %}
+  </div>
 </body>
 </html>

@@ -2,66 +2,327 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Trang cá nhân</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ user.name }} - Blog</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .back-link {
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .back-link:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 30px;
+      padding-bottom: 40px;
+    }
+
+    /* Sidebar - User Info */
     .sidebar {
-      width: 30%;
-      background: #f5f5f5;
-      padding: 20px;
-      box-sizing: border-box;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      height: fit-content;
+      position: sticky;
+      top: 100px;
     }
+
+    .user-avatar {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .sidebar h2 {
+      font-size: 20px;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .info-item {
+      margin-bottom: 18px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .info-label {
+      color: #7f8c8d;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .info-value {
+      color: #2c3e50;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .mark-badge {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      color: #856404;
+      padding: 12px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 15px;
+    }
+
+    .back-btn {
+      width: 100%;
+      padding: 12px;
+      background: #eceff1;
+      color: #2c3e50;
+      text-decoration: none;
+      text-align: center;
+      border-radius: 6px;
+      display: block;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin-top: 20px;
+    }
+
+    .back-btn:hover {
+      background: #cfd8dc;
+    }
+
+    /* Content Area */
     .content {
-      width: 70%;
-      padding: 20px;
-      box-sizing: border-box;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    .article {
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
+
+    .content h2 {
+      font-size: 22px;
+      color: #2c3e50;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
+      border-bottom: 3px solid #4CAF50;
+      display: inline-block;
     }
-    .article h3 {
-      margin: 0;
+
+    /* Articles List */
+    .articles-list {
+      margin-top: 20px;
     }
-    .article small {
-      color: #666;
+
+    .article-item {
+      padding: 18px;
+      background: #f9f9f9;
+      border-left: 4px solid #4CAF50;
+      border-radius: 6px;
+      margin-bottom: 18px;
+      transition: all 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .article-item:hover {
+      background: #f0f0f0;
+      transform: translateX(8px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .article-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .article-item h3 {
+      margin: 0 0 10px 0;
+      font-size: 18px;
+      color: #2c3e50;
+    }
+
+    .article-meta {
+      color: #7f8c8d;
+      font-size: 13px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #7f8c8d;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .sidebar h2,
+      .content h2 {
+        font-size: 18px;
+      }
+
+      .user-avatar {
+        height: 150px;
+        font-size: 40px;
+      }
+
+      .article-item {
+        padding: 15px;
+      }
+
+      .article-item h3 {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Bên trái: thông tin cá nhân -->
-  <div class="sidebar">
-    <h2>Thông tin cá nhân</h2>
-    <p><strong>Họ tên:</strong> {{ user.name }}</p>
-    <p><strong>Giới tính:</strong> {{ user.gender }}</p>
-    <p><strong>Ngày sinh:</strong> {{ user.birth }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Điểm:</strong> {{ user.mark }}</p>
-  </div>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo">📖 Blog</div>
+      <a href="{% url 'home' %}" class="back-link">← Trang chủ</a>
+    </div>
+  </header>
 
-  <!-- Bên phải: danh sách bài viết -->
-  <div class="content">
-    <h2>Bài viết của {{ user.name }}</h2>
-    {% for article in user.article_set.all %}
-      <div class="article">
-        <h3>{{ article.title }}</h3>
-        <small>Likes: {{ article.like }}</small>
-        <p>{{ article.content|safe }}</p>
-        <p><strong>Chủ đề:</strong>
-          {% for topic in article.topic.all %}
-            {{ topic.name }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
-        </p>
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Sidebar - User Info -->
+    <aside class="sidebar">
+      <div class="user-avatar">👤</div>
+      <h2>{{ user.name }}</h2>
+
+      <div class="info-item">
+        <div class="info-label">👤 Tên đăng nhập</div>
+        <div class="info-value">{{ user.username }}</div>
       </div>
-    {% empty %}
-      <p>Chưa có bài viết nào.</p>
-    {% endfor %}
+
+      <div class="info-item">
+        <div class="info-label">📧 Email</div>
+        <div class="info-value">{{ user.email }}</div>
+      </div>
+
+      {% if user.gender %}
+        <div class="info-item">
+          <div class="info-label">⚧️ Giới tính</div>
+          <div class="info-value">{{ user.gender }}</div>
+        </div>
+      {% endif %}
+
+      {% if user.birth %}
+        <div class="info-item">
+          <div class="info-label">📅 Ngày sinh</div>
+          <div class="info-value">{{ user.birth|date:"d/m/Y" }}</div>
+        </div>
+      {% endif %}
+
+      <div class="mark-badge">
+        ⭐ {{ user.mark }} Điểm
+      </div>
+
+      <a href="{% url 'home' %}" class="back-btn">← Quay lại</a>
+    </aside>
+
+    <!-- Content - User Articles -->
+    <main class="content">
+      <h2>📝 Bài viết của {{ user.name }}</h2>
+
+      {% if user.article_set.all %}
+        <div class="articles-list">
+          {% for article in user.article_set.all %}
+            <a href="{% url 'article' article.id %}" class="article-item">
+              <h3>{{ article.title }}</h3>
+              <div class="article-meta">
+                <span>📅 {{ article.created_at|date:"d/m/Y" }}</span>
+                <span>❤️ {{ article.likes.count }} lượt thích</span>
+                <span>💬 {{ article.comment_set.count }} bình luận</span>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <p>📭 {{ user.name }} chưa viết bài viết nào</p>
+        </div>
+      {% endif %}
+    </main>
   </div>
 </body>
 </html>
