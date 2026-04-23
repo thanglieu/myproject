@@ -19,7 +19,7 @@
 
     /* Header */
     header {
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      background: #1aae1c;
       color: white;
       padding: 15px 0;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -54,11 +54,11 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 40px auto;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: 320px 1fr;
+      grid-template-columns: 280px 2fr 280px; /* thêm cột thứ 3 */
       gap: 30px;
       padding-bottom: 40px;
     }
@@ -70,7 +70,6 @@
       border-radius: 10px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       height: fit-content;
-      position: sticky;
       top: 100px;
     }
 
@@ -323,6 +322,39 @@
         </div>
       {% endif %}
     </main>
+
+    <!-- Sidebar phải: quản lý series -->
+     
+    <aside class="sidebar">
+      <div class="sidebar-box">
+        {% if user == request.user %}
+          <h3>📚 Tạo Series mới</h3>
+          <form method="POST" action="{% url 'this_user' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="back-btn">Tạo Series mới</button>
+          </form>
+        {% endif %}
+
+        <h3 style="margin-top:20px;">Danh sách Series</h3>
+        <ul class="series-list">
+          {% for s in k %}
+            <li>
+              {% if s.1 %}
+                <a href="{% url 'article' s.1.id %}">{{ s.0.name }}</a>
+              {% else %}
+                <a>{{ s.0.name }}</a>
+                <p style="color:red; font-size:10px;">Series chưa có bài viết</p>
+              {% endif %}
+            </li>
+          {% empty %}
+            <p>📭 Chưa có series nào. Hãy tạo mới ở trên.</p>
+          {% endfor %}
+        </ul>
+      </div>
+    </aside>
+    
+
   </div>
 </body>
 </html>

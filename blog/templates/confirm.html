@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xác nhận xóa - Blog</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .confirm-box {
+      background: white;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      max-width: 500px;
+      text-align: center;
+    }
+    .confirm-box h1 {
+      font-size: 22px;
+      color: #e74c3c;
+      margin-bottom: 20px;
+    }
+    .confirm-box p {
+      font-size: 16px;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+    .buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+    .buttons button, .buttons a {
+      flex: 1;
+      min-width: 120px;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .delete-btn {
+      background: #e74c3c;
+      color: white;
+    }
+    .delete-btn:hover {
+      background: #c0392b;
+    }
+    .cancel-btn {
+      background: #eceff1;
+      color: #2c3e50;
+    }
+    .cancel-btn:hover {
+      background: #cfd8dc;
+    }
+  </style>
+</head>
+<body>
+  <div class="confirm-box">
+    <h1>🗑️ Xác nhận xóa</h1>
+    <form method="post">
+      {% csrf_token %}
+      <div class="buttons">
+        <button type="submit" class="delete-btn">Xóa</button>
+        <a href="{% url 'home' %}" class="cancel-btn">Hủy</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

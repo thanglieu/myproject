@@ -21,7 +21,7 @@
 
     /* Header */
     header {
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      background: #1aae1c;
       color: white;
       padding: 15px 0;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -60,11 +60,11 @@
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1400px;
       margin: 40px auto;
       padding: 0 20px;
       display: grid;
-      grid-template-columns: 1fr 280px;
+      grid-template-columns: 280px 1fr 280px; /* trái - giữa - phải */
       gap: 30px;
     }
 
@@ -369,6 +369,7 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(76,175,80,0.3);
     }
+    
 
     /* Responsive */
     @media (max-width: 900px) {
@@ -425,6 +426,48 @@
 
   <!-- Main Container -->
   <div class="container">
+
+    <!-- Sidebar bên trái -->
+    <aside class="sidebar">
+      <div class="sidebar-box">
+        {% if not articles %}
+          {% if article.author == request.user %}
+            <h3>📚 Chọn Series cho bài viết</h3>
+            <form method="POST" action="{% url 'article' article.id %}">
+              {% csrf_token %}
+              <div class="sidebar-item">
+                <label for="series">Series</label>
+                <select name="series" id="series" required>
+                  {% for s in series %}
+                    <option value="{{ s.name }}">{{ s.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button type="submit" name="form" value="add" class="back-btn">Gán vào Series</button>
+            </form>
+          {% endif %}
+
+        {% else %}
+          <h3>📚 Các bài viết trong Series "{{ this_series.name }}"</h3>
+          <ul>
+            {% for a in articles %}
+              <li>
+                <a href="{% url 'article' a.id %}">{{ a.title }}</a>
+              </li>
+            {% endfor %}
+
+            {% if article.author == request.user %}
+              <form method="POST" action="{% url 'article' article.id %}">
+                {% csrf_token %}
+                <button type="submit" name="form" value="delete" class="back-btn" style="margin-top:10px;" >Xóa khỏi Series</button>
+              </form>
+            {% endif %} 
+          </ul>
+        {% endif %}
+      </div>
+    </aside>
+
+
     <!-- Main Content -->
     <main class="main-content">
       <!-- Article Header -->
@@ -512,7 +555,7 @@
       </section>
     </main>
 
-    <!-- Sidebar -->
+    <!-- Sidebar bên phải -->
     <aside class="sidebar">
       <!-- Info Box -->
       <div class="sidebar-box">
@@ -546,6 +589,12 @@
         {% endif %}
       </div>
 
+      {% if article.author == request.user %}
+        <a href="/articles/{{ article.id }}/edit" class="back-btn" style="background:#ffc107; border:none; color:#2c3e50; margin-top:0px;">✏️ Chỉnh sửa</a>
+
+        <a href="/articles/{{ article.id }}/delete" class="back-btn" style="background:#e74c3c; border:none; color:#2c3e50; margin-top:0px;">✏️ Xóa</a>
+      {% endif %}
+      
       <!-- Back Button -->
       <a href="{% url 'home' %}" class="back-btn">← Quay lại trang chủ</a>
     </aside>

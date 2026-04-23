@@ -1,19 +1,65 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import ArticleForm
-from .models import Article, Topic, Comment, Like
+from .models import Article, Topic, Comment, Like, Series, Article_List
 from .models import User
-from .forms import CustomUserCreationForm, ArticleCreateForm, CommentForm
+from .forms import CustomUserCreationForm, ArticleCreateForm, CommentForm, SeriesCreateForm
 from django.contrib.auth import login, logout
 from django.core.paginator import Paginator
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.contrib import messages
 
 
 # trang cá nhân 
 def user_page(request):
-    user = request.user   # lấy user hiện đang đăng nhập
-    return render(request, 'users/user.html', {'user': user})
+    # hiển thị thông tin cá nhân, danh sách article và các series
+    if request.method == 'GET':
+        user = request.user
+        form = SeriesCreateForm()
+        series = Series.objects.filter(author=user)
+
+        k = []
+        for i in series:
+            a = Article_List.objects.filter(series=i)
+            k.append([i,a[0].article if len(a)>0 else None])
+
+        return render(request, 'users/user.html', {
+            'user': user,
+            'form': form,
+            'k': k,
+        })
+    
+    # trường user lấy người dùng hiện tại, chứ không nhập liệu qua <input>
+    # do đó không nhập tự động bằng ModelForm được, phải nhập thủ công bằng Form
+    elif request.method == 'POST':
+        form = SeriesCreateForm(request.POST) 
+        if form.is_valid():
+            a = request.user
+            b = form.cleaned_data['name']
+            Series.objects.create(author = a, name = b)
+        
+        return redirect('series')
+
+
+# chi tiết user
+def user_detail(request, pk):
+    # hiển thị thông tin cá nhân, danh sách article và các series
+    if request.method == 'GET':
+        user = User.objects.get(id=pk)
+        form = SeriesCreateForm()
+        series = Series.objects.filter(author=user)
+
+        k = []
+        for i in series:
+            a = Article_List.objects.filter(series=i)
+            k.append([i,a[0].article if len(a)>0 else None])
+
+        return render(request, 'users/user.html', {
+            'user': user,
+            'form': form,
+            'k': k,
+        })
 
 
 # đăng ký
@@ -75,25 +121,18 @@ def article_list(request):
 # home - danh sách bài viết mới + tìm kiếm
 def home(request):
     # nếu HTTP GET rỗng không có dữ liệu (tức kích hoạt bởi gõ URL)
-    if not request.GET:
+    if(request.GET.get('form')==None): 
         return article_list(request)
     else:
     # nếu HTTP GET có dữ liệu (tức submit form có method = get)
-        print(request.GET)
         if(request.GET.get('form')=='search'):    
             return search(request)
         elif(request.GET.get('form')=='logout'):  
             # đăng xuất 
             logout(request)
             return redirect('login')
-        elif(request.GET.get('form')=='create'): 
-            return redirect('create')
-        elif(request.GET.get('form')=='filter'): 
-            return redirect('filter')
-        elif(request.GET.get('form')=='user'): 
-            return redirect('this_user')
-        elif(request.GET.get('form')=='BXH'): 
-            return redirect('user-list')
+        else:
+            return redirect('error')
 
 # ____________________________________
 
@@ -117,8 +156,8 @@ def create_article(request):
         return render(request, 'articles/create.html', {'form': form})
     
     # xử lý thao tác submit bài viết
-    # do trường user lấy người dùng hiện tại qua HTTP request chứ không nhập input qua form
-    # do đó ta dùng forms.Form để nhập liệu thủ công thay vì dùng forms.ModelForm
+    # do trường user lấy người dùng hiện tại, chứ không nhập liệu qua <input>
+    # do đó không nhập tự động bằng ModelForm được, phải nhập thủ công bằng Form
     elif request.method == 'POST':
         form = ArticleCreateForm(request.POST) 
         if form.is_valid():
@@ -127,6 +166,8 @@ def create_article(request):
             c = form.cleaned_data['content']
             d = form.cleaned_data['topic']
             article = Article.objects.create(author = a, title = b, content = c)
+            
+            # do topic là giá trị list [] nên phải dùng set() thay vì create()
             article.topic.set(d)
             form = ArticleCreateForm()
             return redirect('home')
@@ -134,42 +175,62 @@ def create_article(request):
             print(a,b,c,d)
 
 
-"""
-def filter(request):
-    if request.method == 'GET':
-        topic = request.GET.get('tag')
-
-        if not request.GET:
-            return render(request, 'filter_form.html')
-        else:
-            list = Article.objects.filter(tag = topic)
-            return render(request, 'article_list.html',{'form' : list})
-        
-    return render(request, 'error.html')
-
-
-"""
-
-
 # ____________ ARTICLE DETAIL, COMMENT, LIKE FUNCTIONALITY ____________
 
 # View chi tiết bài viết kèm comments
 def article_detail(request, article_id):
-    article = get_object_or_404(Article, id=article_id)
-    comments = Comment.objects.filter(article=article).order_by('-created_at')
-    user_liked_article = False
+
+    # hiển thị thông tin bài viết, content
+    # hiển thị các bài viết cùng series (nếu có series)
+    if request.method == 'GET':
+        article = get_object_or_404(Article, id=article_id)
+        comments = Comment.objects.filter(article=article).order_by('-created_at')
+        user_liked_article = False
+        
+        if request.user.is_authenticated:
+            user_liked_article = Like.objects.filter(user=request.user, article=article).exists()
+        
+        
+        k = Article_List.objects.filter(article=article)
+        this_series = k[0].series if len(k)>0 else None
+
+
+        article_list = Article_List.objects.filter(series=this_series).order_by('id')
+        articles_series = [i.article for i in article_list]
+
+        context = {
+            'article': article,
+            'comments': comments,
+            'user_liked_article': user_liked_article,
+            'comment_form': CommentForm(),
+            'series': Series.objects.filter(author=request.user),
+            'articles': articles_series,
+            'this_series': this_series,
+        }
+        
+        return render(request, 'articles/article.html', context)
     
-    if request.user.is_authenticated:
-        user_liked_article = Like.objects.filter(user=request.user, article=article).exists()
-    
-    context = {
-        'article': article,
-        'comments': comments,
-        'user_liked_article': user_liked_article,
-        'comment_form': CommentForm(),
-    }
-    
-    return render(request, 'articles/article.html', context)
+    # thêm - xóa series cho article (nếu chưa có)
+    elif request.method == 'POST':
+        # thêm vào series 
+        if(request.POST.get('form')=='add'): 
+            # article = Article.objects.get(id=article_id)
+            a = get_object_or_404(Article, id=article_id)
+            b = Series.objects.get(name=request.POST['series'])
+
+            # tạo Article_List cho Series nếu chưa có
+            k = Article_List.objects.create(series=b, article=a)
+
+            # return article_detail(request, article_id), gọi lại hàm nhưng không kích hoạt GET request
+            return redirect('article', article_id=a.id)
+            
+        # xóa series
+        elif (request.POST.get('form')=='delete'): 
+            a = get_object_or_404(Article, id=article_id)
+            b = Article_List.objects.filter(article=a).first().series
+            Article_List.objects.get(series=b, article=a).delete()
+            return redirect('article', article_id=a.id)
+
 
 
 # Tạo comment cho bài viết
@@ -208,5 +269,49 @@ def like_article(request, article_id):
         article.author.save()
     
     return redirect('article', article_id=article_id)
+
+
+#-------------------------------------
+# chỉnh sửa bài viết
+def edit_article(request, pk):
+    article = get_object_or_404(Article, id=pk)
+
+    if request.method == 'GET':
+        # khởi tạo form với dữ liệu sẵn có
+        form = ArticleCreateForm(initial={
+            'title': article.title,
+            'content': article.content,
+            'topic': article.topic.all(),
+        })
+        return render(request, 'articles/create.html', {'form': form, 'article': article})
+
+    elif request.method == 'POST':
+        form = ArticleCreateForm(request.POST)
+        if form.is_valid():
+            article.author = request.user
+            article.title = form.cleaned_data['title']
+            article.content = form.cleaned_data['content']
+            article.topic.set(form.cleaned_data['topic'])
+            article.save()
+            return redirect('article', article_id=article.id)
+        else:
+            return render(request, 'articles/create.html', {'form': form})
+
+
+# xóa bài viết
+def delete_article(request, pk):
+    if request.method == 'GET':
+        return render(request, 'confirm.html')
+    elif request.method == 'POST':
+        article = get_object_or_404(Article, id=pk)
+        article.delete()
+        return redirect('home')
+
+
+
+
+
+
+
 
 

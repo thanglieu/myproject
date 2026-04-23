@@ -23,6 +23,13 @@ class Topic(models.Model):
     def __str__(self):
         return self.name
 
+
+#------------------------------
+class Series(models.Model):
+    name = models.CharField(max_length=255)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 class Article(models.Model):
     title = models.CharField(max_length=255)
     like = models.IntegerField(default=0)
@@ -31,9 +38,25 @@ class Article(models.Model):
     topic = models.ManyToManyField(Topic, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+
     def __str__(self):
         return self.title
 
+
+# bảng trung gian giữa Series và Article (để thêm thuộc tính order)
+class Article_List(models.Model):
+    # id tự động 
+    series = models.ForeignKey(Series, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+
+    """
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['series', 'article'], name='unique_series_article')
+        ]
+    """
+    
+#--------------------------------------
 class Comment(models.Model):
     content = models.TextField()
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -55,5 +78,11 @@ class Like(models.Model):
     def __str__(self):
         return f"{self.user} liked {self.article}"
 
+
+
+    
+
+
+    
 
 

@@ -61,3 +61,8 @@ class CommentForm(forms.ModelForm):
         widgets = {
             'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Viết bình luận...'})
         }
+
+
+class SeriesCreateForm(forms.Form):
+    name = forms.CharField(max_length=255)
+    

@@ -20,7 +20,8 @@
 
     /* Header Navigation */
     header {
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      /* background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); */
+      background: #1aae1c;
       color: white;
       padding: 20px 0;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -237,6 +238,19 @@
       font-weight: 700;
     }
 
+    .back-btn {
+      display: block;
+      padding: 9px 20px;
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      border-radius: 6px;
+      font-weight: 600;
+
+      width: auto;
+    }
+
     /* Responsive */
     @media (max-width: 600px) {
       header {
@@ -283,8 +297,8 @@
       <div class="logo">📖 Blog</div>
       <form method="get" action="" class="header-nav">
         {% csrf_token %}
-        <button type="submit" name="form" value="user">👤 Trang cá nhân</button>
-        <button type="submit" name="form" value="BXH">🏆 Xếp hạng</button>
+        <a href="{% url 'this_user' %}" class="back-btn" style="background: rgba(74, 200, 105, 0.674);" >👤 Trang cá nhân</a>
+        <a href="{% url 'user-list' %}" class="back-btn" style="background: rgba(74, 200, 105, 0.674)" >🏆 Xếp hạng</a>
         <button type="submit" name="form" value="logout" style="background: rgba(255,100,100,0.3); border-color: rgba(255,100,100,0.6);">🚪 Đăng xuất</button>
       </form>
     </div>
@@ -300,8 +314,8 @@
         {% csrf_token %}
         <input type="text" name="keyword" placeholder="🔍 Tìm kiếm bài viết...">
         <button type="submit" name="form" value="search">Tìm kiếm</button>
-        <button type="submit" name="form" value="filter" style="background: #2196F3;">Lọc chủ đề</button>
-        <button type="submit" name="form" value="create" style="background: #ff9800;">✏️ Tạo bài</button>
+        <a href="{% url 'filter' %}" class="back-btn" style="background: #2196F3;">Lọc chủ đề</a>
+        <a href="{% url 'create' %}" class="back-btn" style="background: #ff9800;">✏️ Tạo bài</a>
       </form>
     </div>
 
@@ -331,14 +345,14 @@
 
     <!-- Pagination -->
     <div class="pagination">
-      {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">← Trang trước</a>
+      {% if posts.has_previous %}
+        <a href="?page={{ posts.previous_page_number }}">← Trang trước</a>
       {% endif %}
 
-      <span>Trang {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}</span>
+      <span>Trang {{ posts.number }}/{{ posts.paginator.num_pages }}</span>
 
-      {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Trang sau →</a>
+      {% if posts.has_next %}
+        <a href="?page={{ posts.next_page_number }}">Trang sau →</a>
       {% endif %}
     </div>
   </div>

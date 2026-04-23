@@ -20,7 +20,7 @@
 
     /* Header */
     header {
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      background: #1aae1c;
       color: white;
       padding: 15px 0;
       box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -268,11 +268,11 @@
         <!-- Users Pagination -->
         <div class="pagination" style="margin-top: 25px;">
           {% if users.has_previous %}
-            <a href="?keyword={{ keyword }}&page_users={{ users.previous_page_number }}">← Trước</a>
+            <a href="?form=search&keyword={{ keyword }}&page_users={{ users.previous_page_number }}">← Trước</a>
           {% endif %}
           <span>{{ users.number }}/{{ users.paginator.num_pages }}</span>
           {% if users.has_next %}
-            <a href="?keyword={{ keyword }}&page_users={{ users.next_page_number }}">Sau →</a>
+            <a href="?form=search&keyword={{ keyword }}&page_users={{ users.next_page_number }}">Sau →</a>
           {% endif %}
         </div>
       {% else %}
@@ -300,11 +300,11 @@
         <!-- Articles Pagination -->
         <div class="pagination" style="margin-top: 25px;">
           {% if articles.has_previous %}
-            <a href="?keyword={{ keyword }}&page_articles={{ articles.previous_page_number }}">← Trước</a>
+            <a href="?form=search&keyword={{ keyword }}&page_articles={{ articles.previous_page_number }}">← Trước</a>
           {% endif %}
           <span>{{ articles.number }}/{{ articles.paginator.num_pages }}</span>
           {% if articles.has_next %}
-            <a href="?keyword={{ keyword }}&page_articles={{ articles.next_page_number }}">Sau →</a>
+            <a href="?form=search&keyword={{ keyword }}&page_articles={{ articles.next_page_number }}">Sau →</a>
           {% endif %}
         </div>
       {% else %}
