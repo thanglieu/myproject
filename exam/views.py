@@ -12,7 +12,7 @@ User = get_user_model()
 
 @login_required(login_url='/blog/login/')
 def create_test_count(request):
-    """Hiển thị form để chọn số lượng câu hỏi cho bài kiểm tra mới."""
+    # Hiển thị form để chọn số lượng câu hỏi cho bài kiểm tra mới
     form = QuestionCountForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         question_count = form.cleaned_data['question_count']

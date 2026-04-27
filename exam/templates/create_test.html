@@ -114,7 +114,25 @@
         {% csrf_token %}
         <fieldset>
             <legend>Thông tin bài Test</legend>
-            {{ test_form.as_p }}
+            <div>
+                <label for="{{ test_form.title.id_for_label }}">
+                    {{ test_form.title.label }}
+                </label><br>
+                {{ test_form.title }}
+                {% for error in test_form.title.errors %}
+                    <p style="color:red;">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div>
+                <label for="{{ test_form.quantity.id_for_label }}">
+                    {{ test_form.quantity.label }}
+                </label><br>
+                {{ test_form.quantity }}
+                {% for error in test_form.quantity.errors %}
+                    <p style="color:red;">{{ error }}</p>
+                {% endfor %}
+            </div>
         </fieldset>
 
         {{ question_formset.management_form }}
@@ -122,7 +140,26 @@
         {% for question_form, answer_formset in question_answer_pairs %}
             <fieldset style="margin-top:20px; padding:10px; border:1px solid #888;">
                 <legend>Câu hỏi {{ forloop.counter }}</legend>
-                {{ question_form.as_p }}
+
+                <div>
+                    <label for="{{ question_form.text.id_for_label }}">
+                        {{ question_form.text.label }}
+                    </label><br>
+                    {{ question_form.text }}
+                    {% for error in question_form.text.errors %}
+                        <p style="color:red;">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div>
+                    <label for="{{ question_form.stt.id_for_label }}">
+                        {{ question_form.stt.label }}
+                    </label><br>
+                    {{ question_form.stt }}
+                    {% for error in question_form.stt.errors %}
+                        <p style="color:red;">{{ error }}</p>
+                    {% endfor %}
+                </div>
 
                 {{ answer_formset.management_form }}
 
@@ -131,7 +168,36 @@
                     {% for answer_form in answer_formset.forms %}
                         <div style="margin-bottom:8px; padding:8px; border:1px dashed #ccc;">
                             <p><strong>Đáp án {{ forloop.counter }}:</strong></p>
-                            {{ answer_form.as_p }}
+
+                            <div>
+                                <label for="{{ answer_form.title.id_for_label }}">
+                                    {{ answer_form.title.label }}
+                                </label><br>
+                                {{ answer_form.title }}
+                                {% for error in answer_form.title.errors %}
+                                    <p style="color:red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <div>
+                                <label for="{{ answer_form.text.id_for_label }}">
+                                    {{ answer_form.text.label }}
+                                </label><br>
+                                {{ answer_form.text }}
+                                {% for error in answer_form.text.errors %}
+                                    <p style="color:red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+
+                            <div>
+                                <label for="{{ answer_form.is_correct.id_for_label }}">
+                                    {{ answer_form.is_correct.label }}
+                                </label><br>
+                                {{ answer_form.is_correct }}
+                                {% for error in answer_form.is_correct.errors %}
+                                    <p style="color:red;">{{ error }}</p>
+                                {% endfor %}
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
@@ -143,4 +209,5 @@
 
     <p><a href="{% url 'exam:create_test_count' %}">Quay lại</a></p>
 </body>
+
 </html>

@@ -99,7 +99,18 @@
 
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <div>
+            <label for="{{ form.question_count.id_for_label }}">
+                {{ form.question_count.label }}
+            </label><br>
+            {{ form.question_count }}
+            {% if form.question_count.help_text %}
+                <small>{{ form.question_count.help_text }}</small>
+            {% endif %}
+            {% for error in form.question_count.errors %}
+                <p style="color:red;">{{ error }}</p>
+            {% endfor %}
+        </div>
         <button type="submit">Tiếp tục</button>
     </form>
 
@@ -107,3 +118,4 @@
     <p><a href="{% url 'exam:my_tests' %}">Bài kiểm tra tôi tạo</a></p>
 </body>
 </html>
+
