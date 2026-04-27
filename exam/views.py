@@ -73,10 +73,7 @@ def create_test(request, question_count):
 
     question_answer_pairs = list(zip(question_formset.forms, answer_formsets))
 
-    return render(
-        request,
-        'exam/create_test.html',
-        {
+    return render( request,'create_test.html',{
             'test_form': test_form,
             'question_formset': question_formset,
             'answer_formsets': answer_formsets,
@@ -86,14 +83,16 @@ def create_test(request, question_count):
     )
 
 
-def search_tests(request):
+
+# trang chủ
+def exam_home(request):
     """Tìm kiếm bài kiểm tra theo từ khóa trong tiêu đề."""
     query = request.GET.get('q', '').strip()
     tests = Test.objects.order_by('-id')
     if query:
         tests = tests.filter(title__icontains=query)
 
-    return render(request, 'search_tests.html', {'tests': tests, 'query': query})
+    return render(request, 'exam_home.html', {'tests': tests, 'query': query})
 
 
 @login_required(login_url='/blog/login/')
