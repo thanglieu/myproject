@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tạo bài kiểm tra mới</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px 0 40px;
+        }
+
+        h1 {
+            color: #1f3a5d;
+            margin-bottom: 18px;
+        }
+
+        p {
+            margin-bottom: 18px;
+        }
+
+        form {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #d8dee4;
+            background: #fbfdff;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #4caf50;
+        }
+
+        button {
+            background: #4caf50;
+            color: #ffffff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.18);
+        }
+
+        a {
+            color: #1aae1c;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #3f9a3e;
+        }
+
+        .error-message,
+        div[style*="color:red"] {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+            color: #c62828;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tạo bài kiểm tra mới</h1>
+    <p>Nhập số lượng câu hỏi để bắt đầu tạo bài kiểm tra.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Tiếp tục</button>
+    </form>
+
+    <p><a href="{% url 'exam:search_tests' %}">Tìm kiếm bài kiểm tra</a></p>
+    <p><a href="{% url 'exam:my_tests' %}">Bài kiểm tra tôi tạo</a></p>
+</body>
+</html>

@@ -1,0 +1,34 @@
+﻿{% extends 'exam/base.html' %}
+
+{% block title %}Chi tiết bài kiểm tra{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-title">Chi tiết bài kiểm tra</div>
+    <div class="card-meta">Thông tin chi tiết của bài kiểm tra</div>
+</div>
+
+<div class="card">
+    <div class="card-title">{{ test.title }}</div>
+    <div class="card-meta">Tác giả: {{ test.author.username }}</div>
+    <div class="card-meta">Số câu hỏi: {{ test.quantity }}</div>
+</div>
+
+{% if user_tests %}
+    <div class="card-list">
+        {% for user_test in user_tests %}
+            <div class="card list-item">
+                <div><strong>{{ user_test.user.username }}</strong></div>
+                <div>{{ user_test.score }} điểm</div>
+                <div class="nav-links" style="margin-top: 12px;">
+                    <a class="primary-btn" href="{% url 'exam:test_result' user_test.id %}">Xem chi tiết kết quả</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card">
+        <p>Chưa có người làm bài cho bài kiểm tra này.</p>
+    </div>
+{% endif %}
+{% endblock %}

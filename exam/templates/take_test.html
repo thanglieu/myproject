@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Làm bài kiểm tra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px 0 40px;
+        }
+
+        h1 {
+            color: #1f3a5d;
+            margin-bottom: 18px;
+        }
+
+        p {
+            margin-bottom: 14px;
+        }
+
+        form {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+        }
+
+        fieldset {
+            background: #f8fff9;
+            border: 1px solid rgba(76, 175, 80, 0.18);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        legend {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        button {
+            background: #4caf50;
+            color: #ffffff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.18);
+        }
+
+        div[style*="margin-top:10px"] {
+            margin-top: 12px;
+        }
+
+        div[style*="margin-bottom:8px"] {
+            margin-bottom: 12px;
+        }
+
+        a {
+            color: #1aae1c;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #3f9a3e;
+        }
+
+        .error-message,
+        div[style*="color:red"] {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+            color: #c62828;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Làm bài kiểm tra: {{ test.title }}</h1>
+    <p>Người tạo: {{ test.author.username }}</p>
+    <p>Số câu hỏi: {{ test.quantity }}</p>
+
+    {% if error %}
+        <div style="color:red;">{{ error }}</div>
+    {% endif %}
+
+    {% if existing_user_test %}
+        <p>Bạn đã làm bài này trước đó. Nộp lại sẽ cập nhật điểm.</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {% for question in questions %}
+            <fieldset style="margin-bottom:20px; padding:10px; border:1px solid #888;">
+                <legend>Câu hỏi {{ forloop.counter }}</legend>
+                <div>{{ question.text|safe }}</div>
+                <div style="margin-top:10px;">
+                    {% for answer in question.answer_set.all %}
+                        <div style="margin-bottom:8px;">
+                            <label>
+                                <input type="radio" name="question_{{ question.id }}" value="{{ answer.id }}">
+                                <strong>{{ answer.title }}</strong> - {{ answer.text|safe }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+        {% endfor %}
+        <button type="submit">Nộp bài</button>
+    </form>
+
+    <p><a href="{% url 'exam:search_tests' %}">Quay lại tìm kiếm</a></p>
+</body>
+</html>

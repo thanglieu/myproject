@@ -13,7 +13,7 @@ urlpatterns = [
             template_name='login.html',
             # đặt URL chuyển hướng đến sau khi đăng nhập
             redirect_authenticated_user=True,
-            next_page = '/'
+            next_page = '/blog'
         ), 
         name='login'
     ),
