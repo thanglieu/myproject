@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+    <title>Kết quả bài kiểm tra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px 0 40px;
+        }
+
+        h1 {
+            color: #1f3a5d;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #1f3a5d;
+            margin-bottom: 18px;
+        }
+
+        p {
+            margin-bottom: 14px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        li {
+            margin-bottom: 16px;
+            padding: 18px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        strong {
+            color: #1f3a5d;
+        }
+
+        a {
+            color: #1aae1c;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #3f9a3e;
+        }
+
+        .status {
+            margin-top: 12px;
+        }
+
+        form {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+        }        
+        .answer-content p {
+            display: inline;   /* hoặc inline-block */
+            margin: 0;         /* bỏ khoảng cách mặc định */
+            padding: 0;
+        }
+        .back-btn {
+            padding: 9px 20px;
+            background: rgba(21, 168, 58, 0.85);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+        .answers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 cột */
+            gap: 16px;
+            margin-top: 12px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <h1>Kết quả bài kiểm tra</h1>
+
+
+    <main class="container">
+        <h2>Thông tin bài làm</h2>
+        <form>
+            <p><strong>Bài kiểm tra: </strong>{{ user_test.test.title }}</p>
+            <p><strong>Điểm: </strong>{{ user_test.score }}</p>
+            <p><strong>Người làm: </strong>{{ user_test.user.username }}</p>
+        </form>
+
+        <h2>Chi tiết câu trả lời</h2>
+        
+            <ul>
+                {% for item in question_results %}
+                <form>
+                    <h3>Câu hỏi {{ item.question.stt }}:</h3>
+                    <li>
+                        <div>{{ item.question.text|safe }}</div>
+                    </li>
+                    <strong>Đáp án :</strong> 
+                    <li>
+                        <div style="margin-top:10px;" class="answers-grid">
+                            {% for a in item.answer_list %}
+                                <div>
+                                    <strong>{{ a.title}}) </strong> <span class="answer-content">{{ a.text|safe }}</span> 
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </li>
+
+                    <strong>Đáp án bạn chọn:</strong>
+                    
+                    <li>
+                        {% if item.answer.is_correct %}
+                        
+                            <div class="answer-content">{{ item.answer.title }}) ✅</div>
+                        {% else %}
+                            <div class="answer-content">{{ item.answer.title }}) ❌ </div>
+                            {% for a in item.answer_list %}
+                                <div>
+                                    <span>{% if a.is_correct %} {{ a.title}}) ✅ {% endif %}</span>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </li>
+                </form>
+                {% endfor %}
+            </ul>
+        
+
+        <p><a href="{% url 'exam:exam_home' %}" class="back-btn">Về trang chủ</a></p>
+    </main>
+
+    
+</body>
+</html>

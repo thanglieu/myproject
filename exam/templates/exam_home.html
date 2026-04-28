@@ -43,7 +43,7 @@
 
         .back-btn {
             padding: 9px 20px;
-            background: rgba(74, 200, 105, 0.85);
+            background: rgba(11, 160, 48, 0.85);
             color: white;
             text-decoration: none;
             border-radius: 6px;
@@ -138,7 +138,7 @@
             <div class="logo">📝 Test</div>
             <div class="nav-links">
                 <a class="back-btn" href="{% url 'exam:create_test_count' %}">Tạo Test mới</a>
-                <a class="back-btn" href="{% url 'exam:my_tests' %}">Test của tôi</a>
+                <a class="back-btn" href="{% url 'exam:user_tests'  this_user_id %}">Test của tôi</a>
             </div>
         </div>
     </header>
@@ -157,8 +157,11 @@
                     <li>
                         <strong>{{ test.title }}</strong> - Tác giả: 
                         <a href="{% url 'exam:user_tests' test.author.id %}">{{ test.author.username }}</a>
-                        <br>
-                        <a href="{% url 'exam:take_test' test.id %}">Làm</a>
+                        - {{  test.quantity}} câu
+                        <div style="text-align: right;">
+                            <a href="{% url 'exam:take_test' test.id %}" class="back-btn">Làm</a>
+                        </div>
+
                     </li>
                 {% endfor %}
             </ul>

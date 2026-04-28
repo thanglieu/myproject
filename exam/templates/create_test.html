@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {{ test_form.media }}
+    {{ question_formset.media }}
     <meta charset="utf-8">
     <title>Nhập nội dung bài kiểm tra</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -18,10 +16,7 @@
             padding: 20px 0 40px;
         }
 
-        h1 {
-            color: #1f3a5d;
-            margin-bottom: 18px;
-        }
+        h1 { color: #1f3a5d; margin-bottom: 18px; text-align: center;}
 
         form {
             background: #ffffff;
@@ -45,25 +40,26 @@
             margin-bottom: 14px;
         }
 
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 10px;
-            border: 1px solid #d8dee4;
-            background: #fbfdff;
-            font-size: 14px;
-            transition: border-color 0.2s ease;
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #4caf50;
+        .answers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 cột */
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .answer-block {
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px dashed #ccdce3;
+            background: #ffffff;
+            max-height: 200px;   /* giới hạn chiều cao */
+            overflow-y: auto;    /* thêm thanh cuộn nếu nội dung dài */
         }
 
         button {
@@ -82,132 +78,83 @@
             box-shadow: 0 8px 18px rgba(76, 175, 80, 0.18);
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .answer-block {
-            margin-bottom: 12px;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px dashed #ccdce3;
-            background: #ffffff;
-        }
-
         a {
             color: #1aae1c;
             text-decoration: none;
             transition: color 0.2s ease;
         }
 
-        a:hover {
-            color: #3f9a3e;
+        a:hover { color: #3f9a3e; }
+
+        .back-btn {
+            padding: 9px 20px;
+            background: #4caf50;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s ease;
         }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
     </style>
 </head>
 <body>
     <h1>Nhập nội dung bài kiểm tra</h1>
 
-    <form method="post">
-        {% csrf_token %}
-        <fieldset>
-            <legend>Thông tin bài Test</legend>
-            <div>
-                <label for="{{ test_form.title.id_for_label }}">
-                    {{ test_form.title.label }}
-                </label><br>
-                {{ test_form.title }}
-                {% for error in test_form.title.errors %}
-                    <p style="color:red;">{{ error }}</p>
-                {% endfor %}
-            </div>
-
-            <div>
-                <label for="{{ test_form.quantity.id_for_label }}">
-                    {{ test_form.quantity.label }}
-                </label><br>
-                {{ test_form.quantity }}
-                {% for error in test_form.quantity.errors %}
-                    <p style="color:red;">{{ error }}</p>
-                {% endfor %}
-            </div>
-        </fieldset>
-
-        {{ question_formset.management_form }}
-
-        {% for question_form, answer_formset in question_answer_pairs %}
-            <fieldset style="margin-top:20px; padding:10px; border:1px solid #888;">
-                <legend>Câu hỏi {{ forloop.counter }}</legend>
-
-                <div>
-                    <label for="{{ question_form.text.id_for_label }}">
-                        {{ question_form.text.label }}
-                    </label><br>
-                    {{ question_form.text }}
-                    {% for error in question_form.text.errors %}
-                        <p style="color:red;">{{ error }}</p>
-                    {% endfor %}
+    <main class="container">
+        <form method="post">
+            {% csrf_token %}
+            <fieldset>
+                <h2>Thông tin bài Test</h2>
+                <div>Title : {{ title }}<br>
                 </div>
 
-                <div>
-                    <label for="{{ question_form.stt.id_for_label }}">
-                        {{ question_form.stt.label }}
-                    </label><br>
-                    {{ question_form.stt }}
-                    {% for error in question_form.stt.errors %}
-                        <p style="color:red;">{{ error }}</p>
-                    {% endfor %}
-                </div>
-
-                {{ answer_formset.management_form }}
-
-                <div style="margin-left:20px;">
-                    <h4>Các đáp án</h4>
-                    {% for answer_form in answer_formset.forms %}
-                        <div style="margin-bottom:8px; padding:8px; border:1px dashed #ccc;">
-                            <p><strong>Đáp án {{ forloop.counter }}:</strong></p>
-
-                            <div>
-                                <label for="{{ answer_form.title.id_for_label }}">
-                                    {{ answer_form.title.label }}
-                                </label><br>
-                                {{ answer_form.title }}
-                                {% for error in answer_form.title.errors %}
-                                    <p style="color:red;">{{ error }}</p>
-                                {% endfor %}
-                            </div>
-
-                            <div>
-                                <label for="{{ answer_form.text.id_for_label }}">
-                                    {{ answer_form.text.label }}
-                                </label><br>
-                                {{ answer_form.text }}
-                                {% for error in answer_form.text.errors %}
-                                    <p style="color:red;">{{ error }}</p>
-                                {% endfor %}
-                            </div>
-
-                            <div>
-                                <label for="{{ answer_form.is_correct.id_for_label }}">
-                                    {{ answer_form.is_correct.label }}
-                                </label><br>
-                                {{ answer_form.is_correct }}
-                                {% for error in answer_form.is_correct.errors %}
-                                    <p style="color:red;">{{ error }}</p>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endfor %}
+                <div>Số lượng câu hỏi : {{ question_count }}
                 </div>
             </fieldset>
-        {% endfor %}
 
-        <button type="submit">Tạo bài kiểm tra</button>
-    </form>
+            {{ question_formset.management_form }}
 
-    <p><a href="{% url 'exam:create_test_count' %}">Quay lại</a></p>
+            {% for question_form, answer_formset in question_answer_pairs %}
+                <fieldset>
+                    <h3>Câu hỏi {{ question_form.stt.value }}</h3>
+                    {{ question_form.stt }}
+
+                    <div>Nội dung câu hỏi :<br><br>
+                        {{ question_form.text }}
+                    </div><br>
+
+                    {{ answer_formset.management_form }}
+
+                    <h4>Các đáp án</h4>
+                    <div class="answers-grid">
+                        {% for answer_form in answer_formset.forms %}
+                            <div>
+                                {{ answer_form.title }}
+                                <p><strong>{{ answer_form.title.value}})  </strong>{{ answer_form.is_correct }}</p>
+                                
+                                <div>
+                                    {{ answer_form.text }}
+                                </div>
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            {% endfor %}
+
+            <button type="submit">Tạo bài kiểm tra</button>
+            <a href="{% url 'exam:create_test_count' %}" class="back-btn">Quay lại</a>
+        </form>
+    </main>
+    
+
+
 </body>
-
 </html>

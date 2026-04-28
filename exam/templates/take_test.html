@@ -21,6 +21,7 @@
         h1 {
             color: #1f3a5d;
             margin-bottom: 18px;
+            text-align: center;
         }
 
         p {
@@ -102,42 +103,74 @@
             border-radius: 12px;
             margin-bottom: 20px;
         }
+        .answer-content p {
+            display: inline;   /* hoặc inline-block */
+            margin: 0;         /* bỏ khoảng cách mặc định */
+            padding: 0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .back-btn {
+            padding: 9px 20px;
+            background: rgba(53, 172, 83, 0.85);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+        .answers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 cột */
+            gap: 16px;
+            margin-top: 12px;
+        }
+
     </style>
 </head>
 <body>
+
     <h1>Làm bài kiểm tra: {{ test.title }}</h1>
-    <p>Người tạo: {{ test.author.username }}</p>
-    <p>Số câu hỏi: {{ test.quantity }}</p>
 
-    {% if error %}
-        <div style="color:red;">{{ error }}</div>
-    {% endif %}
+    <main class="container">
+        <h2>Thông tin bài Test</h2>
+        <form>
+            
+            <p><strong>Người tạo: </strong>{{ test.author.username }}</p>
+            <p><strong>Số câu hỏi: </strong>{{ test.quantity }}</p>  
+            {% if existing_user_test %}
+                <p style="color:red;">Bạn đã làm bài này trước đó. Nộp lại sẽ cập nhật điểm.</p>
+            {% endif %}              
+        </form>
 
-    {% if existing_user_test %}
-        <p>Bạn đã làm bài này trước đó. Nộp lại sẽ cập nhật điểm.</p>
-    {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            {% for question in questions %}
+                <fieldset style="margin-bottom:20px; padding:10px; border:1px solid #888;">
+                    <legend>Câu hỏi {{ forloop.counter }}</legend>
+                    <div>{{ question.text|safe }}</div>
+                    <div style="margin-top:10px;" class="answers-grid">
+                        {% for answer in question.answer_set.all %}
+                            <div style="margin-bottom:8px;">
+                                <label>
+                                    <input type="radio" name="question_{{ question.id }}" value="{{ answer.id }}">
+                                    <strong>{{ answer.title }})</strong> 
+                                    <span class="answer-content">{{ answer.text|safe }}</span>
 
-    <form method="post">
-        {% csrf_token %}
-        {% for question in questions %}
-            <fieldset style="margin-bottom:20px; padding:10px; border:1px solid #888;">
-                <legend>Câu hỏi {{ forloop.counter }}</legend>
-                <div>{{ question.text|safe }}</div>
-                <div style="margin-top:10px;">
-                    {% for answer in question.answer_set.all %}
-                        <div style="margin-bottom:8px;">
-                            <label>
-                                <input type="radio" name="question_{{ question.id }}" value="{{ answer.id }}">
-                                <strong>{{ answer.title }}</strong> - {{ answer.text|safe }}
-                            </label>
-                        </div>
-                    {% endfor %}
-                </div>
-            </fieldset>
-        {% endfor %}
-        <button type="submit">Nộp bài</button>
-    </form>
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            {% endfor %}
+            <button type="submit">Nộp bài</button>
+        </form>
 
-    <p><a href="{% url 'exam:exam_home' %}">Quay lại tìm kiếm</a></p>
+        <a href="{% url 'exam:exam_home' %}" class="back-btn">Quay lại tìm kiếm</a>
+    </main>
+    
 </body>
 </html>

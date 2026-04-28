@@ -13,9 +13,8 @@ class QuestionCountForm(forms.Form):
     question_count = forms.IntegerField(
         min_value=1,
         max_value=20,
-        label="Số lượng câu hỏi",
-        help_text="Nhập số lượng câu hỏi bạn muốn tạo cho bài kiểm tra."
     )
+    title = forms.CharField()
 
 
 class QuestionForm(forms.ModelForm):
@@ -24,6 +23,7 @@ class QuestionForm(forms.ModelForm):
         fields = ["text", "stt"]
         widgets = {
             "text": CKEditorWidget(),
+            "stt": forms.HiddenInput(),
         }
 
 
@@ -32,6 +32,7 @@ class AnswerForm(forms.ModelForm):
         model = Answer
         fields = ["title", "text", "is_correct"]
         widgets = {
+            "title": forms.HiddenInput(),
             "text": CKEditorWidget(),
         }
 

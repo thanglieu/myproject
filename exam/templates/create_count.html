@@ -4,28 +4,63 @@
     <meta charset="utf-8">
     <title>Tạo bài kiểm tra mới</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: #2c3e50;
             min-height: 100vh;
-            padding: 20px 0 40px;
         }
 
-        h1 {
-            color: #1f3a5d;
-            margin-bottom: 18px;
+        header {
+            background: #1aae1c;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        p {
-            margin-bottom: 18px;
+        .header-container {
+            max-width: 1000px;   /* giới hạn chiều rộng */
+            margin: 0 auto;      /* căn giữa */
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .back-btn {
+            padding: 9px 20px;
+            background: #4caf50;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .back-btn:hover { background: #45a049; }
+
+        .container {
+            max-width: 600px;   /* thu nhỏ form */
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        h1 { color: #1f3a5d; margin-bottom: 18px; }
+        p { margin-bottom: 18px; }
 
         form {
             background: #ffffff;
@@ -35,10 +70,7 @@
             margin-bottom: 24px;
         }
 
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
+        input[type="number"] {
             width: 100%;
             padding: 12px 14px;
             border-radius: 10px;
@@ -48,10 +80,7 @@
             transition: border-color 0.2s ease;
         }
 
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        textarea:focus,
-        select:focus {
+        input[type="number"]:focus {
             outline: none;
             border-color: #4caf50;
         }
@@ -78,9 +107,7 @@
             transition: color 0.2s ease;
         }
 
-        a:hover {
-            color: #3f9a3e;
-        }
+        a:hover { color: #3f9a3e; }
 
         .error-message,
         div[style*="color:red"] {
@@ -91,31 +118,43 @@
             border-radius: 12px;
             margin-bottom: 20px;
         }
+        
     </style>
 </head>
 <body>
-    <h1>Tạo bài kiểm tra mới</h1>
-    <p>Nhập số lượng câu hỏi để bắt đầu tạo bài kiểm tra.</p>
-
-    <form method="post">
-        {% csrf_token %}
-        <div>
-            <label for="{{ form.question_count.id_for_label }}">
-                {{ form.question_count.label }}
-            </label><br>
-            {{ form.question_count }}
-            {% if form.question_count.help_text %}
-                <small>{{ form.question_count.help_text }}</small>
-            {% endif %}
-            {% for error in form.question_count.errors %}
-                <p style="color:red;">{{ error }}</p>
-            {% endfor %}
+    <header>
+        <div class="header-container">
+            <div class="logo">📝 Test</div>
+            <div class="nav-links">
+            </div>
         </div>
-        <button type="submit">Tiếp tục</button>
-    </form>
+    </header>
 
-    <p><a href="{% url 'exam:exam_home' %}">Tìm kiếm bài kiểm tra</a></p>
-    <p><a href="{% url 'exam:my_tests' %}">Bài kiểm tra tôi tạo</a></p>
+    <main class="container">
+        <h1>Tạo bài kiểm tra mới</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <div>
+                <strong>Nhập tiêu đề</strong>
+                <br>
+                {{ form.title }}
+                
+                <br><br>
+
+                <strong>Nhập số lượng câu hỏi</strong>
+                <br>
+                {{ form.question_count }}
+
+                {% for error in form.question_count.errors %}
+                    <p style="color:red;">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <br>
+            <button type="submit">Tiếp tục</button>
+            <a href="{% url 'exam:exam_home' %}" class="back-btn">Về trang chủ</a>
+        </form>
+
+    </main>
 </body>
 </html>
-

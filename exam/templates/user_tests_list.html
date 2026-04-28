@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bài kiểm tra của {{ author.username }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px 0 40px;
+        }
+
+        h1 {
+            color: #1f3a5d;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 20px;
+        }
+
+        li {
+            margin-bottom: 18px;
+            padding: 18px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.05);
+        }
+
+        strong {
+            color: #1f3a5d;
+        }
+
+        p {
+            margin-bottom: 14px;
+        }
+
+        a {
+            color: #1aae1c;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #3f9a3e;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .back-btn {
+            padding: 9px 20px;
+            background: rgba(11, 160, 48, 0.85);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+        form {
+            background: #e3f6e8;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+        } 
+
+    </style>
+</head>
+<body>
+    <h1>Bài kiểm tra của {{ author.username }}</h1>
+
+    <main class="container">
+        <h2>Danh sách bài Test: </h2>
+        <form>
+            {% if tests %}
+                <ul>
+                    {% for test in tests %}
+                        <li>
+                            <strong>{{ test.title }}</strong> - Tác giả: 
+                            <a href="{% url 'exam:user_tests' test.author.id %}">{{ test.author.username }}</a>
+                            - {{  test.quantity}} câu
+                            <div style="text-align: right;">
+                                <a href="{% url 'exam:take_test' test.id %}" class="back-btn">Làm</a>
+                            </div>
+
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Người dùng này chưa tạo bài kiểm tra nào.</p>
+            {% endif %}
+
+            <br>
+            <p><a href="{% url 'exam:exam_home' %}" class="back-btn">Quay lại tìm kiếm</a></p>
+        </form>    
+    </main>
+
+</body>
+</html>
