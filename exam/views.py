@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.forms import formset_factory, inlineformset_factory
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import AnswerForm, QuestionCountForm, QuestionForm, TestForm
@@ -26,13 +27,14 @@ def create_test_count(request):
 # tạo Test - nhập liệu Form
 @login_required(login_url='/blog/login/')
 def create_test(request, question_count, title):
-    question_count = int(question_count)
+    question_count = int(question_count)    # chú ý : giá trị trên query string ở dạng string chứ không phải int
 
+    # định nghĩa Formset
     QuestionFormSet = inlineformset_factory(
         Test,
         Question,
         form=QuestionForm,
-        extra=question_count,
+        extra=question_count,   # lấy giá trị ở bước trước để quyết định số lượng Question
         min_num=question_count,
         max_num=question_count,
         validate_min=True,
@@ -41,32 +43,25 @@ def create_test(request, question_count, title):
     )
     AnswerFormSet = formset_factory(
         AnswerForm,
-        extra=4,
+        extra=4,        # 4 Answer cho mỗi Question
         min_num=4,
         max_num=4,
         validate_min=True,
         validate_max=True,
     )
 
+    # định nghĩa thứ tự stt của Question là 1,2,3,.. title của Answer là a,b,c,..
     question_initial = [{'stt': i + 1} for i in range(question_count)]
     answer_initial = [{'title': chr(97 + i)} for i in range(4)]
 
     if request.method == 'POST':
-        question_formset = QuestionFormSet(
-            request.POST,
-            prefix='questions',
-            instance=Test(),
-        )
+        question_formset = QuestionFormSet(request.POST, prefix='questions', instance=Test(),)
         answer_formsets = [
             AnswerFormSet(request.POST, prefix=f'answers-{idx}')
             for idx in range(question_count)
         ]
 
-        if (
-        #    test_form.is_valid() and 
-            question_formset.is_valid()
-            and all(fs.is_valid() for fs in answer_formsets)
-        ):
+        if (question_formset.is_valid() and all(fs.is_valid() for fs in answer_formsets)):
             with transaction.atomic():
                 # tạo Test dựa trên dữ liệu ở bước trước
                 test = Test.objects.create(
@@ -75,6 +70,7 @@ def create_test(request, question_count, title):
                     author=request.user
                 )
 
+                # dùng vòng lặp để lưu các Question trong Test, các Answer trong mỗi Question
                 for index, question_form in enumerate(question_formset):
                     question = question_form.save(commit=False)
                     question.test = test
@@ -87,7 +83,7 @@ def create_test(request, question_count, title):
 
             return redirect('exam:exam_home')
     else:
-    #    test_form = TestForm()
+        # hiển thị Form rỗng
         question_formset = QuestionFormSet(
             prefix='questions',
             instance=Test(),
@@ -119,6 +115,7 @@ def exam_home(request):
     """Tìm kiếm bài kiểm tra theo từ khóa trong tiêu đề."""
     query = request.GET.get('q', '').strip()
     tests = Test.objects.order_by('-id')
+    # nếu form tìm kiếm có dữ liệu
     if query:
         tests = tests.filter(title__icontains=query)
 
@@ -126,7 +123,7 @@ def exam_home(request):
 
 
 # hiển thị Test của User khác
-def user_tests(request, user_id):
+def user_tests_list(request, user_id):
     author = get_object_or_404(User, pk=user_id)
     tests = Test.objects.filter(author=author).order_by('-id')
     return render(request, 'user_tests_list.html', {'tests': tests, 'author': author})
@@ -194,6 +191,7 @@ def take_test(request, test_id):
     )
 
 
+# xem đáp án của User làm Test
 @login_required(login_url='/blog/login/')
 def user_answer(request, user_test_id):
     # Hiển thị chi tiết kết quả cho một lần làm bài cụ thể
@@ -213,3 +211,20 @@ def user_answer(request, user_test_id):
             'question_results': question_results,
         }
     )
+
+
+# danh sách các User đã làm bài Test
+@login_required(login_url='/blog/login/')
+def user_test(request, test_id):
+    test = get_object_or_404(Test, pk=test_id, author=request.user)
+    user_tests = (
+        UserTest.objects
+        .filter(test=test)
+        .select_related('user')
+        .order_by('-score', 'user__username')
+    )
+
+    return render(request, 'user_test.html', {
+        'test': test,
+        'user_tests': user_tests,
+    })

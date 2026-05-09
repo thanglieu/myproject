@@ -35,6 +35,7 @@ class UserTest(models.Model):
 
 # Bảng trung gian: User chọn Answer cho Question
 class UserAnswer(models.Model):
+    # tách ra thành bảng trung gian cho linh hoạt, nếu muốn tăng số lượng đáp án trong câu hỏi cũng dễ hơn
     test = models.ForeignKey(UserTest, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     '''

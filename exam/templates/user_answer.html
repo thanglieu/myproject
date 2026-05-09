@@ -153,7 +153,8 @@
             </ul>
         
 
-        <p><a href="{% url 'exam:exam_home' %}" class="back-btn">Về trang chủ</a></p>
+        <a href="{% url 'exam:user_test' user_test.test.id%}" class="back-btn">Quay lại</a>
+        <a href="{% url 'exam:exam_home' %}" class="back-btn">Về trang chủ</a>
     </main>
 
     

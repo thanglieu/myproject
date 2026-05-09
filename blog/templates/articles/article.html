@@ -541,7 +541,7 @@
             <div class="comment-item">
               <div class="comment-author">
               <!--tác dụng như nhau  <a href="{% url 'user' comment.author.id %}">{{ comment.author.name }}</a> -->
-                <a href="http://127.0.0.1:8000/users/{{comment.author.id }}">{{ comment.author.name }}</a>
+                <a href="http://127.0.0.1:8000/blog/users/{{comment.author.id }}">{{ comment.author.name }}</a>
                 <span class="comment-time">{{ comment.created_at|date:"d/m/Y H:i" }}</span>
               </div>
               <div class="comment-content">{{ comment.content }}</div>
@@ -563,7 +563,7 @@
 
         <div class="sidebar-item">
           <label>Tác giả</label>
-          <span>{{ article.author.name }}</span>
+          <a href="{% url 'user' article.author.id %}">{{ article.author.name }}</a>
         </div>
 
         <div class="sidebar-item">
@@ -590,9 +590,9 @@
       </div>
 
       {% if article.author == request.user %}
-        <a href="/articles/{{ article.id }}/edit" class="back-btn" style="background:#ffc107; border:none; color:#2c3e50; margin-top:0px;">✏️ Chỉnh sửa</a>
+        <a href="{% url 'edit' article.id %}" class="back-btn" style="background:#ffc107; border:none; color:#2c3e50; margin-top:0px;">✏️ Chỉnh sửa</a>
 
-        <a href="/articles/{{ article.id }}/delete" class="back-btn" style="background:#e74c3c; border:none; color:#2c3e50; margin-top:0px;">✏️ Xóa</a>
+        <a href="{% url 'delete' article.id %}" class="back-btn" style="background:#e74c3c; border:none; color:#2c3e50; margin-top:0px;">✏️ Xóa</a>
       {% endif %}
       
       <!-- Back Button -->

@@ -89,8 +89,8 @@
                 <ul>
                     {% for test in tests %}
                         <li>
-                            <strong>{{ test.title }}</strong> - Tác giả: 
-                            <a href="{% url 'exam:user_tests' test.author.id %}">{{ test.author.username }}</a>
+                            <a href="{% url 'exam:user_test' test.id %}"><strong>{{ test.title }}</strong></a> - Tác giả: 
+                            <a href="{% url 'exam:user_tests_list' test.author.id %}">{{ test.author.username }}</a>
                             - {{  test.quantity}} câu
                             <div style="text-align: right;">
                                 <a href="{% url 'exam:take_test' test.id %}" class="back-btn">Làm</a>

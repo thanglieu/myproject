@@ -138,7 +138,7 @@
             <div class="logo">📝 Test</div>
             <div class="nav-links">
                 <a class="back-btn" href="{% url 'exam:create_test_count' %}">Tạo Test mới</a>
-                <a class="back-btn" href="{% url 'exam:user_tests'  this_user_id %}">Test của tôi</a>
+                <a class="back-btn" href="{% url 'exam:user_tests_list'  this_user_id %}">Test của tôi</a>
             </div>
         </div>
     </header>
@@ -156,7 +156,7 @@
                 {% for test in tests %}
                     <li>
                         <strong>{{ test.title }}</strong> - Tác giả: 
-                        <a href="{% url 'exam:user_tests' test.author.id %}">{{ test.author.username }}</a>
+                        <a href="{% url 'exam:user_tests_list' test.author.id %}">{{ test.author.username }}</a>
                         - {{  test.quantity}} câu
                         <div style="text-align: right;">
                             <a href="{% url 'exam:take_test' test.id %}" class="back-btn">Làm</a>

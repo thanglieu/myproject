@@ -39,8 +39,9 @@ def user_page(request):
             b = form.cleaned_data['name']
             Series.objects.create(author = a, name = b)
         
-        return redirect('series')
+        return redirect('this_user')
 
+    #----------- chưa có xóa series ---------------
 
 # chi tiết user
 def user_detail(request, pk):
@@ -261,6 +262,8 @@ def like_article(request, article_id):
     
     if like:
         # Nếu đã like, xóa like đi
+        article.author.mark -= 1
+        article.author.save()
         like.delete()
     else:
         # Nếu chưa like, tạo like và tăng mark của article author

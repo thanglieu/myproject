@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Danh sách người làm bài kiểm tra</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px 0 40px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #1f3a5d;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        h2 {
+            color: #1f3a5d;
+            margin-bottom: 8px;
+        }
+        .summary {
+            background: #ffffff;
+            padding: 18px 22px;
+            border-radius: 14px;
+            box-shadow: 0 10px 18px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+            background: #ffffff;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #f1f9ee;
+            color: #1f3a5d;
+        }
+        tr:last-child td { border-bottom: none; }
+        a {
+            color: #1aae1c;
+            text-decoration: none;
+        }
+        a:hover { color: #3f9a3e; }
+        .back-btn {
+            display: inline-block;
+            padding: 9px 20px;
+            background: rgba(11, 160, 48, 0.85);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+        .back-btn:hover { background: #388e3c; }
+        .no-results {
+            padding: 18px;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 10px 18px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        form {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+            margin-bottom: 24px;
+        } 
+
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Bài Test : {{ test.title }}</h1>
+  
+        <h2>Thông tin bài viết</h2>
+        <form>
+            <p><strong>Số câu hỏi</strong> : {{ test.quantity }}</p>
+            <p><strong>Người tạo</strong> : {{ test.author.username }}</p>
+            <p><strong>Số người đã làm</strong> : {{ user_tests.count }}</p>
+        </form>
+    
+        <h2>Danh sách người làm Test</h2>
+        {% if user_tests %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Người làm</th>
+                        <th>Điểm</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in user_tests %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ item.user.username }}</td>
+                            <td>{{ item.score|default:'0.00' }}</td>
+                            <td><a href="{% url 'exam:user_answer' item.id %}">Xem chi tiết</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-results">
+                <p>Chưa có ai hoàn thành bài kiểm tra này.</p>
+            </div>
+        {% endif %}
+
+        <p><a href="{% url 'exam:user_tests_list' test.author.id %}" class="back-btn">Quay lại</a></p>
+    </main>
+</body>
+</html>
