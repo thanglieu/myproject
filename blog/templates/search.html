@@ -241,7 +241,7 @@
   <header>
     <div class="header-container">
       <div class="logo">📖 Blog</div>
-      <a href="{% url 'home' %}" class="back-link">← Quay lại trang chủ</a>
+      <a href="{% url 'blog:home' %}" class="back-link">← Quay lại trang chủ</a>
     </div>
   </header>
 
@@ -259,7 +259,7 @@
         <div class="user-grid">
           {% for user in users %}
             <div class="user-item">
-              <a href="{% url 'user' user.id %}">{{ user.name }}</a>
+              <a href="{% url 'blog:user' user.id %}">{{ user.name }}</a>
               <small style="color: #7f8c8d;">{{ user.mark }} ⭐</small>
             </div>
           {% endfor %}
@@ -288,7 +288,7 @@
       {% if articles %}
         {% for article in articles %}
           <div class="article-item">
-            <h3><a href="{% url 'article' article.id %}">{{ article.title }}</a></h3>
+            <h3><a href="{% url 'blog:article' article.id %}">{{ article.title }}</a></h3>
             <div class="article-meta">
               <span>✍️ <strong>{{ article.author.name }}</strong></span>
               <span> • 📅 {{ article.created_at|date:"d/m/Y" }}</span>

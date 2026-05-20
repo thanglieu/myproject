@@ -5,6 +5,8 @@ from . import views
 from .models import Article, User, Series
 from .forms import ArticleCreateForm
 
+app_name = 'blog'
+
 urlpatterns = [
 
     # đăng nhập

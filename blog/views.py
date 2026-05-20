@@ -12,6 +12,7 @@ from django.contrib import messages
 
 
 # trang cá nhân 
+@login_required(login_url='blog:login')
 def user_page(request):
     # hiển thị thông tin cá nhân, danh sách article và các series
     if request.method == 'GET':
@@ -39,11 +40,12 @@ def user_page(request):
             b = form.cleaned_data['name']
             Series.objects.create(author = a, name = b)
         
-        return redirect('this_user')
+        return redirect('blog:this_user')
 
     #----------- chưa có xóa series ---------------
 
 # chi tiết user
+@login_required(login_url='blog:login')
 def user_detail(request, pk):
     # hiển thị thông tin cá nhân, danh sách article và các series
     if request.method == 'GET':
@@ -64,16 +66,17 @@ def user_detail(request, pk):
 
 
 # đăng ký
+@login_required(login_url='blog:login')
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
         #    login(request, user)  # đăng nhập ngay sau khi đăng ký
-            return redirect('login')
+            return redirect('blog:login')
         else:
             return render(request, 'error.html', {'form': form})
-        #    return redirect('error')
+        #    return redirect('blog:error')
         
     else:
         form = CustomUserCreationForm()
@@ -81,6 +84,7 @@ def register(request):
 
 
 # tìm kiếm
+@login_required(login_url='blog:login')
 def search(request):
     k = request.GET.get('keyword', '').strip()
 
@@ -110,6 +114,7 @@ def search(request):
             
 
 # danh sách bài viết mới
+@login_required(login_url='blog:login')
 def article_list(request):
     articles = Article.objects.all().order_by('-created_at')
     paginator = Paginator(articles, 10)
@@ -120,6 +125,7 @@ def article_list(request):
 
 
 # home - danh sách bài viết mới + tìm kiếm
+@login_required(login_url='blog:login')
 def home(request):
     # nếu HTTP GET rỗng không có dữ liệu (tức kích hoạt bởi gõ URL)
     if(request.GET.get('form')==None): 
@@ -131,13 +137,14 @@ def home(request):
         elif(request.GET.get('form')=='logout'):  
             # đăng xuất 
             logout(request)
-            return redirect('login')
+            return redirect('blog:login')
         else:
-            return redirect('error')
+            return redirect('blog:error')
 
 # ____________________________________
 
 # lọc
+@login_required(login_url='blog:login')
 def filter(request):
     topics = Topic.objects.all() 
     selected_topics = request.GET.getlist('topics') 
@@ -151,6 +158,7 @@ def filter(request):
     })
 
 # tạo bài viết
+@login_required(login_url='blog:login')
 def create_article(request):
     if request.method == 'GET':
         form = ArticleCreateForm()
@@ -171,7 +179,7 @@ def create_article(request):
             # do topic là giá trị list [] nên phải dùng set() thay vì create()
             article.topic.set(d)
             form = ArticleCreateForm()
-            return redirect('home')
+            return redirect('blog:home')
         else:
             print(a,b,c,d)
 
@@ -179,6 +187,7 @@ def create_article(request):
 # ____________ ARTICLE DETAIL, COMMENT, LIKE FUNCTIONALITY ____________
 
 # View chi tiết bài viết kèm comments
+@login_required(login_url='blog:login')
 def article_detail(request, article_id):
 
     # hiển thị thông tin bài viết, content
@@ -223,19 +232,19 @@ def article_detail(request, article_id):
             k = Article_List.objects.create(series=b, article=a)
 
             # return article_detail(request, article_id), gọi lại hàm nhưng không kích hoạt GET request
-            return redirect('article', article_id=a.id)
+            return redirect('blog:article', article_id=a.id)
             
         # xóa series
         elif (request.POST.get('form')=='delete'): 
             a = get_object_or_404(Article, id=article_id)
             b = Article_List.objects.filter(article=a).first().series
             Article_List.objects.get(series=b, article=a).delete()
-            return redirect('article', article_id=a.id)
+            return redirect('blog:article', article_id=a.id)
 
 
 
 # Tạo comment cho bài viết
-@login_required(login_url='login')
+@login_required(login_url='blog:login')
 def create_comment(request, article_id):
     article = get_object_or_404(Article, id=article_id)
     
@@ -246,13 +255,13 @@ def create_comment(request, article_id):
             comment.author = request.user
             comment.article = article
             comment.save()
-            return redirect('article', article_id=article_id)
+            return redirect('blog:article', article_id=article_id)
     
-    return redirect('article', article_id=article_id)
+    return redirect('blog:article', article_id=article_id)
 
 
 # Like bài viết
-@login_required(login_url='login')
+@login_required(login_url='blog:login')
 def like_article(request, article_id):
     article = get_object_or_404(Article, id=article_id)
     user = request.user
@@ -271,11 +280,12 @@ def like_article(request, article_id):
         article.author.mark += 1
         article.author.save()
     
-    return redirect('article', article_id=article_id)
+    return redirect('blog:article', article_id=article_id)
 
 
 #-------------------------------------
 # chỉnh sửa bài viết
+@login_required(login_url='blog:login')
 def edit_article(request, pk):
     article = get_object_or_404(Article, id=pk)
 
@@ -296,19 +306,20 @@ def edit_article(request, pk):
             article.content = form.cleaned_data['content']
             article.topic.set(form.cleaned_data['topic'])
             article.save()
-            return redirect('article', article_id=article.id)
+            return redirect('blog:article', article_id=article.id)
         else:
             return render(request, 'articles/create.html', {'form': form})
 
 
 # xóa bài viết
+@login_required(login_url='blog:login')
 def delete_article(request, pk):
     if request.method == 'GET':
         return render(request, 'confirm.html')
     elif request.method == 'POST':
         article = get_object_or_404(Article, id=pk)
         article.delete()
-        return redirect('home')
+        return redirect('blog:home')
 
 
 

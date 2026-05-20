@@ -420,7 +420,7 @@
   <header>
     <div class="header-container">
       <div class="logo">📖 Blog</div>
-      <a href="{% url 'home' %}" class="back-link">← Quay lại trang chủ</a>
+      <a href="{% url 'blog:home' %}" class="back-link">← Quay lại trang chủ</a>
     </div>
   </header>
 
@@ -433,7 +433,7 @@
         {% if not articles %}
           {% if article.author == request.user %}
             <h3>📚 Chọn Series cho bài viết</h3>
-            <form method="POST" action="{% url 'article' article.id %}">
+            <form method="POST" action="{% url 'blog:article' article.id %}">
               {% csrf_token %}
               <div class="sidebar-item">
                 <label for="series">Series</label>
@@ -452,12 +452,12 @@
           <ul>
             {% for a in articles %}
               <li>
-                <a href="{% url 'article' a.id %}">{{ a.title }}</a>
+                <a href="{% url 'blog:article' a.id %}">{{ a.title }}</a>
               </li>
             {% endfor %}
 
             {% if article.author == request.user %}
-              <form method="POST" action="{% url 'article' article.id %}">
+              <form method="POST" action="{% url 'blog:article' article.id %}">
                 {% csrf_token %}
                 <button type="submit" name="form" value="delete" class="back-btn" style="margin-top:10px;" >Xóa khỏi Series</button>
               </form>
@@ -486,7 +486,7 @@
           <h4>📌 Chủ đề liên quan:</h4>
           <div class="topic-list">
             {% for topic in article.topic.all %}
-              <a href="{% url 'filter'%}?topics={{topic.id}}" class="topic-tag">{{ topic.name }}</a>
+              <a href="{% url 'blog:filter'%}?topics={{topic.id}}" class="topic-tag">{{ topic.name }}</a>
             {% endfor %}
           </div>
         </div>
@@ -503,7 +503,7 @@
           ❤️ <strong>{{ article.likes.count }}</strong> người thích bài này
         </div>
         {% if user.is_authenticated %}
-          <form method="POST" action="{% url 'like_article' article.id %}" style="display: contents;">
+          <form method="POST" action="{% url 'blog:like_article' article.id %}" style="display: contents;">
             {% csrf_token %}
             <button type="submit" class="like-button {% if user_liked_article %}like-button-active{% else %}like-button-inactive{% endif %}">
               {% if user_liked_article %}♥️ Bỏ thích{% else %}🤍 Thích bài viết{% endif %}
@@ -511,7 +511,7 @@
           </form>
         {% else %}
           <div class="login-prompt">
-            <a href="{% url 'login' %}">🔓 Đăng nhập để thích bài viết</a>
+            <a href="{% url 'blog:login' %}">🔓 Đăng nhập để thích bài viết</a>
           </div>
         {% endif %}
       </div>
@@ -523,7 +523,7 @@
         {% if user.is_authenticated %}
           <!-- Comment Form -->
           <div class="comment-form">
-            <form method="POST" action="{% url 'create_comment' article.id %}">
+            <form method="POST" action="{% url 'blog:create_comment' article.id %}">
               {% csrf_token %}
               <textarea name="content" class="comment-textarea" placeholder="Chia sẻ ý kiến của bạn..." required></textarea>
               <button type="submit" class="comment-submit">💬 Gửi bình luận</button>
@@ -531,7 +531,7 @@
           </div>
         {% else %}
           <div class="login-prompt" style="margin-bottom: 30px;">
-            <p><a href="{% url 'login' %}">🔓 Đăng nhập để bình luận</a></p>
+            <p><a href="{% url 'blog:login' %}">🔓 Đăng nhập để bình luận</a></p>
           </div>
         {% endif %}
 
@@ -563,7 +563,7 @@
 
         <div class="sidebar-item">
           <label>Tác giả</label>
-          <a href="{% url 'user' article.author.id %}">{{ article.author.name }}</a>
+          <a href="{% url 'blog:user' article.author.id %}">{{ article.author.name }}</a>
         </div>
 
         <div class="sidebar-item">
@@ -582,7 +582,7 @@
             <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">
               {% for t in article.topic.all %}
                 <!-- <span class="topic-tag" style="font-size: 11px; padding: 4px 10px;">{{ t.name }}</span> -->
-                <a href="{% url 'filter' %}?topics={{ t.id }}" class="topic-tag" style="font-size: 11px; padding: 4px 10px;">{{ t.name }}</a>
+                <a href="{% url 'blog:filter' %}?topics={{ t.id }}" class="topic-tag" style="font-size: 11px; padding: 4px 10px;">{{ t.name }}</a>
               {% endfor %}
             </div>
           </div>
@@ -590,13 +590,13 @@
       </div>
 
       {% if article.author == request.user %}
-        <a href="{% url 'edit' article.id %}" class="back-btn" style="background:#ffc107; border:none; color:#2c3e50; margin-top:0px;">✏️ Chỉnh sửa</a>
+        <a href="{% url 'blog:edit' article.id %}" class="back-btn" style="background:#ffc107; border:none; color:#2c3e50; margin-top:0px;">✏️ Chỉnh sửa</a>
 
-        <a href="{% url 'delete' article.id %}" class="back-btn" style="background:#e74c3c; border:none; color:#2c3e50; margin-top:0px;">✏️ Xóa</a>
+        <a href="{% url 'blog:delete' article.id %}" class="back-btn" style="background:#e74c3c; border:none; color:#2c3e50; margin-top:0px;">✏️ Xóa</a>
       {% endif %}
       
       <!-- Back Button -->
-      <a href="{% url 'home' %}" class="back-btn">← Quay lại trang chủ</a>
+      <a href="{% url 'blog:home' %}" class="back-btn">← Quay lại trang chủ</a>
     </aside>
   </div>
 </body>

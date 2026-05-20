@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'blog',
     'exam',
+    'practice',
 ]
 
 MIDDLEWARE = [

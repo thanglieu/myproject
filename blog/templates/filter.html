@@ -266,7 +266,7 @@
 
         <div class="sidebar-buttons">
           <button type="submit">🔍 Lọc bài viết</button>
-          <a href="{% url 'home' %}">← Quay lại</a>
+          <a href="{% url 'blog:home' %}">← Quay lại</a>
         </div>
       </form>
     </aside>
@@ -278,7 +278,7 @@
       {% if articles %}
         <div class="articles-grid">
           {% for article in articles %}
-            <a href="{% url 'article' article.id %}" class="article-card" style="text-decoration: none; color: inherit;">
+            <a href="{% url 'blog:article' article.id %}" class="article-card" style="text-decoration: none; color: inherit;">
               <h3>{{ article.title }}</h3>
               <div class="article-meta">
                 <span>✍️ {{ article.author.name }}</span>

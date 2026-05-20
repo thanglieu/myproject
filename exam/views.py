@@ -111,6 +111,7 @@ def create_test(request, question_count, title):
 
 
 # trang chủ - tìm kiếm
+@login_required(login_url='/blog/login/')
 def exam_home(request):
     """Tìm kiếm bài kiểm tra theo từ khóa trong tiêu đề."""
     query = request.GET.get('q', '').strip()
@@ -123,6 +124,7 @@ def exam_home(request):
 
 
 # hiển thị Test của User khác
+@login_required(login_url='/blog/login/')
 def user_tests_list(request, user_id):
     author = get_object_or_404(User, pk=user_id)
     tests = Test.objects.filter(author=author).order_by('-id')

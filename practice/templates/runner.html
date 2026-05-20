@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Code Runner</title>
+</head>
+<body>
+    <h1>Python Code Runner</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <p>Input : </p>
+        <textarea name="input" rows="3" cols="100">{{ input }}</textarea>
+        <br>
+        <p>Code : </p>
+        <textarea name="code" rows="20" cols="100">{{ code }}</textarea>
+        <br>
+        <button type="submit">Run</button>
+    </form>
+
+    <h3>Output:</h3>
+    <pre>{{ output }}</pre>
+
+    <h3>Error:</h3>
+    <pre>{{ error }}</pre>
+</body>
+</html>

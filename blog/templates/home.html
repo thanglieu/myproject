@@ -297,8 +297,8 @@
       <div class="logo">📖 Blog</div>
       <form method="get" action="" class="header-nav">
         {% csrf_token %}
-        <a href="{% url 'this_user' %}" class="back-btn" style="background: rgba(74, 200, 105, 0.674);" >👤 Trang cá nhân</a>
-        <a href="{% url 'user-list' %}" class="back-btn" style="background: rgba(74, 200, 105, 0.674)" >🏆 Xếp hạng</a>
+        <a href="{% url 'blog:this_user' %}" class="back-btn" style="background: rgba(74, 200, 105, 0.674);" >👤 Trang cá nhân</a>
+        <a href="{% url 'blog:user-list' %}" class="back-btn" style="background: rgba(74, 200, 105, 0.674)" >🏆 Xếp hạng</a>
         <button type="submit" name="form" value="logout" style="background: rgba(255,100,100,0.3); border-color: rgba(255,100,100,0.6);">🚪 Đăng xuất</button>
       </form>
     </div>
@@ -314,15 +314,15 @@
         {% csrf_token %}
         <input type="text" name="keyword" placeholder="🔍 Tìm kiếm bài viết...">
         <button type="submit" name="form" value="search">Tìm kiếm</button>
-        <a href="{% url 'filter' %}" class="back-btn" style="background: #2196F3;">Lọc chủ đề</a>
-        <a href="{% url 'create' %}" class="back-btn" style="background: #ff9800;">✏️ Tạo bài</a>
+        <a href="{% url 'blog:filter' %}" class="back-btn" style="background: #2196F3;">Lọc chủ đề</a>
+        <a href="{% url 'blog:create' %}" class="back-btn" style="background: #ff9800;">✏️ Tạo bài</a>
       </form>
     </div>
 
     <!-- Posts -->
     <div class="posts-list">
       {% for post in posts %}
-        <a href="{% url 'article' post.id %}" class="post-card">
+        <a href="{% url 'blog:article' post.id %}" class="post-card">
           <h3>{{ post.title }}</h3>
           <div class="post-meta">
             <strong>{{ post.author.name }}</strong> • {{ post.created_at|date:"d/m/Y H:i" }}

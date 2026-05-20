@@ -238,7 +238,7 @@
   <header>
     <div class="header-container">
       <div class="logo">📖 Blog</div>
-      <a href="{% url 'home' %}" class="back-link">← Trang chủ</a>
+      <a href="{% url 'blog:home' %}" class="back-link">← Trang chủ</a>
     </div>
   </header>
 
@@ -263,7 +263,7 @@
               <tr>
                 <td class="rank-column">{{ forloop.counter }}</td>
                 <td>
-                  <a href="{% url 'user' user.pk %}">{{ user.name }}</a>
+                  <a href="{% url 'blog:user' user.pk %}">{{ user.name }}</a>
                 </td>
                 <td class="email-column">{{ user.email }}</td>
                 <td class="gender-column">{{ user.gender|default:"—" }}</td>

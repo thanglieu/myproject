@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Practice Detail</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-4">
+
+    <h2>{{ practice.title }}</h2>
+    <p><strong>Tác giả:</strong> {{ practice.author.username }}</p>
+    <p><strong>User:</strong> {{ user.username }}</p>
+    <p><strong>Điểm:</strong> {{ user_practice.mark }}</p>
+
+    <h4>Code của user:</h4>
+    <pre>{{ user_practice.user_code }}</pre>
+
+    <h4>Kết quả test case:</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Input</th>
+                <th>Output chuẩn</th>
+                <th>Output của user</th>
+                <th>Kết quả</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in user_outputs %}
+            <tr>
+                <td><pre>{{ u.input }}</pre></td>
+                <td><pre>{{ u.expected }}</pre></td>
+                <td><pre>{{ u.user_output }}</pre></td>
+                <td>
+                    {% if u.is_correct %}
+                        <span class="text-success">✔ Đúng</span>
+                    {% else %}
+                        <span class="text-danger">✘ Sai</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="mb-3">
+        <a href="{% url 'practice:practice_list' %}" class="btn btn-secondary">← Quay về danh sách Practice</a>
+    </div>
+
+</body>
+</html>

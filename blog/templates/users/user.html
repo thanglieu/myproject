@@ -257,7 +257,7 @@
   <header>
     <div class="header-container">
       <div class="logo">📖 Blog</div>
-      <a href="{% url 'home' %}" class="back-link">← Trang chủ</a>
+      <a href="{% url 'blog:home' %}" class="back-link">← Trang chủ</a>
     </div>
   </header>
 
@@ -296,7 +296,7 @@
         ⭐ {{ user.mark }} Điểm
       </div>
 
-      <a href="{% url 'home' %}" class="back-btn">← Quay lại</a>
+      <a href="{% url 'blog:home' %}" class="back-btn">← Quay lại</a>
     </aside>
 
     <!-- Content - User Articles -->
@@ -306,7 +306,7 @@
       {% if user.article_set.all %}
         <div class="articles-list">
           {% for article in user.article_set.all %}
-            <a href="{% url 'article' article.id %}" class="article-item">
+            <a href="{% url 'blog:article' article.id %}" class="article-item">
               <h3>{{ article.title }}</h3>
               <div class="article-meta">
                 <span>📅 {{ article.created_at|date:"d/m/Y" }}</span>
@@ -329,7 +329,7 @@
       <div class="sidebar-box">
         {% if user == request.user %}
           <h3>📚 Tạo Series mới</h3>
-          <form method="POST" action="{% url 'this_user' %}">
+          <form method="POST" action="{% url 'blog:this_user' %}">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="back-btn">Tạo Series mới</button>
@@ -341,7 +341,7 @@
           {% for s in k %}
             <li>
               {% if s.1 %}
-                <a href="{% url 'article' s.1.id %}">{{ s.0.name }}</a>
+                <a href="{% url 'blog:article' s.1.id %}">{{ s.0.name }}</a>
               {% else %}
                 <a>{{ s.0.name }}</a>
                 <p style="color:red; font-size:10px;">Series chưa có bài viết</p>
