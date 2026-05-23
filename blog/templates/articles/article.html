@@ -1,603 +1,703 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ article.title }} - Blog</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ article.title }} - Blog – PTITShare</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <style>
+        :root {
+            --green:       #04AA6D;
+            --green-dark:  #059862;
+            --green-light: #e8f8f2;
+            --dark:        #282A35;
+            --gray-bg:     #f6f6f6;
+            --border:      #e0e0e0;
+            --muted:       #6c757d;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
-      padding-bottom: 40px;
-      color: #333;
-    }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Header */
-    header {
-      background: #1aae1c;
-      color: white;
-      padding: 15px 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+        body {
+            font-family: var(--bs-body-font-family);
+            background: var(--gray-bg);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        /* ══ NAVBAR PTITSHARE MẶC ĐỊNH ══ */
+        .navbar {
+            background: var(--green);
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+        }
+        .nav-logo {
+            font-size: 19px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+            letter-spacing: -.5px;
+            white-space: nowrap;
+        }
+        .nav-logo span { color: var(--dark); }
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      text-decoration: none;
-      color: white;
-    }
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fff;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 0 14px;
+            height: 52px;
+            cursor: pointer;
+            user-select: none;
+            transition: background .15s;
+        }
+        .nav-dropdown-btn:hover,
+        .nav-dropdown:hover .nav-dropdown-btn { background: rgba(0,0,0,.15); }
+        .nav-dropdown-btn svg { transition: transform .2s; }
+        .nav-dropdown:hover .nav-dropdown-btn svg { transform: rotate(180deg); }
 
-    .back-link {
-      color: white;
-      text-decoration: none;
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 4px;
-      transition: all 0.3s;
-    }
+        .nav-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--dark);
+            border-radius: 0 0 6px 6px;
+            min-width: 140px;
+            box-shadow: 0 6px 20px rgba(0,0,0,.3);
+            z-index: 200;
+        }
+        .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+        .nav-dropdown-menu a {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 10px 18px;
+            transition: background .12s, color .12s;
+        }
+        .nav-dropdown-menu a:hover { background: var(--green); color: #fff; }
 
-    .back-link:hover {
-      background: rgba(255,255,255,0.3);
-    }
+        .nav-spacer { flex: 1; }
+        .nav-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(255,255,255,.35);
+            margin: 0 4px;
+        }
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 0 14px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            transition: background .15s;
+            white-space: nowrap;
+        }
+        .nav-link:hover { background: rgba(0,0,0,.15); color: #fff; }
 
-    .container {
-      max-width: 1400px;
-      margin: 40px auto;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: 280px 1fr 280px; /* trái - giữa - phải */
-      gap: 30px;
-    }
+        /* ══ CONTAINER LAYOUT (3 CỘT TỐI ƯU CHIỀU RỘNG) ══ */
+        .container {
+            max-width: 1300px;
+            margin: 32px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 230px 1fr 230px; /* Thu hẹp lề trái phải để dồn không gian cho phần giữa */
+            gap: 24px;
+            flex: 1;
+        }
 
-    /* Main Content */
-    .main-content {
-      background: white;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
+        /* ══ MAIN CONTENT ══ */
+        .main-content {
+            background: white;
+            padding: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
 
-    .article-header {
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid #e0e0e0;
-    }
+        .article-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
 
-    .article-header h1 {
-      font-size: 32px;
-      color: #2c3e50;
-      margin-bottom: 15px;
-      line-height: 1.3;
-    }
+        .article-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1f3a5d;
+            margin-bottom: 12px;
+            line-height: 1.35;
+        }
 
-    .article-meta {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      color: #7f8c8d;
-      font-size: 14px;
-    }
+        .article-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            color: var(--muted);
+            font-size: 13.5px;
+            font-weight: 600;
+        }
 
-    .article-meta span {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+        .article-body {
+            font-size: 15.5px;
+            line-height: 1.8;
+            margin-bottom: 32px;
+            color: var(--dark);
+        }
 
-    .article-body {
-      font-size: 16px;
-      line-height: 1.8;
-      margin-bottom: 30px;
-      color: #444;
-    }
+        .article-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
 
-    .article-body img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 6px;
-      margin: 20px 0;
-    }
+        /* Topics */
+        .topic-section {
+            margin-bottom: 24px;
+            padding: 14px;
+            background: var(--green-light);
+            border-left: 4px solid var(--green);
+            border-radius: 6px;
+        }
 
-    /* Topics */
-    .topic-section {
-      margin-bottom: 30px;
-      padding: 15px;
-      background: #e8f5e9;
-      border-left: 4px solid #4CAF50;
-      border-radius: 6px;
-    }
+        .topic-section h4 {
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+        }
 
-    .topic-section h4 {
-      color: #2c3e50;
-      margin-bottom: 10px;
-      font-size: 14px;
-    }
+        .topic-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
 
-    .topic-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+        .topic-tag {
+            display: inline-block;
+            background: var(--green);
+            color: white !important;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .topic-tag:hover {
+            background: var(--green-dark);
+        }
 
-    .topic-tag {
-      display: inline-block;
-      background: #4CAF50;
-      color: white;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none; /* bỏ gạch chân */
-    }
+        /* Like Section */
+        .like-section {
+            margin: 32px 0;
+            padding: 20px;
+            background: #fffdf0;
+            border: 1px solid #ffeeba;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
 
-    /* Like Section */
-    .like-section {
-      margin: 30px 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%);
-      border-radius: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
+        .like-count {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--dark);
+        }
 
-    .like-count {
-      font-size: 18px;
-      font-weight: 600;
-      color: #2c3e50;
-    }
+        .like-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 700;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-    .like-button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+        .like-button-active {
+            background: #ff6b6b;
+            color: white;
+        }
 
-    .like-button-active {
-      background: #ff6b6b;
-      color: white;
-    }
+        .like-button-inactive {
+            background: var(--green);
+            color: white;
+        }
 
-    .like-button-inactive {
-      background: #4CAF50;
-      color: white;
-    }
+        .like-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-    .like-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
+        .login-prompt {
+            background: var(--gray-bg);
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 13.5px;
+            font-weight: 600;
+            border: 1px solid var(--border);
+        }
 
-    .login-prompt {
-      background: #eceff1;
-      padding: 15px;
-      border-radius: 6px;
-      text-align: center;
-    }
+        .login-prompt a {
+            color: var(--green-dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .login-prompt a:hover { text-decoration: underline; }
 
-    .login-prompt a {
-      color: #4CAF50;
-      font-weight: 600;
-      text-decoration: none;
-    }
+        /* Comments Section */
+        .comments-section {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
 
-    /* Comments Section */
-    .comments-section {
-      margin-top: 40px;
-      padding-top: 30px;
-      border-top: 2px solid #e0e0e0;
-    }
+        .comments-header {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1f3a5d;
+            margin-bottom: 20px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--green);
+            display: inline-block;
+        }
 
-    .comments-header {
-      font-size: 20px;
-      color: #2c3e50;
-      margin-bottom: 25px;
-      padding-bottom: 10px;
-      border-bottom: 3px solid #4CAF50;
-      display: inline-block;
-    }
+        .comment-form {
+            background: var(--gray-bg);
+            padding: 18px;
+            border-radius: 6px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
 
-    .comment-form {
-      background: #f9f9f9;
-      padding: 20px;
-      border-radius: 8px;
-      margin-bottom: 30px;
-      border: 1px solid #e0e0e0;
-    }
+        .comment-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 90px;
+            margin-bottom: 10px;
+            transition: border-color 0.2s;
+        }
 
-    .comment-textarea {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #e0e0e0;
-      border-radius: 6px;
-      font-family: inherit;
-      font-size: 14px;
-      resize: vertical;
-      min-height: 100px;
-      margin-bottom: 12px;
-      transition: border-color 0.3s;
-    }
+        .comment-textarea:focus {
+            outline: none;
+            border-color: var(--green);
+        }
 
-    .comment-textarea:focus {
-      outline: none;
-      border-color: #4CAF50;
-      box-shadow: 0 0 0 3px rgba(76,175,80,0.1);
-    }
+        .comment-submit {
+            padding: 8px 16px;
+            background: var(--green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 700;
+            transition: background 0.15s;
+        }
 
-    .comment-submit {
-      padding: 10px 20px;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
+        .comment-submit:hover {
+            background: var(--green-dark);
+        }
 
-    .comment-submit:hover {
-      background: #45a049;
-      transform: translateY(-2px);
-    }
+        .comment-item {
+            margin-bottom: 16px;
+            padding: 16px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--green);
+            border-radius: 6px;
+            transition: box-shadow 0.2s;
+        }
 
-    .comment-item {
-      margin-bottom: 20px;
-      padding: 18px;
-      background: #f9f9f9;
-      border-left: 4px solid #4CAF50;
-      border-radius: 6px;
-      transition: all 0.3s;
-    }
+        .comment-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
 
-    .comment-item:hover {
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
+        .comment-author {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
 
-    .comment-author {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
+        .comment-author a {
+            color: #1f3a5d;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .comment-author a:hover { color: var(--green-dark); }
 
-    .comment-author strong {
-      color: #2c3e50;
-      font-weight: 600;
-    }
+        .comment-time {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-    .comment-time {
-      color: #99a8b3;
-      font-size: 12px;
-    }
+        .comment-content {
+            color: var(--dark);
+            font-size: 14.5px;
+            line-height: 1.6;
+        }
 
-    .comment-content {
-      color: #444;
-      line-height: 1.6;
-      margin-bottom: 8px;
-    }
+        .empty-state {
+            text-align: center;
+            padding: 24px;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: 14px;
+        }
 
-    .empty-state {
-      text-align: center;
-      padding: 30px;
-      color: #99a8b3;
-    }
+        /* ══ SIDEBAR LEFT & RIGHT ══ */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
 
-    .empty-state p {
-      font-size: 15px;
-    }
+        .sidebar-box {
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
 
-    /* Sidebar */
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+        .sidebar-box h3 {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--green);
+        }
 
-    .sidebar-box {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+        .sidebar-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-    .sidebar-box h3 {
-      font-size: 16px;
-      color: #2c3e50;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #4CAF50;
-    }
+        .sidebar-box ul li {
+            margin-bottom: 10px;
+            font-size: 13.5px;
+            line-height: 1.4;
+        }
 
-    .sidebar-item {
-      margin-bottom: 12px;
-      font-size: 14px;
-    }
+        .sidebar-box ul li a {
+            color: #1f3a5d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .sidebar-box ul li a:hover { color: var(--green-dark); }
 
-    .sidebar-item label {
-      color: #7f8c8d;
-      font-weight: 600;
-      display: block;
-      margin-bottom: 4px;
-    }
+        .sidebar-box select {
+            width: 100%;
+            padding: 6px;
+            font-size: 13.5px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            margin-bottom: 12px;
+            outline: none;
+        }
 
-    .sidebar-item span {
-      color: #2c3e50;
-      font-weight: 600;
-    }
+        .sidebar-item {
+            margin-bottom: 12px;
+            font-size: 13.5px;
+        }
 
-    .back-btn {
-      display: block;
-      padding: 12px 20px;
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-      color: white;
-      text-decoration: none;
-      text-align: center;
-      border-radius: 6px;
-      font-weight: 600;
-      transition: all 0.3s;
-      width: 100%;
-    }
+        .sidebar-item label {
+            color: var(--muted);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+        }
 
-    .back-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(76,175,80,0.3);
-    }
-    
+        .sidebar-item span, .sidebar-item a {
+            color: var(--dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .sidebar-item a:hover { color: var(--green-dark); }
 
-    /* Responsive */
-    @media (max-width: 900px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
+        .back-btn {
+            display: block;
+            padding: 10px 14px;
+            background: var(--green-dark);
+            color: white !important;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 13.5px;
+            font-weight: 700;
+            transition: background 0.15s;
+            width: 100%;
+            border: none;
+        }
 
-      .article-header h1 {
-        font-size: 26px;
-      }
+        .back-btn:hover {
+            background: var(--green);
+        }
 
-      .like-section {
-        flex-direction: column;
-        align-items: stretch;
-      }
+        /* ══ FOOTER MÀU ĐEN NHẠT QUY CHUẨN ══ */
+        footer {
+            background: var(--dark);
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #bbb;
+            margin-top: auto;
+        }
+        footer a {
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        footer a:hover {
+            color: var(--green-dark);
+            text-decoration: underline;
+        }
 
-      .like-button {
-        justify-content: center;
-      }
-    }
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                order: 2;
+            }
+            .main-content {
+                order: 1;
+            }
+        }
 
-    @media (max-width: 600px) {
-      .main-content {
-        padding: 20px;
-      }
-
-      .article-header h1 {
-        font-size: 22px;
-      }
-
-      .article-meta {
-        flex-direction: column;
-        gap: 10px;
-      }
-
-      .sidebar {
-        gap: 15px;
-      }
-
-      .comment-form {
-        padding: 15px;
-      }
-    }
-  </style>
+        @media (max-width: 600px) {
+            .navbar { padding: 0 16px; }
+            .container { padding: 0 16px; margin: 20px auto; }
+            .main-content { padding: 20px; }
+            .article-header h1 { font-size: 22px; }
+            .like-section { flex-direction: column; align-items: stretch; }
+            .like-button { justify-content: center; }
+        }
+    </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="header-container">
-      <div class="logo">📖 Blog</div>
-      <a href="{% url 'blog:home' %}" class="back-link">← Quay lại trang chủ</a>
+
+<nav class="navbar">
+    <a class="nav-logo" href="#">PTIT<span>Share</span></a>
+    <div class="nav-dropdown">
+        <div class="nav-dropdown-btn">
+            Khám phá
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+            </svg>
+        </div>
+        <div class="nav-dropdown-menu">
+            <a href="{% url 'blog:home' %}">Blog</a>
+            <a href="{% url 'exam:exam_home' %}">Exam</a>
+            <a href="{% url 'practice:practice_list' %}">Practice</a>
+        </div>
     </div>
-  </header>
+    <div class="nav-spacer"></div>
+    <div class="nav-divider"></div>
+    <a href="{% url 'blog:this_user' %}" class="nav-link">Trang cá nhân</a>
+    <a href="{% url 'blog:user-list' %}" class="nav-link">Xếp hạng</a>
+    <a href="{% url 'blog:logout' %}" class="nav-link">Đăng xuất</a>
+</nav>
 
-  <!-- Main Container -->
-  <div class="container">
+<div class="container">
 
-    <!-- Sidebar bên trái -->
     <aside class="sidebar">
-      <div class="sidebar-box">
-        {% if not articles %}
-          {% if article.author == request.user %}
-            <h3>📚 Chọn Series cho bài viết</h3>
-            <form method="POST" action="{% url 'blog:article' article.id %}">
-              {% csrf_token %}
-              <div class="sidebar-item">
-                <label for="series">Series</label>
-                <select name="series" id="series" required>
-                  {% for s in series %}
-                    <option value="{{ s.name }}">{{ s.name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <button type="submit" name="form" value="add" class="back-btn">Gán vào Series</button>
-            </form>
-          {% endif %}
-
-        {% else %}
-          <h3>📚 Các bài viết trong Series "{{ this_series.name }}"</h3>
-          <ul>
-            {% for a in articles %}
-              <li>
-                <a href="{% url 'blog:article' a.id %}">{{ a.title }}</a>
-              </li>
-            {% endfor %}
-
-            {% if article.author == request.user %}
-              <form method="POST" action="{% url 'blog:article' article.id %}">
-                {% csrf_token %}
-                <button type="submit" name="form" value="delete" class="back-btn" style="margin-top:10px;" >Xóa khỏi Series</button>
-              </form>
-            {% endif %} 
-          </ul>
-        {% endif %}
-      </div>
+        <div class="sidebar-box">
+            {% if not articles %}
+                {% if article.author == request.user %}
+                    <h3>📚 Chọn Series cho bài viết</h3>
+                    <form method="POST" action="{% url 'blog:article' article.id %}">
+                        {% csrf_token %}
+                        <div class="sidebar-item">
+                            <select name="series" id="series" required>
+                                {% for s in series %}
+                                    <option value="{{ s.name }}">{{ s.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" name="form" value="add" class="back-btn">Gán vào Series</button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <h3>📚 Series "{{ this_series.name }}"</h3>
+                <ul>
+                    {% for a in articles %}
+                        <li>
+                            <a href="{% url 'blog:article' a.id %}" {% if a.id == article.id %}style="color: var(--green); font-weight:700;"{% endif %}>{{ a.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% if article.author == request.user %}
+                    <form method="POST" action="{% url 'blog:article' article.id %}">
+                        {% csrf_token %}
+                        <button type="submit" name="form" value="delete" class="back-btn" style="margin-top:12px; background: #e74c3c;">Xóa khỏi Series</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
     </aside>
 
-
-    <!-- Main Content -->
     <main class="main-content">
-      <!-- Article Header -->
-      <div class="article-header">
-        <h1>{{ article.title }}</h1>
-        <div class="article-meta">
-          <span>✍️ <strong>{{ article.author.name }}</strong></span>
-          <span> 📅 {{ article.created_at|date:"d/m/Y H:i" }}</span>
-          <span> 📚 {{ article.topic.count }} chủ đề</span>
-        </div>
-      </div>
-
-      <!-- Topics -->
-      {% if article.topic.all %}
-        <div class="topic-section">
-          <h4>📌 Chủ đề liên quan:</h4>
-          <div class="topic-list">
-            {% for topic in article.topic.all %}
-              <a href="{% url 'blog:filter'%}?topics={{topic.id}}" class="topic-tag">{{ topic.name }}</a>
-            {% endfor %}
-          </div>
-        </div>
-      {% endif %}
-
-      <!-- Article Content -->
-      <div class="article-body">
-        {{ article.content|safe }}
-      </div>
-
-      <!-- Like Section -->
-      <div class="like-section">
-        <div class="like-count">
-          ❤️ <strong>{{ article.likes.count }}</strong> người thích bài này
-        </div>
-        {% if user.is_authenticated %}
-          <form method="POST" action="{% url 'blog:like_article' article.id %}" style="display: contents;">
-            {% csrf_token %}
-            <button type="submit" class="like-button {% if user_liked_article %}like-button-active{% else %}like-button-inactive{% endif %}">
-              {% if user_liked_article %}♥️ Bỏ thích{% else %}🤍 Thích bài viết{% endif %}
-            </button>
-          </form>
-        {% else %}
-          <div class="login-prompt">
-            <a href="{% url 'blog:login' %}">🔓 Đăng nhập để thích bài viết</a>
-          </div>
-        {% endif %}
-      </div>
-
-      <!-- Comments Section -->
-      <section class="comments-section">
-        <h2 class="comments-header">💬 Bình luận ({{ comments.count }})</h2>
-
-        {% if user.is_authenticated %}
-          <!-- Comment Form -->
-          <div class="comment-form">
-            <form method="POST" action="{% url 'blog:create_comment' article.id %}">
-              {% csrf_token %}
-              <textarea name="content" class="comment-textarea" placeholder="Chia sẻ ý kiến của bạn..." required></textarea>
-              <button type="submit" class="comment-submit">💬 Gửi bình luận</button>
-            </form>
-          </div>
-        {% else %}
-          <div class="login-prompt" style="margin-bottom: 30px;">
-            <p><a href="{% url 'blog:login' %}">🔓 Đăng nhập để bình luận</a></p>
-          </div>
-        {% endif %}
-
-        <!-- Comments List -->
-        {% if comments %}
-          {% for comment in comments %}
-            <div class="comment-item">
-              <div class="comment-author">
-              <!--tác dụng như nhau  <a href="{% url 'user' comment.author.id %}">{{ comment.author.name }}</a> -->
-                <a href="http://127.0.0.1:8000/blog/users/{{comment.author.id }}">{{ comment.author.name }}</a>
-                <span class="comment-time">{{ comment.created_at|date:"d/m/Y H:i" }}</span>
-              </div>
-              <div class="comment-content">{{ comment.content }}</div>
+        <div class="article-header">
+            <h1>{{ article.title }}</h1>
+            <div class="article-meta">
+                <span>✍️ <strong>{{ article.author.name }}</strong></span>
+                <span>📅 {{ article.created_at|date:"d/m/Y H:i" }}</span>
+                <span>📌 {{ article.topic.count }} chủ đề</span>
             </div>
-          {% endfor %}
-        {% else %}
-          <div class="empty-state">
-            <p>📭 Chưa có bình luận nào. Hãy là người bình luận đầu tiên!</p>
-          </div>
-        {% endif %}
-      </section>
-    </main>
-
-    <!-- Sidebar bên phải -->
-    <aside class="sidebar">
-      <!-- Info Box -->
-      <div class="sidebar-box">
-        <h3>ℹ️ Thông tin bài viết</h3>
-
-        <div class="sidebar-item">
-          <label>Tác giả</label>
-          <a href="{% url 'blog:user' article.author.id %}">{{ article.author.name }}</a>
-        </div>
-
-        <div class="sidebar-item">
-          <label>Ngày đăng</label>
-          <span>{{ article.created_at|date:"d/m/Y" }}</span>
-        </div>
-
-        <div class="sidebar-item">
-          <label>Lượt thích</label>
-          <span>{{ article.likes.count }} ❤️</span>
         </div>
 
         {% if article.topic.all %}
-          <div class="sidebar-item">
-            <label>Chủ đề</label>
-            <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">
-              {% for t in article.topic.all %}
-                <!-- <span class="topic-tag" style="font-size: 11px; padding: 4px 10px;">{{ t.name }}</span> -->
-                <a href="{% url 'blog:filter' %}?topics={{ t.id }}" class="topic-tag" style="font-size: 11px; padding: 4px 10px;">{{ t.name }}</a>
-              {% endfor %}
+            <div class="topic-section">
+                <h4>📌 Chủ đề liên quan:</h4>
+                <div class="topic-list">
+                    {% for topic in article.topic.all %}
+                        <a href="{% url 'blog:filter' %}?topics={{ topic.id }}" class="topic-tag">{{ topic.name }}</a>
+                    {% endfor %}
+                </div>
             </div>
-          </div>
         {% endif %}
-      </div>
 
-      {% if article.author == request.user %}
-        <a href="{% url 'blog:edit' article.id %}" class="back-btn" style="background:#ffc107; border:none; color:#2c3e50; margin-top:0px;">✏️ Chỉnh sửa</a>
+        <div class="article-body">
+            {{ article.content|safe }}
+        </div>
 
-        <a href="{% url 'blog:delete' article.id %}" class="back-btn" style="background:#e74c3c; border:none; color:#2c3e50; margin-top:0px;">✏️ Xóa</a>
-      {% endif %}
-      
-      <!-- Back Button -->
-      <a href="{% url 'blog:home' %}" class="back-btn">← Quay lại trang chủ</a>
+        <div class="like-section">
+            <div class="like-count">
+                ❤️ <strong>{{ article.likes.count }}</strong> người thích bài này
+            </div>
+            {% if user.is_authenticated %}
+                <form method="POST" action="{% url 'blog:like_article' article.id %}" style="display: contents;">
+                    {% csrf_token %}
+                    <button type="submit" class="like-button {% if user_liked_article %}like-button-active{% else %}like-button-inactive{% endif %}">
+                        {% if user_liked_article %}♥️ Bỏ thích{% else %}🤍 Thích bài viết{% endif %}
+                    </button>
+                </form>
+            {% else %}
+                <div class="login-prompt">
+                    <a href="{% url 'blog:login' %}">🔓 Đăng nhập để thích bài viết</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <section class="comments-section">
+            <h2 class="comments-header">💬 Bình luận ({{ comments.count }})</h2>
+
+            {% if user.is_authenticated %}
+                <div class="comment-form">
+                    <form method="POST" action="{% url 'blog:create_comment' article.id %}">
+                        {% csrf_token %}
+                        <textarea name="content" class="comment-textarea" placeholder="Chia sẻ ý kiến của bạn..." required></textarea>
+                        <button type="submit" class="comment-submit">💬 Gửi bình luận</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="login-prompt" style="margin-bottom: 24px;">
+                    <p><a href="{% url 'blog:login' %}">🔓 Đăng nhập để bình luận</a></p>
+                </div>
+            {% endif %}
+
+            {% if comments %}
+                <div class="comments-list">
+                    {% for comment in comments %}
+                        <div class="comment-item">
+                            <div class="comment-author">
+                                <a href="{% url 'blog:user' comment.author.id %}">{{ comment.author.name }}</a>
+                                <span class="comment-time">{{ comment.created_at|date:"d/m/Y H:i" }}</span>
+                            </div>
+                            <div class="comment-content">{{ comment.content }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>📭 Chưa có bình luận nào. Hãy là người bình luận đầu tiên!</p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <aside class="sidebar">
+        <div class="sidebar-box">
+            <h3>ℹ️ Thông tin bài viết</h3>
+
+            <div class="sidebar-item">
+                <label>Tác giả</label>
+                <a href="{% url 'blog:user' article.author.id %}">{{ article.author.name }}</a>
+            </div>
+
+            <div class="sidebar-item">
+                <label>Ngày đăng</label>
+                <span>{{ article.created_at|date:"d/m/Y" }}</span>
+            </div>
+
+            <div class="sidebar-item">
+                <label>Lượt thích</label>
+                <span>{{ article.likes.count }} ❤️</span>
+            </div>
+
+            {% if article.topic.all %}
+                <div class="sidebar-item">
+                    <label>Chủ đề</label>
+                    <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">
+                        {% for t in article.topic.all %}
+                            <a href="{% url 'blog:filter' %}?topics={{ t.id }}" class="topic-tag" style="font-size: 11px; padding: 4px 10px;">{{ t.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if article.author == request.user %}
+            <a href="{% url 'blog:edit' article.id %}" class="back-btn" style="background:#ffc107; color:#282A35 !important;">✏️ Chỉnh sửa bài</a>
+            <a href="{% url 'blog:delete' article.id %}" class="back-btn" style="background:#e74c3c;">🗑️ Xóa bài viết</a>
+        {% endif %}
+        
+        <a href="{% url 'blog:home' %}" class="back-btn">← Quay lại trang chủ</a>
     </aside>
-  </div>
+</div>
+
+<footer>
+    &copy; 2026 PTITShare &mdash; Powered by <a href="#">Django</a>
+</footer>
+
 </body>
 </html>

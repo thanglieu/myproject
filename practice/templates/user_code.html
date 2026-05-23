@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách UserPractice – PTITShare</title>
+    <title>Chi tiết bài làm – PTITShare</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -15,6 +15,7 @@
             --gray-bg:     #f6f6f6;
             --border:      #e0e0e0;
             --muted:       #6c757d;
+            --danger:      #dc3545;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,7 +29,7 @@
             flex-direction: column;
         }
 
-        /* ══ NAVBAR (Copy chuẩn 100% từ file mẫu) ══ */
+        /* ══ NAVBAR ══ */
         .navbar {
             background: var(--green);
             height: 52px;
@@ -121,19 +122,85 @@
             flex: 1;
         }
 
-        .page-header {
-            text-align: center;
-            margin-bottom: 28px;
-            padding-bottom: 16px;
-            border-bottom: 3px solid var(--green);
+        /* ══ BỐ CỤC MỚI CHO PHẦN TỔNG QUAN ══ */
+        .overview-box {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); /* Đổ bóng siêu nhạt, bỏ bóng đen cũ */
         }
-        .page-header h1 { 
-            font-size: 26px; 
-            font-weight: 800; 
+        .overview-box h2 {
+            font-size: 28px;
+            font-weight: 850;
+            margin-bottom: 20px;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+        }
+        .meta-info-container {
+            display: flex;
+            flex-direction: column; /* Xếp dọc các dòng từ trên xuống */
+            align-items: flex-start; /* Căn lề trái ngay ngắn */
+            gap: 12px; /* Khoảng cách giữa các dòng */
+            font-size: 15px;
+            color: #555;
+            padding: 4px 12px;
+        }
+        .meta-item strong {
             color: var(--dark);
+            font-weight: 700;
+            display: inline-block;
+            min-width: 140px; /* Định rộng để phần nội dung phía sau thẳng hàng hàng dọc */
         }
-        .page-header h1 span {
-            color: var(--green-dark);
+        .meta-item .score-red {
+            color: var(--danger);
+            font-weight: 800;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 17px;
+        }
+
+        /* ══ TIÊU ĐỀ PHÂN MỤC ══ */
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a1a1a;
+            margin: 44px 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--green);
+        }
+        .section-title svg {
+            color: var(--green);
+        }
+
+        /* ══ USER CODE BLOCK ══ */
+        .code-container {
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            overflow-x: auto;
+            margin-bottom: 24px;
+        }
+        .code-container pre {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 14.5px;
+            color: var(--dark);
+            margin: 0;
+            line-height: 1.6;
         }
 
         /* ══ PTIT TABLE CARD ══ */
@@ -142,81 +209,68 @@
             border-radius: 8px;
             border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+            box-shadow: 0 2px 8px rgba(1, 189, 89, 0.05);
             margin-bottom: 24px;
         }
         .ptit-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 14px;
+            margin: 0;
         }
         .ptit-table thead tr {
             background: #f0f0f0;
             color: #555;
         }
         .ptit-table thead th {
-            padding: 13px 18px;
+            padding: 14px 18px;
             font-size: 12.5px;
             font-weight: 700;
-            letter-spacing: .5px;
             text-transform: uppercase;
             border-bottom: 2px solid var(--border);
         }
         .ptit-table tbody tr {
             border-bottom: 1px solid var(--border);
-            transition: background .1s;
         }
         .ptit-table tbody tr:last-child { border-bottom: none; }
-        .ptit-table tbody tr:hover { background: var(--green-light); }
         .ptit-table td {
-            padding: 13px 18px;
+            padding: 14px 18px;
             vertical-align: middle;
         }
-
-        /* Thành phần trong bảng */
-        .badge-author {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--gray-bg);
+        .ptit-table td pre {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 13px;
+            margin: 0;
+            background: #f8f9fa;
+            padding: 8px 12px;
             border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 3px 11px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+
+        /* Badges Result */
+        .badge-success {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
             font-size: 12.5px;
-            font-weight: 700;
-            color: var(--dark);
+            font-weight: bold;
+            border-radius: 4px;
             white-space: nowrap;
         }
-        .badge-dot {
-            width: 7px; height: 7px;
-            background: var(--green);
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .mark-display {
-            font-family: 'Source Code Pro', monospace;
-            font-weight: 700;
-            color: var(--green-dark);
-            font-size: 15px;
+        .badge-danger {
+            display: inline-block;
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12.5px;
+            font-weight: bold;
+            border-radius: 4px;
+            white-space: nowrap;
         }
 
         /* ══ NÚT BẤM ══ */
-        .btn-do {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--green);
-            color: #fff !important;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 13px;
-            transition: background .15s, transform .1s;
-        }
-        .btn-do:hover { background: var(--green-dark); }
-        .btn-do:active { transform: scale(0.98); }
-
         .btn-back {
             display: inline-flex;
             align-items: center;
@@ -224,11 +278,11 @@
             background: #fff;
             color: #555 !important;
             font-weight: 600;
-            padding: 8px 16px;
+            padding: 10px 18px;
             border-radius: 6px;
             border: 1px solid var(--border);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 14.5px;
             transition: all .15s ease;
         }
         .btn-back:hover {
@@ -236,14 +290,6 @@
             color: var(--dark) !important;
             border-color: #bbb;
         }
-
-        /* Trạng thái trống */
-        .no-result {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--muted);
-        }
-        .no-result svg { color: #ddd; margin-bottom: 12px; }
 
         /* ══ FOOTER ══ */
         footer {
@@ -287,52 +333,54 @@
 </nav>
 
 <div class="page-wrapper">
-
-    <div class="page-header">
-        <h1>Danh sách nộp bài cho: <span>{{ practice.title }}</span></h1>
+    <h2 class="text-center fw-bold">{{ practice.title }}</h2>
+    
+    <div class="overview-box">
+        <div class="meta-info-container">
+            <div class="meta-item"><strong>Tác giả đề bài:</strong> {{ practice.author.username }}</div>
+            <div class="meta-item"><strong>Sinh viên nộp bài:</strong> {{ user.username }}</div>
+            <div class="meta-item"><strong>Điểm số:</strong> <span class="score-red">{{ user_practice.mark }}</span></div>
+        </div>
     </div>
 
+    <div class="section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"/>
+        </svg>
+        Code :
+    </div>
+    <div class="code-container">
+        <pre><code>{{ user_practice.user_code }}</code></pre>
+    </div>
+
+    <div class="section-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+        </svg>
+        Chi tiết kết quả Test cases
+    </div>
     <div class="table-card">
         <table class="ptit-table">
             <thead>
                 <tr>
-                    <th style="width: 60px; text-align: center;">#</th>
-                    <th>Sinh viên</th>
-                    <th style="width: 150px; text-align: center;">Điểm số</th>
-                    <th style="width: 160px; text-align: center;">Hành động</th>
+                    <th style="width: 25%;">Input</th>
+                    <th style="width: 25%;">Output chuẩn</th>
+                    <th style="width: 25%;">Output của user</th>
+                    <th style="width: 25%; text-align: center;">Kết quả</th>
                 </tr>
             </thead>
             <tbody>
-                {% for up in user_practices %}
+                {% for u in user_outputs %}
                 <tr>
-                    <td style="color:#bbb; font-size:13px; text-align:center;">{{ forloop.counter }}</td>
-                    <td>
-                        <span class="badge-author">
-                            <span class="badge-dot"></span>{{ up.user.username }}
-                        </span>
-                    </td>
+                    <td><pre>{{ u.input }}</pre></td>
+                    <td><pre>{{ u.expected }}</pre></td>
+                    <td><pre>{{ u.user_output }}</pre></td>
                     <td style="text-align: center;">
-                        <span class="mark-display">{{ up.mark }}</span>
-                    </td>
-                    <td style="text-align: center;">
-                        <a href="{% url 'practice:user_practice' practice.id up.user.id %}" class="btn-do">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-                                <path d="M0 8s3-5.5 8-5.5s8 5.5 8 5.5s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-                            </svg>
-                            Xem 
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4">
-                        <div class="no-result">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.868-3.833zm-5.242 1.406a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
-                            </svg>
-                            <p class="mb-0">Chưa có thành viên nào nộp bài cho Practice này.</p>
-                        </div>
+                        {% if u.is_correct %}
+                            <span class="badge-success">✔ Đúng</span>
+                        {% else %}
+                            <span class="badge-danger">✘ Sai</span>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -340,9 +388,13 @@
         </table>
     </div>
 
-    <div class="mt-2">
-        <a href="{% url 'practice:practice_list' %}" class="btn-do">Về trang chủ</a>
-        <a href="{% url 'practice:take_practice' practice.id %}" class="btn-do">Làm</a>
+    <div class="mt-4">
+        <a href="{% url 'practice:practice_list' %}" class="btn-back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+            </svg>
+            Quay về danh sách Practice
+        </a>
     </div>
 
 </div>

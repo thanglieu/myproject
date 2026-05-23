@@ -3,268 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bảng xếp hạng - Blog</title>
+  <title>Bảng xếp hạng - PTITShare</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+        --green: #04AA6D;
+        --dark: #282A35;
+        --gray-bg: #f6f6f6;
+        --border: #e0e0e0;
     }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: var(--gray-bg);
       min-height: 100vh;
-      padding-bottom: 40px;
-    }
-
-    /* Header */
-    header {
-      background: #1aae1c;
-      color: white;
-      padding: 20px 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .header-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 20px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
     }
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: white;
+    /* ══ NAVBAR CHUẨN ══ */
+    .navbar {
+        background: var(--green); color: white; padding: 0 32px; height: 52px;
+        display: flex; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
-    .back-link {
-      color: white;
-      text-decoration: none;
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 4px;
-      transition: all 0.3s;
+    .nav-logo { font-size: 19px; font-weight: 700; color: #fff; text-decoration: none; margin-right: 20px; }
+    .nav-logo span { color: var(--dark); }
+    .nav-dropdown { position: relative; cursor: pointer; }
+    .nav-dropdown-btn { color: #fff; font-size: 13.5px; font-weight: 700; padding: 0 14px; height: 52px; display: flex; align-items: center; }
+    .nav-dropdown:hover .nav-dropdown-btn { background: rgba(0,0,0,.15); }
+    .nav-dropdown-menu {
+        display: none; position: absolute; top: 100%; left: 0; background: var(--dark);
+        border-radius: 0 0 6px 6px; min-width: 140px; box-shadow: 0 6px 20px rgba(0,0,0,.3); z-index: 200;
     }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a { display: block; color: #ccc; text-decoration: none; font-size: 13.5px; padding: 10px 18px; }
+    .nav-dropdown-menu a:hover { background: var(--green); color: #fff; }
+    .nav-spacer { flex: 1; }
+    .nav-link { color: #fff; text-decoration: none; font-size: 13.5px; font-weight: 700; padding: 0 14px; height: 52px; display: flex; align-items: center; }
+    .nav-link:hover { background: rgba(0,0,0,.15); }
 
-    .back-link:hover {
-      background: rgba(255,255,255,0.3);
-    }
+    /* ══ NỘI DUNG ══ */
+    .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; flex: 1; width: 100%; }
+    h1 { text-align: center; color: var(--dark); margin-bottom: 30px; }
 
-    .container {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
+    .table-container { background: white; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: #f8f9fa; }
+    th { padding: 16px 20px; text-align: left; font-size: 13px; color: #666; text-transform: uppercase; border-bottom: 2px solid var(--gray-bg); }
+    td { padding: 16px 20px; border-bottom: 1px solid var(--gray-bg); }
+    
+    .rank-column { font-weight: 700; color: var(--green); }
+    td a { color: var(--dark); text-decoration: none; font-weight: 600; }
+    td a:hover { color: var(--green); }
+    .mark-cell { font-weight: 700; color: #ff9800; }
 
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-      font-size: 32px;
-      margin-bottom: 30px;
-    }
-
-    /* Table Container */
-    .table-container {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      overflow: hidden;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    thead {
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-      color: white;
-    }
-
-    th {
-      padding: 18px 20px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    tbody tr {
-      border-bottom: 1px solid #e0e0e0;
-      transition: all 0.3s;
-    }
-
-    tbody tr:hover {
-      background: #f9f9f9;
-    }
-
-    tbody tr:last-child {
-      border-bottom: none;
-    }
-
-    td {
-      padding: 16px 20px;
-      font-size: 14px;
-      color: #2c3e50;
-    }
-
-    /* Special styling for rank column */
-    .rank-column {
-      font-weight: 600;
-      color: #4CAF50;
-      font-size: 16px;
-    }
-
-    /* Medal emoji for top 3 */
-    tr:nth-child(1) .rank-column {
-      font-size: 20px;
-    }
-
-    tr:nth-child(1) td:first-child::before {
-      content: "🥇 ";
-    }
-
-    tr:nth-child(2) td:first-child::before {
-      content: "🥈 ";
-    }
-
-    tr:nth-child(3) td:first-child::before {
-      content: "🥉 ";
-    }
-
-    /* User name link */
-    td a {
-      color: #4CAF50;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s;
-    }
-
-    td a:hover {
-      color: #45a049;
-      text-decoration: underline;
-    }
-
-    /* Mark/Score styling */
-    .mark-cell {
-      font-weight: 700;
-      color: #ff9800;
-      font-size: 16px;
-    }
-
-    /* Empty state */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      background: white;
-      border-radius: 10px;
-      color: #7f8c8d;
-    }
-
-    .empty-state p {
-      font-size: 16px;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 24px;
-      }
-
-      th, td {
-        padding: 12px 10px;
-        font-size: 13px;
-      }
-
-      th {
-        font-size: 12px;
-      }
-
-      .rank-column {
-        font-size: 14px;
-      }
-
-      .mark-cell {
-        font-size: 14px;
-      }
-
-      /* Hide some columns on mobile */
-      .gender-column {
-        display: none;
-      }
-
-      .email-column {
-        display: none;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .header-container {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      h1 {
-        font-size: 20px;
-        margin-bottom: 20px;
-      }
-
-      .container {
-        padding: 0 15px;
-      }
-
-      th, td {
-        padding: 10px 8px;
-        font-size: 12px;
-      }
-
-      th {
-        font-size: 11px;
-      }
-
-      .mark-cell {
-        font-size: 12px;
-      }
-    }
+    /* ══ FOOTER CHUẨN ══ */
+    footer { background: var(--dark); padding: 20px; text-align: center; color: #bbb; font-size: 14px; font-weight: 600; margin-top: 40px; }
+    footer a { color: var(--green); text-decoration: none; }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="header-container">
-      <div class="logo">📖 Blog</div>
-      <a href="{% url 'blog:home' %}" class="back-link">← Trang chủ</a>
-    </div>
-  </header>
 
-  <!-- Main Container -->
+  <nav class="navbar">
+      <a class="nav-logo" href="#">PTIT<span>Share</span></a>
+      <div class="nav-dropdown">
+          <div class="nav-dropdown-btn">Khám phá ▾</div>
+          <div class="nav-dropdown-menu">
+              <a href="{% url 'blog:home' %}">Blog</a>
+              <a href="{% url 'exam:exam_home' %}">Exam</a>
+              <a href="{% url 'practice:practice_list' %}">Practice</a>
+          </div>
+      </div>
+      <div class="nav-spacer"></div>
+      <a href="{% url 'blog:this_user' %}" class="nav-link">Trang cá nhân</a>
+      <a href="{% url 'blog:user-list' %}" class="nav-link" style="background: rgba(0,0,0,.15);">Xếp hạng</a>
+      <a href="{% url 'blog:logout' %}" class="nav-link">Đăng xuất</a>
+  </nav>
+
   <div class="container">
-    <h1>🏆 Bảng xếp hạng người dùng</h1>
+    <h1>🏆 Bảng xếp hạng</h1>
 
     {% if users %}
       <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th width="10%">#</th>
-              <th width="35%">👤 Tên người dùng</th>
-              <th class="email-column" width="30%">📧 Email</th>
-              <th class="gender-column" width="15%">⚧️ Giới tính</th>
-              <th width="10%">⭐ Điểm</th>
+              <th>#</th>
+              <th>Người dùng</th>
+              <th class="email-column">Email</th>
+              <th class="gender-column">Giới tính</th>
+              <th>Điểm</th>
             </tr>
           </thead>
           <tbody>
             {% for user in users %}
               <tr>
                 <td class="rank-column">{{ forloop.counter }}</td>
-                <td>
-                  <a href="{% url 'blog:user' user.pk %}">{{ user.name }}</a>
-                </td>
+                <td><a href="{% url 'blog:user' user.pk %}">{{ user.name }}</a></td>
                 <td class="email-column">{{ user.email }}</td>
                 <td class="gender-column">{{ user.gender|default:"—" }}</td>
                 <td class="mark-cell">{{ user.mark }} ⭐</td>
@@ -274,10 +109,13 @@
         </table>
       </div>
     {% else %}
-      <div class="empty-state">
-        <p>📭 Không có người dùng nào</p>
-      </div>
+      <div style="text-align: center; padding: 50px;">📭 Chưa có người dùng nào.</div>
     {% endif %}
   </div>
+
+  <footer>
+    &copy; 2026 PTITShare &mdash; Powered by <a href="#">Django</a>
+  </footer>
+
 </body>
 </html>

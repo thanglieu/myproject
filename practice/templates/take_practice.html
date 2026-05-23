@@ -1,55 +1,273 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Làm Practice</title>
+    <title>Làm Practice – PTITShare</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green:       #04AA6D;
+            --green-dark:  #059862;
+            --green-light: #e8f8f2;
+            --dark:        #282A35;
+            --gray-bg:     #f6f6f6;
+            --border:      #e0e0e0;
+            --muted:       #6c757d;
+        }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--gray-bg);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* ══ NAVBAR ══ */
+        .navbar {
+            background: var(--green);
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+        }
+        .nav-logo {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 19px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+            letter-spacing: -.5px;
+            white-space: nowrap;
+        }
+        .nav-logo span { color: var(--dark); }
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fff;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 0 14px;
+            height: 52px;
+            cursor: pointer;
+            user-select: none;
+            transition: background .15s;
+        }
+        .nav-dropdown-btn:hover,
+        .nav-dropdown:hover .nav-dropdown-btn { background: rgba(0,0,0,.15); }
+        .nav-dropdown-btn svg { transition: transform .2s; }
+        .nav-dropdown:hover .nav-dropdown-btn svg { transform: rotate(180deg); }
+        .nav-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--dark);
+            border-radius: 0 0 6px 6px;
+            min-width: 140px;
+            box-shadow: 0 6px 20px rgba(0,0,0,.3);
+            z-index: 200;
+        }
+        .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+        .nav-dropdown-menu a {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 10px 18px;
+            transition: background .12s, color .12s;
+        }
+        .nav-dropdown-menu a:hover { background: var(--green); color: #fff; }
+        .nav-spacer { flex: 1; }
+        .nav-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(255,255,255,.35);
+            margin: 0 4px;
+        }
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 0 14px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            transition: background .15s;
+            white-space: nowrap;
+        }
+        .nav-link:hover { background: rgba(0,0,0,.15); color: #fff; }
+
+        .page-wrapper {
+            width: 100%;
+            max-width: 900px;
+            margin: 36px auto;
+            padding: 0 24px;
+            flex: 1;
+        }
+        .page-header {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid var(--green);
+        }
+        .page-header h1 { font-size: 26px; font-weight: 800; }
+        .form-card {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        .form-card-header {
+            background: #f0f0f0;
+            color: #555;
+            font-size: 12.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 12px 20px;
+            border-bottom: 2px solid var(--border);
+        }
+        .form-card-body { padding: 20px; }
+        textarea {
+            width: 100%;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+
+            font-size: 13px;
+            resize: vertical;
+        }
+        textarea:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(4,170,109,.1);
+            outline: none;
+        }
+        .btn-run {
+            background: var(--green);
+            color: #fff;
+            font-weight: 700;
+            padding: 10px 28px;
+            border-radius: 6px;
+            border: none;
+            transition: background .15s, transform .1s;
+        }
+        .btn-run:hover { background: var(--green-dark); transform: translateY(-1px); }
+        .ptit-table thead tr { background: #f0f0f0; color: #555; }
+        .ptit-table tbody tr:hover { background: var(--green-light); }
+        .badge-success { color: var(--green-dark); font-weight: 700; }
+        .badge-danger { color: #c0392b; font-weight: 700; }
+        footer {
+            background: var(--dark);
+            color: #888;
+            text-align: center;
+            padding: 18px;
+            font-size: 13px;
+            margin-top: auto;
+        }
+        footer a { color: var(--green); text-decoration: none; }
+    </style>
 </head>
-<body class="container mt-4">
+<body>
 
-    <h2>{{ practice.title }}</h2>
-    <p><strong>Tác giả:</strong> {{ practice.author.username }}</p>
-    <p>{{ practice.content }}</p>
-
-    <form method="post" class="mb-4">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label">Nhập code của bạn</label>
-            {{ form.user_code }}
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar">
+    <a class="nav-logo" href="#">PTIT<span>Share</span></a>
+    <div class="nav-dropdown">
+        <div class="nav-dropdown-btn">
+            Khám phá
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+            </svg>
         </div>
-        <button type="submit" class="btn btn-primary">Run code</button>
+        <div class="nav-dropdown-menu">
+            <a href="{% url 'blog:home' %}">Blog</a>
+            <a href="{% url 'exam:exam_home' %}">Exam</a>
+            <a href="{% url 'practice:practice_list' %}">Practice</a>
+        </div>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-divider"></div>
+    <a href="{% url 'blog:this_user' %}" class="nav-link">Trang cá nhân</a>
+    <a href="{% url 'blog:user-list' %}" class="nav-link">Xếp hạng</a>
+    <a href="{% url 'blog:logout' %}" class="nav-link">Đăng xuất</a>
+</nav>
+
+<div class="page-wrapper">
+
+    <div class="page-header">
+        <h1>{{ practice.title }}</h1>
+        <p class="text-muted">Tác giả: {{ practice.author.username }}</p>
+    </div>
+
+    <div class="form-card">
+        <div class="form-card-header">Nội dung Practice</div>
+        <div class="form-card-body">
+            <p>{{ practice.content }}</p>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-card">
+            <div class="form-card-header">Code của bạn</div>
+            <div class="form-card-body">
+                {{ form.user_code }}
+            </div>
+        </div>
+        <button type="submit" class="btn-run">▶ Run code</button>
     </form>
 
     {% if user_outputs %}
-    <h4>Kết quả</h4>
-    <p><strong>Điểm:</strong> {{ mark }}</p>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Input</th>
-                <th>Output chuẩn</th>
-                <th>Output của bạn</th>
-                <th>Kết quả</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for u in user_outputs %}
-            <tr>
-                <td><pre>{{ u.input }}</pre></td>
-                <td><pre>{{ u.expected }}</pre></td>
-                <td><pre>{{ u.user_output }}</pre></td>
-                <td>
-                    {% if u.is_correct %}
-                        <span class="text-success">✔ Đúng</span>
-                    {% else %}
-                        <span class="text-danger">✘ Sai</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="form-card mt-4">
+        <div class="form-card-header">Kết quả</div>
+        <div class="form-card-body">
+            <p><strong>Điểm:</strong> {{ mark }}</p>
+            <table class="ptit-table table">
+                <thead>
+                    <tr>
+                        <th>Input</th>
+                        <th>Output chuẩn</th>
+                        <th>Output của bạn</th>
+                        <th>Kết quả</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in user_outputs %}
+                    <tr>
+                        <td><pre>{{ u.input }}</pre></td>
+                        <td><pre>{{ u.expected }}</pre></td>
+                        <td><pre>{{ u.user_output }}</pre></td>
+                        <td>
+                            {% if u.is_correct %}
+                                <span class="badge-success">✔ Đúng</span>
+                            {% else %}
+                                <span class="badge-danger">✘ Sai</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
     {% endif %}
+
+</div>
+
+<footer>
+    &copy; 2025 PTITShare — Powered by <a href="#">Django</a>
+</footer>
 
 </body>
 </html>

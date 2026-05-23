@@ -23,6 +23,9 @@ urlpatterns = [
     # đăng ký
     path('register/', views.register, name='register'),
 
+    # đăng xuất
+    path('logout/', views.user_logout, name='logout'),
+
     # trang cá nhân
     path('users/this-user', views.user_page, name='this_user'),
 

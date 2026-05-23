@@ -1,86 +1,445 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Tạo Practice mới</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo Practice mới – PTITShare</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --green:       #04AA6D;
+            --green-dark:  #059862;
+            --green-light: #e8f8f2;
+            --dark:        #282A35;
+            --gray-bg:     #f6f6f6;
+            --border:      #e0e0e0;
+            --muted:       #6c757d;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--gray-bg);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ══ NAVBAR ══ */
+        .navbar {
+            background: var(--green);
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
+        }
+        .nav-logo {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 19px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            margin-right: 20px;
+            letter-spacing: -.5px;
+            white-space: nowrap;
+        }
+        .nav-logo span { color: var(--dark); }
+
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fff;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 0 14px;
+            height: 52px;
+            cursor: pointer;
+            user-select: none;
+            transition: background .15s;
+        }
+        .nav-dropdown-btn:hover,
+        .nav-dropdown:hover .nav-dropdown-btn { background: rgba(0,0,0,.15); }
+        .nav-dropdown-btn svg { transition: transform .2s; }
+        .nav-dropdown:hover .nav-dropdown-btn svg { transform: rotate(180deg); }
+
+        .nav-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--dark);
+            border-radius: 0 0 6px 6px;
+            min-width: 140px;
+            box-shadow: 0 6px 20px rgba(0,0,0,.3);
+            z-index: 200;
+        }
+        .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+        .nav-dropdown-menu a {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 10px 18px;
+            transition: background .12s, color .12s;
+        }
+        .nav-dropdown-menu a:hover { background: var(--green); color: #fff; }
+
+        .nav-spacer { flex: 1; }
+        .nav-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(255,255,255,.35);
+            margin: 0 4px;
+        }
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 0 14px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            transition: background .15s;
+            white-space: nowrap;
+        }
+        .nav-link:hover { background: rgba(0,0,0,.15); color: #fff; }
+
+        /* ══ PAGE WRAPPER ══ */
+        .page-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 36px auto;
+            padding: 0 24px;
+            flex: 1;
+        }
+
+        /* ══ BACK LINK ══ */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: color .15s;
+        }
+        .back-link:hover { color: var(--green-dark); }
+
+        /* ══ PAGE HEADER ══ */
+        .page-header {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 3px solid var(--green);
+        }
+        .page-header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        /* ══ CARD ══ */
+        .form-card {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        .form-card-header {
+            background: #f0f0f0;
+            color: #555;
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            padding: 12px 20px;
+            border-bottom: 2px solid var(--border);
+        }
+        .form-card-body {
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* ══ FORM FIELDS ══ */
+        .field-group { display: flex; flex-direction: column; gap: 6px; }
+        .field-label {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .field-label.author-label {
+            font-size: 13.5px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .author-value {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gray-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--dark);
+            width: fit-content;
+        }
+        .author-dot {
+            width: 7px; height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+        }
+
+        /* Override Django form widget styles */
+        .form-card-body input[type="text"],
+        .form-card-body textarea,
+        .form-card-body select {
+            width: 100%;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            padding: 9px 12px;
+            font-size: 13.5px;
+            font-family: 'Nunito', sans-serif;
+            background: #fff;
+            outline: none;
+            transition: border-color .15s, box-shadow .15s;
+            color: var(--dark);
+        }
+        .form-card-body input[type="text"]:focus,
+        .form-card-body textarea:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(4,170,109,.1);
+        }
+        .form-card-body textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 13px;
+        }
+
+        /* ══ TESTCASE BLOCK ══ */
+        .testcase-block {
+            background: var(--gray-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .testcase-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--green-dark);
+            text-transform: uppercase;
+            letter-spacing: .4px;
+        }
+        .testcase-output {
+            background: #fff;
+            border: 1.5px solid var(--border);
+            border-radius: 6px;
+            padding: 9px 12px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 13px;
+            color: var(--dark);
+            min-height: 60px;
+        }
+
+        /* ══ ACTIONS ══ */
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--green);
+            color: #fff;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 10px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background .15s, transform .1s;
+            font-family: 'Nunito', sans-serif;
+        }
+        .btn-submit:hover { background: var(--green-dark); transform: translateY(-1px); }
+        .btn-submit:active { transform: translateY(0); }
+
+        /* ══ FOOTER ══ */
+        footer {
+            background: var(--dark);
+            color: #888;
+            text-align: center;
+            padding: 18px;
+            font-size: 13px;
+            margin-top: auto;
+        }
+        footer a { color: var(--green); text-decoration: none; }
+
+        @media (max-width: 640px) {
+            .navbar { padding: 0 16px; }
+            .page-wrapper { padding: 0 12px; margin: 20px auto; }
+        }
+    </style>
 </head>
-<body class="container mt-4">
+<body>
 
-    <div class="mb-3">
-        <a href="{% url 'practice:practice_list' %}" class="btn btn-secondary">← Quay về danh sách Practice</a>
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar">
+    <a class="nav-logo" href="#">PTIT<span>Share</span></a>
+    <div class="nav-dropdown">
+        <div class="nav-dropdown-btn">
+            Khám phá
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+            </svg>
+        </div>
+        <div class="nav-dropdown-menu">
+            <a href="{% url 'blog:home' %}">Blog</a>
+            <a href="{% url 'exam:exam_home' %}">Exam</a>
+            <a href="{% url 'practice:practice_list' %}">Practice</a>
+        </div>
     </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-divider"></div>
+    <a href="{% url 'blog:this_user' %}" class="nav-link">Trang cá nhân</a>
+    <a href="{% url 'blog:user-list' %}" class="nav-link">Xếp hạng</a>
+    <a href="{% url 'blog:logout' %}" class="nav-link">Đăng xuất</a>
+</nav>
 
-    <h2 class="mb-4">Tạo Practice mới</h2>
+<!-- ══ CONTENT ══ -->
+<div class="page-wrapper">
+
+    <a href="{% url 'practice:practice_list' %}" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        Quay về danh sách Practice
+    </a>
+
+    <div class="page-header">
+        <h1>Tạo Practice mới</h1>
+    </div>
 
     <form method="post">
         {% csrf_token %}
 
-        <!-- Practice form -->
-        <div class="card mb-4">
-            <div class="card-header">Thông tin Practice</div>
-            <div class="card-body">
-                <div>
-                    <label for="id_author" class="form-label">Tác giả : {{ request.user }}</label>
+        <!-- Thông tin Practice -->
+        <div class="form-card">
+            <div class="form-card-header">Thông tin Practice</div>
+            <div class="form-card-body">
+
+                <div class="field-group">
+                    <span class="field-label author-label">Tác giả</span>
+                    <div class="author-value">
+                        <span class="author-dot"></span>
+                        {{ request.user }}
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="id_title" class="form-label">Tiêu đề</label>
+
+                <div class="field-group">
+                    <label for="id_title" class="field-label">Tiêu đề</label>
                     {{ form.title }}
                 </div>
-                <div class="mb-3">
-                    <label for="id_content" class="form-label">Nội dung</label>
+
+                <div class="field-group">
+                    <label for="id_content" class="field-label">Nội dung</label>
                     {{ form.content }}
                 </div>
-                <div class="mb-3">
-                    <label for="id_code" class="form-label">Code</label>
+
+                <div class="field-group">
+                    <label for="id_code" class="field-label">Code</label>
                     {{ form.code }}
                 </div>
+
             </div>
         </div>
 
         <!-- TestCase formset -->
-        <div class="card mb-4">
-            <div class="card-header">Các TestCase</div>
-            <div class="card-body">
+        <div class="form-card">
+            <div class="form-card-header">Các TestCase</div>
+            <div class="form-card-body">
                 {{ formset.management_form }}
 
                 {% if k == 0 %}
                     {% for f in formset %}
-                        <div class="border p-3 mb-3">
-                            <h6>Test case : {{ f.stt }}</h6>
-                            <div class="mb-3">
-                                <label class="form-label">Input</label>
-                                {{ f.input }}
-                            </div>
+                    <div class="testcase-block">
+                        <div class="testcase-title">Test case {{ f.stt }}</div>
+                        <div class="field-group">
+                            <label class="field-label">Input</label>
+                            {{ f.input }}
                         </div>
+                    </div>
                     {% endfor %}
                 {% endif %}
 
                 {% if k == 1 %}
                     {% for f in formset %}
-                        <div class="border p-3 mb-3">
-                            <h6>Test case : {{ f.stt }}</h6>
-                            <div class="mb-3">
-                                <label class="form-label">Input</label>
-                                {{ f.input }}
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Output</label>
-                                {{ f.instance.output }}
-                            </div>
+                    <div class="testcase-block">
+                        <div class="testcase-title">Test case {{ f.stt }}</div>
+                        <div class="field-group">
+                            <label class="field-label">Input</label>
+                            {{ f.input }}
                         </div>
+                        <div class="field-group">
+                            <label class="field-label">Output</label>
+                            <div class="testcase-output">{{ f.instance.output }}</div>
+                        </div>
+                    </div>
                     {% endfor %}
-                {% endif %}    
+                {% endif %}
 
             </div>
         </div>
-        
-        {% if k == 0 %}
-            <button type="submit" name="submit" value="create" class="btn btn-primary">Tạo Practice</button>
-        {% else %}
-            <button type="submit" name="submit" value="confirm" class="btn btn-primary">Xác nhận</button>
-        {% endif %}
+
+        <!-- Submit -->
+        <div class="form-actions">
+            {% if k == 0 %}
+            <button type="submit" name="submit" value="create" class="btn-submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                </svg>
+                Tạo Practice
+            </button>
+            {% else %}
+            <button type="submit" name="submit" value="confirm" class="btn-submit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                </svg>
+                Xác nhận
+            </button>
+            {% endif %}
+        </div>
+
     </form>
+</div>
+
+<footer>
+    &copy; 2025 PTITShare &mdash; Powered by <a href="#">Django</a>
+</footer>
 
 </body>
 </html>

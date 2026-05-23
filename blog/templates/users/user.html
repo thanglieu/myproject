@@ -3,358 +3,296 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ user.name }} - Blog</title>
+  <title>{{ user.name }} - Blog – PTITShare</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+        --green:       #04AA6D;
+        --green-dark:  #059862;
+        --green-light: #e8f8f2;
+        --dark:        #282A35;
+        --gray-bg:     #f6f6f6;
+        --border:      #e0e0e0;
+        --muted:       #6c757d;
     }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: var(--gray-bg);
       min-height: 100vh;
-    }
-
-    /* Header */
-    header {
-      background: #1aae1c;
-      color: white;
-      padding: 15px 0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 20px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
     }
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: white;
+    /* ══ NAVBAR CHUẨN PTITSHARE ══ */
+    .navbar {
+        background: var(--green);
+        height: 52px;
+        display: flex;
+        align-items: center;
+        padding: 0 32px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,.2);
     }
+    .nav-logo { font-size: 19px; font-weight: 700; color: #fff; text-decoration: none; margin-right: 20px; letter-spacing: -.5px; }
+    .nav-logo span { color: var(--dark); }
 
-    .back-link {
-      color: white;
-      text-decoration: none;
-      padding: 8px 16px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 4px;
-      transition: all 0.3s;
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-btn {
+        display: flex; align-items: center; gap: 5px; color: #fff; font-size: 13.5px; font-weight: 700; 
+        padding: 0 14px; height: 52px; cursor: pointer; transition: background .15s;
     }
-
-    .back-link:hover {
-      background: rgba(255,255,255,0.3);
+    .nav-dropdown:hover .nav-dropdown-btn { background: rgba(0,0,0,.15); }
+    .nav-dropdown-menu {
+        display: none; position: absolute; top: 100%; left: 0; background: var(--dark);
+        border-radius: 0 0 6px 6px; min-width: 140px; box-shadow: 0 6px 20px rgba(0,0,0,.3); z-index: 200;
     }
+    .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a {
+        display: block; color: #ccc; text-decoration: none; font-size: 13.5px; font-weight: 600; padding: 10px 18px;
+    }
+    .nav-dropdown-menu a:hover { background: var(--green); color: #fff; }
 
+    .nav-spacer { flex: 1; }
+    .nav-divider { width: 1px; height: 22px; background: rgba(255,255,255,.35); margin: 0 4px; }
+    .nav-link {
+        color: #fff; text-decoration: none; font-size: 13.5px; font-weight: 700; 
+        padding: 0 14px; height: 52px; display: flex; align-items: center; transition: background .15s;
+    }
+    .nav-link:hover { background: rgba(0,0,0,.15); }
+
+    /* ══ CẤU TRÚC TRANG ══ */
     .container {
       max-width: 1400px;
-      margin: 40px auto;
-      padding: 0 20px;
+      margin-top: 50px;
+      margin-left: 100px;
+      margin-right: 100px;
+      padding: 0px 20px;
       display: grid;
-      grid-template-columns: 280px 2fr 280px; /* thêm cột thứ 3 */
+      grid-template-columns: 280px 1fr 280px;
       gap: 30px;
       padding-bottom: 40px;
     }
 
-    /* Sidebar - User Info */
-    .sidebar {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      height: fit-content;
-      top: 100px;
+    .sidebar { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); height: fit-content; }
+    .user-avatar { width: 100%; height: 200px; background: var(--green); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 60px; margin-bottom: 20px; color: white; }
+    .sidebar h2 { font-size: 20px; color: #2c3e50; margin-bottom: 20px; text-align: center; }
+    .info-item { margin-bottom: 18px; padding-bottom: 15px; border-bottom: 1px solid #e0e0e0; }
+    .info-label { color: #7f8c8d; font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
+    .info-value { color: #2c3e50; font-size: 15px; font-weight: 600; }
+    .mark-badge { background: #fff3cd; border: 2px solid #ffc107; color: #856404; padding: 12px; border-radius: 6px; text-align: center; font-size: 18px; font-weight: 700; margin-top: 15px; }
+    .back-btn { width: 100%; padding: 12px; background: #eceff1; color: #2c3e50; text-decoration: none; text-align: center; border-radius: 6px; display: block; font-weight: 600; margin-top: 20px; }
+    .back-btn:hover { background: #cfd8dc; }
+
+    .content { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .content h2 { font-size: 22px; color: #2c3e50; margin-bottom: 25px; padding-bottom: 12px; border-bottom: 3px solid var(--green); display: inline-block; }
+    .article-item { padding: 18px; background: #f9f9f9; border-left: 4px solid var(--green); border-radius: 6px; margin-bottom: 18px; display: block; text-decoration: none; color: inherit; }
+    .article-item:hover { background: #f0f0f0; }
+
+    /* ══ FOOTER CHUẨN ══ */
+    footer {
+        background: var(--dark);
+        padding: 20px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: #bbb;
+        margin-top: auto;
     }
+    footer a { color: var(--green); text-decoration: none; font-weight: 700; }
 
-    .user-avatar {
-      width: 100%;
-      height: 200px;
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 60px;
-      margin-bottom: 20px;
-      color: white;
-    }
-
-    .sidebar h2 {
-      font-size: 20px;
-      color: #2c3e50;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .info-item {
-      margin-bottom: 18px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .info-item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-    }
-
-    .info-label {
-      color: #7f8c8d;
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-
-    .info-value {
-      color: #2c3e50;
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .mark-badge {
-      background: #fff3cd;
-      border: 2px solid #ffc107;
-      color: #856404;
-      padding: 12px;
-      border-radius: 6px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 700;
-      margin-top: 15px;
-    }
-
-    .back-btn {
-      width: 100%;
-      padding: 12px;
-      background: #eceff1;
-      color: #2c3e50;
-      text-decoration: none;
-      text-align: center;
-      border-radius: 6px;
-      display: block;
-      font-weight: 600;
-      transition: all 0.3s;
-      margin-top: 20px;
-    }
-
-    .back-btn:hover {
-      background: #cfd8dc;
-    }
-
-    /* Content Area */
-    .content {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-    .content h2 {
-      font-size: 22px;
-      color: #2c3e50;
-      margin-bottom: 25px;
-      padding-bottom: 12px;
-      border-bottom: 3px solid #4CAF50;
-      display: inline-block;
-    }
-
-    /* Articles List */
-    .articles-list {
-      margin-top: 20px;
-    }
-
-    .article-item {
-      padding: 18px;
-      background: #f9f9f9;
-      border-left: 4px solid #4CAF50;
-      border-radius: 6px;
-      margin-bottom: 18px;
-      transition: all 0.3s;
-      cursor: pointer;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-
-    .article-item:hover {
-      background: #f0f0f0;
-      transform: translateX(8px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .article-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .article-item h3 {
-      margin: 0 0 10px 0;
-      font-size: 18px;
-      color: #2c3e50;
-    }
-
-    .article-meta {
-      color: #7f8c8d;
-      font-size: 13px;
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #7f8c8d;
-    }
-
-    .empty-state p {
-      font-size: 16px;
-      margin: 10px 0;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .container {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        position: static;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .sidebar h2,
-      .content h2 {
-        font-size: 18px;
-      }
-
-      .user-avatar {
-        height: 150px;
-        font-size: 40px;
-      }
-
-      .article-item {
-        padding: 15px;
-      }
-
-      .article-item h3 {
-        font-size: 16px;
-      }
-    }
+    @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="header-container">
-      <div class="logo">📖 Blog</div>
-      <a href="{% url 'blog:home' %}" class="back-link">← Trang chủ</a>
-    </div>
-  </header>
 
-  <!-- Main Content -->
+  <nav class="navbar">
+      <a class="nav-logo" href="#">PTIT<span>Share</span></a>
+      <div class="nav-dropdown">
+          <div class="nav-dropdown-btn">Khám phá ▾</div>
+          <div class="nav-dropdown-menu">
+              <a href="{% url 'blog:home' %}">Blog</a>
+              <a href="{% url 'exam:exam_home' %}">Exam</a>
+              <a href="{% url 'practice:practice_list' %}">Practice</a>
+          </div>
+      </div>
+      <div class="nav-spacer"></div>
+      <div class="nav-divider"></div>
+      <a href="{% url 'blog:this_user' %}" class="nav-link">Trang cá nhân</a>
+      <a href="{% url 'blog:user-list' %}" class="nav-link">Xếp hạng</a>
+      <a href="{% url 'blog:logout' %}" class="nav-link">Đăng xuất</a>
+  </nav>
+
   <div class="container">
-    <!-- Sidebar - User Info -->
+    <!-- side bar trái -->
     <aside class="sidebar">
       <div class="user-avatar">👤</div>
       <h2>{{ user.name }}</h2>
-
       <div class="info-item">
         <div class="info-label">👤 Tên đăng nhập</div>
         <div class="info-value">{{ user.username }}</div>
       </div>
-
       <div class="info-item">
         <div class="info-label">📧 Email</div>
         <div class="info-value">{{ user.email }}</div>
       </div>
-
       {% if user.gender %}
         <div class="info-item">
           <div class="info-label">⚧️ Giới tính</div>
           <div class="info-value">{{ user.gender }}</div>
         </div>
       {% endif %}
-
       {% if user.birth %}
         <div class="info-item">
           <div class="info-label">📅 Ngày sinh</div>
           <div class="info-value">{{ user.birth|date:"d/m/Y" }}</div>
         </div>
       {% endif %}
-
-      <div class="mark-badge">
-        ⭐ {{ user.mark }} Điểm
-      </div>
-
-      <a href="{% url 'blog:home' %}" class="back-btn">← Quay lại</a>
+      <div class="mark-badge">⭐ {{ user.mark }} Điểm</div>
     </aside>
 
-    <!-- Content - User Articles -->
+    <!-- main giữa -->
     <main class="content">
-      <h2>📝 Bài viết của {{ user.name }}</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2> Nội dung của {{ user.name }}</h2>
+        <select id="content-selector" onchange="showContent(this.value)" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc;">
+          <option value="articles">Bài viết</option>
+          <option value="tests">Bài Test</option>
+          <option value="practices">Practice</option>
+        </select>
+      </div>
 
-      {% if user.article_set.all %}
-        <div class="articles-list">
-          {% for article in user.article_set.all %}
-            <a href="{% url 'blog:article' article.id %}" class="article-item">
-              <h3>{{ article.title }}</h3>
-              <div class="article-meta">
-                <span>📅 {{ article.created_at|date:"d/m/Y" }}</span>
-                <span>❤️ {{ article.likes.count }} lượt thích</span>
-                <span>💬 {{ article.comment_set.count }} bình luận</span>
-              </div>
-            </a>
-          {% endfor %}
-        </div>
-      {% else %}
-        <div class="empty-state">
-          <p>📭 {{ user.name }} chưa viết bài viết nào</p>
-        </div>
-      {% endif %}
-    </main>
+      <div id="articles" class="content-section">
+        {% if user.article_set.all %}
+          <div class="articles-list">
+            {% for article in user.article_set.all %}
+              <div style="display: flex; justify-content: space-between; " class="article-item">
+                <a href="{% url 'blog:article' article.id %}" style="text-decoration: none; color: inherit; display: block;">
+                  <h3>{{ article.title }}</h3>
+                  <div class="article-meta">📅 {{ article.created_at|date:"d/m/Y" }}</div>
+                </a>
 
-    <!-- Sidebar phải: quản lý series -->
-     
-    <aside class="sidebar">
-      <div class="sidebar-box">
-        {% if user == request.user %}
-          <h3>📚 Tạo Series mới</h3>
-          <form method="POST" action="{% url 'blog:this_user' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="back-btn">Tạo Series mới</button>
-          </form>
+                {% if request.user == user %}
+                  <form method="post">
+                    {% csrf_token %}
+                    <button name="form2" value="{{article.id}}">❌</button>
+                  </form>   
+                {% endif %}      
+              </div>  
+
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state"><p>📭 Chưa có bài viết nào</p></div>
         {% endif %}
 
-        <h3 style="margin-top:20px;">Danh sách Series</h3>
-        <ul class="series-list">
+      </div>
+
+      <div id="tests" class="content-section" style="display:none;">
+        {% if user.test_set.all %}
+          <div class="articles-list">
+              {% for test in user.test_set.all %}
+              <div style="display: flex; justify-content: space-between;" class="article-item">
+                <a href="{% url 'exam:user_test' test.id %}" style="text-decoration: none; color: inherit; display: block;">
+                  <h3>{{ test.title }}</h3>
+                </a>
+                {% if request.user == user %}
+                  <form method="post">
+                    {% csrf_token %}
+                    <button name="form3" value="{{test.id}}">❌</button>
+                  </form>   
+                {% endif %} 
+              </div>
+
+              {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state"><p>📭 Chưa có bài Test nào</p></div>
+        {% endif %}
+      </div>
+
+      <div id="practices" class="content-section" style="display:none;">
+        {% if user.practice_set.all %}
+          <div class="articles-list">
+              {% for p in user.practice_set.all %}
+              <div style="display: flex; justify-content: space-between;" class="article-item">
+                <a href="{% url 'practice:user_practice_list' p.id %}" style="text-decoration: none; color: inherit; display: block;">
+                  <h3>{{ p.title }}</h3>
+                </a>
+                  {% if request.user == user %}
+                    <form method="post">
+                      {% csrf_token %}
+                      <button name="form4" value="{{p.id}}">❌</button>
+                    </form>   
+                  {% endif %} 
+              </div>
+
+              {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state"><p>📭 Chưa có Practice nào</p></div>
+        {% endif %}
+      </div>
+    </main>
+
+    <!-- side bar phải -->
+    <aside class="sidebar">
+        {% if user == request.user %}
+          <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 18px; margin-bottom: 15px; color: var(--green-dark);">📚 Tạo Series mới</h3>
+
+            <form method="POST" class="series-form" >
+              {% csrf_token %}
+              <div style="margin-bottom: 10px;">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+              </div>
+              <button type="submit" class="back-btn" style="border:none; cursor:pointer; background: var(--green); color: white;"
+                      name="form" value="create_series">
+                  Tạo Series mới
+              </button>
+            </form>
+
+          </div>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        {% endif %}
+
+        <h3 style="font-size: 18px; margin-bottom: 15px; color: var(--dark);">Danh sách Series</h3>
+        <ul style="list-style: none; padding: 0;">
           {% for s in k %}
-            <li>
+            <li style="margin-bottom: 10px; padding: 8px; background: #f9f9f9; border-radius: 4px; border-left: 3px solid var(--green); display: flex; justify-content: space-between;">
               {% if s.1 %}
-                <a href="{% url 'blog:article' s.1.id %}">{{ s.0.name }}</a>
+                <a href="{% url 'blog:article' s.1.id %}" style="text-decoration:none; color: var(--green-dark); font-weight: 600;">{{ s.0.name }}</a>
               {% else %}
-                <a>{{ s.0.name }}</a>
-                <p style="color:red; font-size:10px;">Series chưa có bài viết</p>
+                <span style="color: #666; font-weight: 600;">{{ s.0.name }}</span>
+              {% endif %}              
+
+              {% if request.user == user %}
+                <form method="post">
+                  {% csrf_token %}
+                  <button name="form" value="{{s.0.id}}">❌</button>
+                </form>              
               {% endif %}
+
             </li>
           {% empty %}
-            <p>📭 Chưa có series nào. Hãy tạo mới ở trên.</p>
+            <li style="color: #999; font-size: 13px;">Chưa có series nào.</li>
           {% endfor %}
         </ul>
-      </div>
     </aside>
-    
-
   </div>
+
+  <footer>
+    &copy; 2026 PTITShare &mdash; Powered by <a href="#">Django</a>
+  </footer>
+
+  <script>
+    function showContent(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+    }
+  </script>
 </body>
 </html>

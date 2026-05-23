@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
+from exam.models import Test
+from practice.models import Practice
 from .forms import ArticleForm
 from .models import Article, Topic, Comment, Like, Series, Article_List
 from .models import User
@@ -10,46 +13,18 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.contrib import messages
 
-
 # trang cá nhân 
 @login_required(login_url='blog:login')
 def user_page(request):
-    # hiển thị thông tin cá nhân, danh sách article và các series
-    if request.method == 'GET':
-        user = request.user
-        form = SeriesCreateForm()
-        series = Series.objects.filter(author=user)
-
-        k = []
-        for i in series:
-            a = Article_List.objects.filter(series=i)
-            k.append([i,a[0].article if len(a)>0 else None])
-
-        return render(request, 'users/user.html', {
-            'user': user,
-            'form': form,
-            'k': k,
-        })
-    
-    # trường user lấy người dùng hiện tại, chứ không nhập liệu qua <input>
-    # do đó không nhập tự động bằng ModelForm được, phải nhập thủ công bằng Form
-    elif request.method == 'POST':
-        form = SeriesCreateForm(request.POST) 
-        if form.is_valid():
-            a = request.user
-            b = form.cleaned_data['name']
-            Series.objects.create(author = a, name = b)
+    return redirect('blog:user',request.user.id)
         
-        return redirect('blog:this_user')
-
-    #----------- chưa có xóa series ---------------
 
 # chi tiết user
 @login_required(login_url='blog:login')
 def user_detail(request, pk):
     # hiển thị thông tin cá nhân, danh sách article và các series
+    user = User.objects.get(id=pk)
     if request.method == 'GET':
-        user = User.objects.get(id=pk)
         form = SeriesCreateForm()
         series = Series.objects.filter(author=user)
 
@@ -63,6 +38,49 @@ def user_detail(request, pk):
             'form': form,
             'k': k,
         })
+
+    # trường user lấy người dùng hiện tại, chứ không nhập liệu qua <input>
+    # do đó không nhập tự động bằng ModelForm được, phải nhập thủ công bằng Form
+        
+    elif request.method == 'POST':
+        if user == request.user:
+            # tạo và xóa series
+            if request.POST.get('form'):
+                if request.POST.get('form') == "create_series":
+                    form = SeriesCreateForm(request.POST) 
+                    if form.is_valid():
+                        a = request.user
+                        b = form.cleaned_data['name']
+                        Series.objects.create(author = a, name = b)
+                
+                else:
+                    id = int(request.POST.get('form'))
+                    s = Series.objects.get(id=id)
+                    s.delete()
+            
+            # xóa article
+            if request.POST.get('form2'):
+                id = int(request.POST.get('form2'))
+                k = Article.objects.get(id=id)
+                k.delete()
+
+            # xóa test
+            if request.POST.get('form3'):
+                id = int(request.POST.get('form3'))
+                k = Test.objects.get(id=id)
+                k.delete()
+
+            # xóa practice
+            if request.POST.get('form4'):
+                id = int(request.POST.get('form4'))
+                k = Practice.objects.get(id=id)
+                k.delete()
+
+            return redirect('blog:this_user')
+            
+
+        return redirect('blog:this_user')
+    #----------- chưa có xóa series ---------------
 
 
 # đăng ký
@@ -92,22 +110,39 @@ def search(request):
     if k:
         list1 = Article.objects.filter(title__icontains=k)
         list2 = User.objects.filter(name__icontains=k)
+        list3 = Test.objects.filter(title__icontains=k)
+        list4 = Practice.objects.filter(title__icontains=k)
     else:
         list1 = Article.objects.none()
         list2 = User.objects.none()
+        list3 = Test.objects.none()
+        list4 = Practice.objects.none()
 
     # phân trang cho Article
-    paginator_articles = Paginator(list1, 10)  
+    paginator_articles = Paginator(list1, 10)
     page_number_articles = request.GET.get('page_articles')
     page_obj_articles = paginator_articles.get_page(page_number_articles)
+
+    # phân trang cho Test
+    paginator_tests = Paginator(list3, 10)  # Giả sử mỗi trang 10 mục
+    page_number_tests = request.GET.get('page_tests')
+    page_obj_tests = paginator_tests.get_page(page_number_tests)
+
+    # phân trang cho Practice
+    paginator_practices = Paginator(list4, 10)
+    page_number_practices = request.GET.get('page_practices')
+    page_obj_practices = paginator_practices.get_page(page_number_practices)
 
     # phân trang cho User
     paginator_users = Paginator(list2, 9)  
     page_number_users = request.GET.get('page_users')
     page_obj_users = paginator_users.get_page(page_number_users)
 
+
     return render(request, 'search.html', {
         'articles': page_obj_articles, 
+        'tests' : page_obj_tests,
+        'practices' : page_obj_practices,
         'users': page_obj_users,
         'keyword': k
     })
@@ -134,12 +169,13 @@ def home(request):
     # nếu HTTP GET có dữ liệu (tức submit form có method = get)
         if(request.GET.get('form')=='search'):    
             return search(request)
-        elif(request.GET.get('form')=='logout'):  
-            # đăng xuất 
-            logout(request)
-            return redirect('blog:login')
         else:
             return redirect('blog:error')
+
+# đăng xuất
+def user_logout(request):
+    logout(request)
+    return redirect('blog:login')
 
 # ____________________________________
 

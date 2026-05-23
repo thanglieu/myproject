@@ -10,31 +10,26 @@ from .models import Answer, Question, Test, UserAnswer, UserTest
 
 User = get_user_model()
 
-# chọn số lượng Form, tiêu đề title để bước sau tạo Test
+# tạo Test
 @login_required(login_url='/blog/login/')
-def create_test_count(request):
-    # Hiển thị form để chọn số lượng câu hỏi cho bài kiểm tra mới
-    form = QuestionCountForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        title = form.cleaned_data['title']
-        question_count = form.cleaned_data['question_count']
-        return redirect('exam:create_test', question_count=question_count, title=title)
+def create_test(request):
 
-    return render(request, 'create_count.html', {'form': form})
+    # lấy trước số lượng câu hỏi và tiêu đề. 
+    if request.GET:
+        # chú ý : trường hợp tạo Test tuy là POST request vẫn chứ query string nên vẫn có request.GET
+        question_count = int(request.GET.get('question_count'))
+        title = request.GET.get('title')
+    else:
+        question_count = 0
+        title = ''
 
-
-
-# tạo Test - nhập liệu Form
-@login_required(login_url='/blog/login/')
-def create_test(request, question_count, title):
-    question_count = int(question_count)    # chú ý : giá trị trên query string ở dạng string chứ không phải int
 
     # định nghĩa Formset
     QuestionFormSet = inlineformset_factory(
         Test,
         Question,
         form=QuestionForm,
-        extra=question_count,   # lấy giá trị ở bước trước để quyết định số lượng Question
+        extra=question_count,   # số lượng câu hỏi
         min_num=question_count,
         max_num=question_count,
         validate_min=True,
@@ -55,6 +50,7 @@ def create_test(request, question_count, title):
     answer_initial = [{'title': chr(97 + i)} for i in range(4)]
 
     if request.method == 'POST':
+        # khởi tạo Formset, chú ý do dùng formset lồng nhau nên phải thêm prefix
         question_formset = QuestionFormSet(request.POST, prefix='questions', instance=Test(),)
         answer_formsets = [
             AnswerFormSet(request.POST, prefix=f'answers-{idx}')
@@ -62,6 +58,7 @@ def create_test(request, question_count, title):
         ]
 
         if (question_formset.is_valid() and all(fs.is_valid() for fs in answer_formsets)):
+            # phương thức nguyên tử
             with transaction.atomic():
                 # tạo Test dựa trên dữ liệu ở bước trước
                 test = Test.objects.create(
@@ -82,6 +79,7 @@ def create_test(request, question_count, title):
                         answer.save()
 
             return redirect('exam:exam_home')
+        
     else:
         # hiển thị Form rỗng
         question_formset = QuestionFormSet(
@@ -92,10 +90,10 @@ def create_test(request, question_count, title):
         answer_formsets = [
             AnswerFormSet(prefix=f'answers-{idx}', initial=answer_initial)
             for idx in range(question_count)
-        ]
+        ]                
 
-    # kết hợp Question form và Answer Formset thành từng cặp để hiển thị 
-    question_answer_pairs = list(zip(question_formset.forms, answer_formsets))
+        # kết hợp Question form và Answer Formset thành từng cặp để hiển thị 
+        question_answer_pairs = list(zip(question_formset.forms, answer_formsets))
 
     return render( request,'create_test.html',{
             'question_formset': question_formset,
@@ -108,27 +106,12 @@ def create_test(request, question_count, title):
 
 
 
-
-
 # trang chủ - tìm kiếm
 @login_required(login_url='/blog/login/')
 def exam_home(request):
-    """Tìm kiếm bài kiểm tra theo từ khóa trong tiêu đề."""
-    query = request.GET.get('q', '').strip()
     tests = Test.objects.order_by('-id')
-    # nếu form tìm kiếm có dữ liệu
-    if query:
-        tests = tests.filter(title__icontains=query)
 
-    return render(request, 'exam_home.html', {'tests': tests, 'query': query, 'this_user_id': request.user.id })
-
-
-# hiển thị Test của User khác
-@login_required(login_url='/blog/login/')
-def user_tests_list(request, user_id):
-    author = get_object_or_404(User, pk=user_id)
-    tests = Test.objects.filter(author=author).order_by('-id')
-    return render(request, 'user_tests_list.html', {'tests': tests, 'author': author})
+    return render(request, 'exam_home.html', {'tests': tests, 'this_user_id': request.user.id })
 
 
 # làm Test
@@ -230,3 +213,5 @@ def user_test(request, test_id):
         'test': test,
         'user_tests': user_tests,
     })
+
+

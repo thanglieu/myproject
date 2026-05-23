@@ -119,7 +119,7 @@ def create_practice(request):
                             output=out
                         )
 
-                return redirect('practice:run_code')  # hoặc trang bạn muốn
+                return redirect('practice:practice_list')  
                          
 
     else:
@@ -181,10 +181,11 @@ def take_practice(request, practice_id):
     })
 
 
-# danh sách practice
+# danh sách practice - trang chủ
 def practice_list(request):
     practices = Practice.objects.all().order_by('-id')  # lấy tất cả, mới nhất trước
-    return render(request, "practice_list.html", {"practices": practices})
+    
+    return render(request, "practice_home.html", {"practices": practices})
 
 
 # danh sách user làm practice
@@ -194,7 +195,7 @@ def user_practice_list(request, practice_id):
 
     return render(
         request,
-        "user_practice_list.html",
+        "user_practice.html",
         {
             "practice": practice,
             "user_practices": user_practices,
@@ -219,13 +220,10 @@ def user_practice(request, practice_id, user_id):
             'is_correct': (out.strip() == tc.output.strip())
         })
 
-    return render(request, "user_practice.html", {
+    return render(request, "user_code.html", {
         "practice": practice,
         "user": user,
         "user_practice": user_practice,
         "user_outputs": user_outputs
     })
-
-
-
 

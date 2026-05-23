@@ -1,174 +1,438 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
     <meta charset="utf-8">
-    <title>Tìm kiếm bài kiểm tra</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm kiếm bài kiểm tra – PTITShare</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #2c3e50;
-            min-height: 100vh;
+        :root {
+            --green:       #04AA6D;
+            --green-dark:  #059862;
+            --green-light: #e8f8f2;
+            --dark:        #282A35;
+            --gray-bg:     #f6f6f6;
+            --border:      #e0e0e0;
+            --muted:       #6c757d;
         }
 
-        header {
-            background: #1aae1c;
-            color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            /* Đã chuyển hoàn toàn về phông chữ mặc định của hệ thống */
+            font-family: var(--bs-body-font-family);
+            background: var(--gray-bg);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ══ NAVBAR ══ */
+        .navbar {
+            background: var(--green);
+            height: 52px;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,.2);
         }
-
-        .header-container {
-            max-width: 1000px;   /* giới hạn chiều rộng */
-            margin: 0 auto;      /* căn giữa */
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
+        .nav-logo {
+            font-size: 19px;
             font-weight: 700;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 12px;
-        }
-
-        .back-btn {
-            padding: 9px 20px;
-            background: rgba(11, 160, 48, 0.85);
-            color: white;
+            color: #fff;
             text-decoration: none;
-            border-radius: 6px;
+            margin-right: 20px;
+            letter-spacing: -.5px;
+            white-space: nowrap;
+        }
+        .nav-logo span { color: var(--dark); }
+
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fff;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 0 14px;
+            height: 52px;
+            cursor: pointer;
+            user-select: none;
+            transition: background .15s;
+        }
+        .nav-dropdown-btn:hover,
+        .nav-dropdown:hover .nav-dropdown-btn { background: rgba(0,0,0,.15); }
+        .nav-dropdown-btn svg { transition: transform .2s; }
+        .nav-dropdown:hover .nav-dropdown-btn svg { transform: rotate(180deg); }
+
+        .nav-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--dark);
+            border-radius: 0 0 6px 6px;
+            min-width: 140px;
+            box-shadow: 0 6px 20px rgba(0,0,0,.3);
+            z-index: 200;
+        }
+        .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+        .nav-dropdown-menu a {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            font-size: 13.5px;
             font-weight: 600;
-            transition: background 0.2s ease;
+            padding: 10px 18px;
+            transition: background .12s, color .12s;
         }
+        .nav-dropdown-menu a:hover { background: var(--green); color: #fff; }
 
-        .back-btn:hover {
-            background: #45a049;
+        .nav-spacer { flex: 1; }
+        .nav-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(255,255,255,.35);
+            margin: 0 4px;
         }
+        .nav-link {
+            color: #fff;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 700;
+            padding: 0 14px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            transition: background .15s;
+            white-space: nowrap;
+        }
+        .nav-link:hover { background: rgba(0,0,0,.15); color: #fff; }
 
+        /* ══ CONTAINER LAYOUT ══ */
         .container {
             max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 40px auto;
+            padding: 0 24px;
+            flex: 1;
         }
 
-        h1, h2 {
-            text-align: center;
+        h1 {
             color: #1f3a5d;
-            margin-bottom: 18px;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            text-align: center; /* Đưa thẳng căn giữa vào CSS */
+        }
+
+        /* ══ KHỐI THAO TÁC QUẢN LÝ ══ */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            transition: background .15s, border-color .15s;
+        }
+        .btn-action-primary {
+            background: var(--green-light);
+            color: var(--green-dark) !important;
+            border: 1px solid rgba(4, 170, 109, 0.25);
+        }
+        .btn-action-primary:hover {
+            background: #d4f4e8;
+            border-color: var(--green);
+        }
+        .btn-action-secondary {
+            background: #fff;
+            color: var(--dark) !important;
+            border: 1px solid var(--border);
+        }
+        .btn-action-secondary:hover {
+            background: #f1f3f5;
+            border-color: #bbb;
+        }
+
+        /* ══ SEARCH BAR FORM ══ */
+        .search-form {
+            background: #ffffff;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-form input[type="text"] {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #d8dee4;
+            font-size: 14.5px;
+            outline: none;
+        }
+
+        .search-form input[type="text"]:focus {
+            border-color: var(--green);
+        }
+
+        /* Định dạng chung cho các nút trong form */
+        .btn-nav-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+
+        /* Nút Tìm kiếm */
+        .btn-search { background: var(--green); color: #1aa63b; }
+        .btn-search:hover { background: var(--green-dark); color: #fff; }
+
+        /* Nút Bài Test của tôi */
+        .btn-my-tests { background: #3498db; color: #fff; }
+        .btn-my-tests:hover { background: #2980b9; color: #fff; }
+
+        /* Nút Tạo bài Test */
+        .btn-create { background: #ff9800; color: #fff; }
+        .btn-create:hover { background: #e68900; color: #fff; }
+
+        /* Responsive cho mobile */
+        @media (max-width: 768px) {
+            .search-form { flex-direction: column; }
+            .search-form input[type="text"] { width: 100%; }
+            .btn-nav-action { width: 100%; }
+        }
+
+        /* ══ LIST OF TESTS ══ */
+        .test-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .test-item {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+            transition: border-color 0.15s;
+        }
+        .test-item:hover {
+            border-color: #b3e2cd;
+        }
+
+        .test-info-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .test-title {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: #1f3a5d;
+        }
+
+        .test-sub-details {
+            font-size: 13.5px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .badge-author {
+            color: var(--green-dark);
+            text-decoration: none;
+            font-weight: 700;
+            background: var(--green-light);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .badge-author:hover {
+            background: #d0f2e4;
+            color: var(--green-dark);
+        }
+
+        .badge-quantity {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .btn-take-test {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--green);
+            color: #fff !important;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 8px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.15s;
+            min-width: 80px;
+            text-align: center;
+        }
+        .btn-take-test:hover {
+            background: var(--green-dark);
+        }
+
+        .no-result {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* ══ FOOTER ══ */
+        footer {
+            background: var(--dark);
+            color: #888;
+            text-align: center;
+            padding: 18px;
+            font-size: 13px;
+            margin-top: auto;
+        }
+        footer a { color: var(--green); text-decoration: none; }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 0 16px; }
+            .container { padding: 0 16px; margin: 20px auto; }
+            .action-bar { flex-direction: column; gap: 8px; }
+            .btn-action { width: 100%; justify-content: center; }
+            .test-item { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .test-item div[style*="text-align: right"] { width: 100%; text-align: left !important; }
+            .btn-take-test { width: 100%; }
         }
 
         .search-form {
             background: #ffffff;
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-            margin-bottom: 24px;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            margin-bottom: 28px;
+            
+            /* Flexbox giúp dàn hàng ngang */
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px; 
         }
 
-        .search-form label { font-weight: 600; margin-right: 8px; }
-
-        .search-form input[type="text"] {
-            flex: 1;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: 1px solid #d8dee4;
-            background: #fbfdff;
-            font-size: 14px;
-            transition: border-color 0.2s ease;
-        }
-
-        .search-form input[type="text"]:focus {
-            outline: none;
-            border-color: #4caf50;
-        }
-
-        .search-form button {
-            background: #4caf50;
-            color: #ffffff;
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .search-form button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(76, 175, 80, 0.18);
-        }
-
-        ul { list-style: none; padding-left: 0; margin-top: 20px; }
-
-        li {
-            margin-bottom: 18px;
-            padding: 18px;
-            background: #ffffff;
-            border-radius: 14px;
-            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.05);
-        }
-
-        strong { color: #1f3a5d; }
-
-        a {
-            color: #1aae1c;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        a:hover { color: #3f9a3e; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-container">
-            <div class="logo">📝 Test</div>
-            <div class="nav-links">
-                <a class="back-btn" href="{% url 'exam:create_test_count' %}">Tạo Test mới</a>
-                <a class="back-btn" href="{% url 'exam:user_tests_list'  this_user_id %}">Test của tôi</a>
-                
-            </div>
+
+<nav class="navbar">
+    <a class="nav-logo" href="#">PTIT<span>Share</span></a>
+    <div class="nav-dropdown">
+        <div class="nav-dropdown-btn">
+            Khám phá
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+            </svg>
         </div>
-    </header>
+        <div class="nav-dropdown-menu">
+            <a href="{% url 'blog:home' %}">Blog</a>
+            <a href="{% url 'exam:exam_home' %}">Exam</a>
+            <a href="{% url 'practice:practice_list' %}">Practice</a>
+        </div>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-divider"></div>
+    <a href="{% url 'blog:this_user' %}" class="nav-link">Trang cá nhân</a>
+    <a href="{% url 'blog:user-list' %}" class="nav-link">Xếp hạng</a>
+    <a href="{% url 'blog:logout' %}" class="nav-link">Đăng xuất</a>
+</nav>
 
-    <main class="container">
-        <h1>📝 Danh sách bài kiểm tra mới nhất</h1>
-        <form method="get" class="search-form">
-            <label for="q">Từ khóa:</label>
-            <input id="q" name="q" type="text" value="{{ query }}">
-            <button type="submit">Tìm</button>
-        </form>
+<main class="container">
+    <h1>📝 Danh sách bài kiểm tra mới nhất</h1>
+    <br>
+    
+    <!-- gọi đến hàm search của blog -->
+    <form method="get" class="search-form" style="display: flex; align-items: center; gap: 10px; width: 100%;"
+        action="{% url 'blog:search' %}">
+        
+        <input name="keyword" type="text" placeholder="Tìm kiếm theo tiêu đề bài test..." value="{{ query }}" 
+            style="flex: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 6px; height: 42px; outline: none; box-sizing: border-box;">
+        
+        <button type="submit" style="height: 42px; padding: 0 20px; background: #04AA6D; color: #fff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap;">
+            Tìm kiếm
+        </button>
+        
+        <a href="{% url 'blog:user' this_user_id %}" 
+        style="height: 42px; padding: 0 20px; background: #2196F3; color: #fff; border-radius: 6px; font-weight: 700; text-decoration: none; display: flex; align-items: center; white-space: nowrap;">
+            Test của tôi
+        </a>
+        
+        <a href="{% url 'exam:create_test' %}" 
+        style="height: 42px; padding: 0 20px; background: #ff9800; color: #fff; border-radius: 6px; font-weight: 700; text-decoration: none; display: flex; align-items: center; white-space: nowrap;">
+            Tạo Test mới
+        </a>
+    </form>
 
-        {% if tests %}
-            <ul>
-                {% for test in tests %}
-                    <li>
-                        <strong>{{ test.title }}</strong> - Tác giả: 
-                        <a href="{% url 'exam:user_tests_list' test.author.id %}">{{ test.author.username }}</a>
-                        - {{  test.quantity}} câu
-                        <div style="text-align: right;">
-                            <a href="{% url 'exam:take_test' test.id %}" class="back-btn">Làm</a>
+    {% if tests %}
+        <ul class="test-list">
+            {% for test in tests %}
+                <li class="test-item">
+                    <div class="test-info-meta">
+                        <a class="test-title" style="text-decoration: none; color: inherit; display: block;"
+                            href="{% url 'exam:user_test' test.id %}"> 
+                            {{ test.title }} 
+                        </a>
+                        <div class="test-sub-details">
+                            Tác giả: <a href="{% url 'blog:user' test.author.id %}" >{{ test.author.username }}</a>
+                            &bull; <span class="badge-quantity">{{ test.quantity }} câu hỏi</span>
                         </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <a href="{% url 'exam:take_test' test.id %}" class="btn-take-test">Làm bài</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="no-result">
+            <p>Không tìm thấy bài kiểm tra nào phù hợp với từ khóa tìm kiếm của bạn.</p>
+        </div>
+    {% endif %}
+</main>
 
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Không có bài kiểm tra phù hợp.</p>
-        {% endif %}
-    </main>
+<footer>
+    &copy; 2026 PTITShare &mdash; Powered by <a href="#">Django</a>
+</footer>
+
 </body>
 </html>
