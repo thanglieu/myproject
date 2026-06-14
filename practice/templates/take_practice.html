@@ -11,39 +11,57 @@
             --green-dark:  #059862;
             --green-light: #e8f8f2;
             --dark:        #282A35;
-            --gray-bg:     #f6f6f6;
-            --border:      #e0e0e0;
+            --gray-bg:     #fafafa;
+            --border:      #e5e5e5;
             --muted:       #6c757d;
+            
+            /* Định dạng màu tối cho editor */
+            --code-bg:       #1e1e1e; 
+            --code-text:     #f4f4f4;
+            --code-border:   #333333;
         }
-        body {
+
+        h1 {
+            color: #1f3a5d;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+        
+        /* Reset cứng để không bị cuộn toàn trang */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
             font-family: 'Nunito', sans-serif;
             background: var(--gray-bg);
             color: var(--dark);
-            min-height: 100vh;
+        }
+
+        body {
             display: flex;
             flex-direction: column;
         }
+
         /* ══ NAVBAR ══ */
         .navbar {
             background: var(--green);
             height: 52px;
             display: flex;
             align-items: center;
-            padding: 0 32px;
-            position: sticky;
-            top: 0;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--green-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,.15);
             z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,.2);
         }
         .nav-logo {
             font-family: 'Source Code Pro', monospace;
             font-size: 19px;
-            font-weight: 600;
+            font-weight: 700;
             color: #fff;
             text-decoration: none;
             margin-right: 20px;
-            letter-spacing: -.5px;
-            white-space: nowrap;
         }
         .nav-logo span { color: var(--dark); }
         .nav-dropdown { position: relative; }
@@ -61,9 +79,8 @@
             transition: background .15s;
         }
         .nav-dropdown-btn:hover,
-        .nav-dropdown:hover .nav-dropdown-btn { background: rgba(0,0,0,.15); }
-        .nav-dropdown-btn svg { transition: transform .2s; }
-        .nav-dropdown:hover .nav-dropdown-btn svg { transform: rotate(180deg); }
+        .nav-dropdown:hover .nav-dropdown-btn { background: rgba(0,0,0,.12); }
+        
         .nav-dropdown-menu {
             display: none;
             position: absolute;
@@ -83,15 +100,15 @@
             font-size: 13.5px;
             font-weight: 600;
             padding: 10px 18px;
-            transition: background .12s, color .12s;
         }
         .nav-dropdown-menu a:hover { background: var(--green); color: #fff; }
+        
         .nav-spacer { flex: 1; }
         .nav-divider {
             width: 1px;
             height: 22px;
-            background: rgba(255,255,255,.35);
-            margin: 0 4px;
+            background: rgba(255,255,255,.3);
+            margin: 0 8px;
         }
         .nav-link {
             color: #fff;
@@ -102,85 +119,172 @@
             height: 52px;
             display: flex;
             align-items: center;
-            transition: background .15s;
             white-space: nowrap;
         }
-        .nav-link:hover { background: rgba(0,0,0,.15); color: #fff; }
+        .nav-link:hover { background: rgba(0,0,0,.12); color: #fff; }
 
+        /* ══ MAIN LAYOUT ══ */
         .page-wrapper {
-            width: 100%;
-            max-width: 900px;
-            margin: 36px auto;
-            padding: 0 24px;
             flex: 1;
+            display: flex;
+            padding: 12px; 
+            gap: 12px;
+            height: calc(100vh - 87px);
+            box-sizing: border-box;
         }
-        .page-header {
-            text-align: center;
-            margin-bottom: 28px;
-            padding-bottom: 16px;
-            border-bottom: 3px solid var(--green);
-        }
-        .page-header h1 { font-size: 26px; font-weight: 800; }
-        .form-card {
+
+        .left-panel {
+            flex: 5;
             background: #fff;
             border-radius: 8px;
             border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0,0,0,.05);
-            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
-        .form-card-header {
-            background: #f0f0f0;
-            color: #555;
-            font-size: 12.5px;
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 12px 20px;
-            border-bottom: 2px solid var(--border);
+
+        .right-panel {
+            flex: 7;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow: hidden;
         }
-        .form-card-body { padding: 20px; }
+
+        /* ══ ĐỊNH DẠNG TABS CỦA LEETCODE ══ */
+        .panel-tabs {
+            background: #fdfdfd;
+            border-bottom: 1px solid var(--border);
+            padding: 0 12px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-tab-item {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--muted);
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            user-select: none;
+            transition: color .15s;
+        }
+        .panel-tab-item:hover {
+            color: var(--dark);
+        }
+        /* Tab đang được chọn kích hoạt */
+        .panel-tab-item.active {
+            font-weight: 700;
+            color: var(--dark);
+            border-bottom: 2px solid var(--dark);
+        }
+
+        .panel-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Ẩn/Hiện nội dung các tab */
+        .tab-content-item {
+            display: none;
+        }
+        .tab-content-item.active {
+            display: block;
+        }
+
+        .page-header {
+            border-bottom: 1px solid #000;    /* đường gạch mảnh màu đen */
+            padding-bottom: 8px;                /* tạo khoảng cách giữa nội dung và gạch */
+            margin-bottom: 12px;                /* khoảng cách với phần sau */
+        }
+
+        .page-header h1 { 
+            font-size: 22px; 
+            font-weight: 700; 
+            margin-bottom: 6px;
+        }
+        
+        /* ══ FORM & CODE EDITOR ══ */
+        .editor-container {
+            flex: 1;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
         textarea {
             width: 100%;
-            border: 1.5px solid var(--border);
-            border-radius: 6px;
-            padding: 10px 12px;
-
-            font-size: 13px;
-            resize: vertical;
-        }
-        textarea:focus {
-            border-color: var(--green);
-            box-shadow: 0 0 0 3px rgba(4,170,109,.1);
+            height: 100%;
+            flex: 1;
+            border: none;
+            padding: 16px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 14px;
+            resize: none;
             outline: none;
+            line-height: 1.5;
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            caret-color: var(--green);
         }
+        
+        pre {
+            background-color: var(--code-bg);
+            color: #a9b7c6;
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--code-border);
+            font-family: 'Source Code Pro', monospace;
+            font-size: 13px;
+        }
+
+        /* ══ BOTTOM CONSOLE ══ */
+        .bottom-console {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
         .btn-run {
+            width: 100px;
             background: var(--green);
             color: #fff;
             font-weight: 700;
-            padding: 10px 28px;
+            font-size: 14px;
+            padding: 8px 24px;
             border-radius: 6px;
             border: none;
-            transition: background .15s, transform .1s;
+            transition: background .15s;
         }
-        .btn-run:hover { background: var(--green-dark); transform: translateY(-1px); }
-        .ptit-table thead tr { background: #f0f0f0; color: #555; }
-        .ptit-table tbody tr:hover { background: var(--green-light); }
+        .btn-run:hover { background: var(--green-dark); }
+
+        .ptit-table thead tr { background: #f5f5f5; color: #555; }
         .badge-success { color: var(--green-dark); font-weight: 700; }
         .badge-danger { color: #c0392b; font-weight: 700; }
+        
         footer {
-            background: var(--dark);
+            background: #fff;
             color: #888;
             text-align: center;
-            padding: 18px;
-            font-size: 13px;
-            margin-top: auto;
+            padding: 8px;
+            font-size: 12px;
+            border-top: 1px solid var(--border);
         }
         footer a { color: var(--green); text-decoration: none; }
     </style>
 </head>
 <body>
 
-<!-- ══ NAVBAR ══ -->
 <nav class="navbar">
     <a class="nav-logo" href="#">PTIT<span>Share</span></a>
     <div class="nav-dropdown">
@@ -204,70 +308,152 @@
 </nav>
 
 <div class="page-wrapper">
+    
+    <div class="left-panel">
+        <div class="panel-tabs">
+            {% if m %}
+                <div class="panel-tab-item" data-target="tab-testcase">Testcase</div>
+            {% else %}
+                <div class="panel-tab-item active" data-target="tab-description">Description</div>
+                <div class="panel-tab-item" data-target="tab-testcase">Testcase</div>
+                <div class="panel-tab-item" data-target="tab-answer">Answer</div>
+            {% endif %}
+        </div>
+        
+        <div class="panel-content">
+            
+        <div id="tab-description" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #333; ">
+            
+            <h1 style="margin: 0 0 15px 0; font-size: 24px; font-weight: 700; color: #1a1a1a;">
+                {{ practice.title }}
+            </h1>
+            
+            <div style="display: flex; font-size: 14px; color: #555; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eaecef;">
+                <span><strong>Tác giả : </strong><a href="{% url 'blog:user' practice.author.id %}" >{{ practice.author.username }}</a></span>
+            </div>
+            
+            <div style="font-size: 15px; line-height: 1.6; color: #212529;">
+                <strong>Mô tả : </strong>
+                <div style="white-space: pre-line;">{{ practice.content }}</div>
+            </div>
+            
+        </div>
 
-    <div class="page-header">
-        <h1>{{ practice.title }}</h1>
-        <p class="text-muted">Tác giả: {{ practice.author.username }}</p>
-    </div>
+            <div id="tab-testcase" class="tab-content-item">
+                {% if user_code  %}
+                    <div class="table-responsive">
+                        {% if k == 0 %}
+                            <p style="color: red;">Lần làm bài trước</p>
+                        {% endif %}
+                        <p class="fw-bold mb-3" >Điểm: {{ mark }} / 5</p>
+                        <table class="ptit-table table table-sm table-bordered align-middle" style="font-size: 13.5px;">
+                            <thead>
+                                <tr>
+                                    <th>Input</th>
+                                    <th>Output chuẩn</th>
+                                    <th>Mã của bạn</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for u in user_outputs %}
+                                <tr>
+                                    <td>{{ u.input }}</td>
+                                    <td>{{ u.expected }}</td>
+                                    <td>{{ u.user_output }}</td>
+                                    <td class="text-center">
+                                        {% if u.is_correct %}
+                                            <span class="badge-success">✔ Pass</span>
+                                        {% else %}
+                                            <span class="badge-danger">✘ Fail</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center text-muted py-5">
+                        <p>Chưa có code.</p>
+                    </div>
+                {% endif %}
+            </div>
 
-    <div class="form-card">
-        <div class="form-card-header">Nội dung Practice</div>
-        <div class="form-card-body">
-            <p>{{ practice.content }}</p>
+            <div id="tab-answer" class="tab-content-item">
+                <div class="text-center text-muted py-5">
+                    <p>Lời giải chính thức.</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <form method="post">
-        {% csrf_token %}
-        <div class="form-card">
-            <div class="form-card-header">Code của bạn</div>
-            <div class="form-card-body">
+    <div class="right-panel">
+        
+        <form method="post" class="h-100 d-flex flex-column gap-2" style="flex: 1;">
+            {% csrf_token %}
+            
+            <div class="editor-container">
+  
+                <div class="panel-tabs d-flex justify-content-between align-items-center">
+                   <strong>Code </strong>
+                   <select name="language_type">
+                        <option class="panel-tab-item active" style="color: var(--green); border-bottom-color: var(--green);">Python</option>
+                        <option class="panel-tab-item active" style="color: var(--green); border-bottom-color: var(--green);">Java</option>
+                        <option class="panel-tab-item active" style="color: var(--green); border-bottom-color: var(--green);">C++</option>
+                    </select>
+                </div>
+                 
                 {{ form.user_code }}
             </div>
-        </div>
-        <button type="submit" class="btn-run">▶ Run code</button>
-    </form>
-
-    {% if user_outputs %}
-    <div class="form-card mt-4">
-        <div class="form-card-header">Kết quả</div>
-        <div class="form-card-body">
-            <p><strong>Điểm:</strong> {{ mark }}</p>
-            <table class="ptit-table table">
-                <thead>
-                    <tr>
-                        <th>Input</th>
-                        <th>Output chuẩn</th>
-                        <th>Output của bạn</th>
-                        <th>Kết quả</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for u in user_outputs %}
-                    <tr>
-                        <td><pre>{{ u.input }}</pre></td>
-                        <td><pre>{{ u.expected }}</pre></td>
-                        <td><pre>{{ u.user_output }}</pre></td>
-                        <td>
-                            {% if u.is_correct %}
-                                <span class="badge-success">✔ Đúng</span>
-                            {% else %}
-                                <span class="badge-danger">✘ Sai</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            
+                <button type="submit" class="btn-run align-self-end">Submit</button>
+        </form>
     </div>
-    {% endif %}
 
 </div>
 
-<footer>
-    &copy; 2025 PTITShare — Powered by <a href="#">Django</a>
-</footer>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tabItems = document.querySelectorAll(".left-panel .panel-tab-item");
+        const contentItems = document.querySelectorAll(".left-panel .tab-content-item");
+
+        // Hàm xử lý switch tab chung
+        function switchTab(targetId) {
+            // Xóa trạng thái active cũ của các tab button
+            tabItems.forEach(item => item.classList.remove("active"));
+            // Ẩn tất cả các khối content
+            contentItems.forEach(content => content.classList.remove("active"));
+
+            // Kích hoạt tab button tương ứng
+            const activeTabBtn = document.querySelector(`[data-target="${targetId}"]`);
+            if (activeTabBtn) activeTabBtn.classList.add("active");
+
+            // Hiển thị content tương ứng
+            const activeContent = document.getElementById(targetId);
+            if (activeContent) activeContent.classList.add("active");
+        }
+
+        // Đăng ký sự kiện click cho các tab
+        tabItems.forEach(item => {
+            item.addEventListener("click", function () {
+                const targetId = this.getAttribute("data-target");
+                switchTab(targetId);
+            });
+        });
+
+        /* TỰ ĐỘNG CHUYỂN TAB SANG TESTCASE KHI NỘP BÀI THÀNH CÔNG:
+        nếu k==1 tức POST reuqest gửi code khi nhấn submit
+        */
+
+        /* do sử dụng django trong js nên báo đỏ chứ thực tế vẫn chạy được */
+        {% if m or k == 1 %}
+            switchTab("tab-testcase");
+        {% endif %}
+
+    });
+</script>
 
 </body>
 </html>

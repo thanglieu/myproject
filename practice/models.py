@@ -1,12 +1,13 @@
 from django.db import models
-from blog.models import User
+from blog.models import User, Topic
 
 class Practice(models.Model):
     title = models.CharField()
     content = models.TextField()
     code = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    topic = models.ManyToManyField(Topic, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)   
 
 
 class TestCase(models.Model):
@@ -21,6 +22,7 @@ class UserPractice(models.Model):
     practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
     mark = models.IntegerField(default=0)
     user_code = models.TextField()
+    language = models.TextField(default='')
 
 
 

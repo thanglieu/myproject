@@ -27,6 +27,14 @@
             flex-direction: column;
         }
 
+        h1 {
+            color: #1f3a5d;
+            font-size: 26px;
+            font-weight: 800;
+            text-align: center; /* Đưa thẳng căn giữa vào CSS */
+            margin-top: 30px;
+        }
+
         /* ══ NAVBAR PTITSHARE MẶC ĐỊNH ══ */
         .navbar {
             background: var(--green);
@@ -116,9 +124,12 @@
         /* ══ CONTAINER LAYOUT ══ */
         .container {
             max-width: 1000px;
-            margin: 40px auto;
+            margin: 10px auto;
             padding: 0 24px;
             flex: 1;
+            background-color: #fff;              /* nền trắng */
+            border-radius: 8px;                  /* bo góc nhẹ cho khối */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* đổ bóng nhẹ để nổi bật */
         }
 
         /* Thông tin tìm kiếm */
@@ -149,7 +160,7 @@
             color: #1f3a5d;
             font-size: 18px;
             font-weight: 800;
-            margin: 0 0 20px 0;
+            margin: 15px 0 0px 0;
             padding-bottom: 6px;
             border-bottom: 2px solid var(--green);
             display: inline-block;
@@ -161,7 +172,59 @@
             border-radius: 8px;
             border: 1px solid var(--border);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            margin-bottom: 32px;
+            margin-bottom: 10px;
+        }
+
+        /* Nút Tìm kiếm */
+        .btn-search { background: var(--green); color: white; }
+        .btn-search:hover { background: var(--green-dark); }
+    
+            .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.1s;
+            white-space: nowrap;
+        }
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+        /* ══ SEARCH BAR FORM ══ */
+        .search-form {
+            background: #ffffff;
+            padding: 14px 20px;
+
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            margin-bottom: 20px;
+            
+            /* Flexbox giúp dàn hàng ngang */
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
+
+        .search-form input[type="text"] {
+            flex: 1;
+            min-width: 240px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14.5px;
+            font-weight: 600;
+            transition: border-color 0.2s;
+            
+        }
+
+        .search-form input[type="text"]:focus {
+            outline: none;
+            border-color: var(--green);
         }
 
         /* ══ USER GRID ══ */
@@ -246,6 +309,8 @@
             justify-content: center;
             align-items: center;
             gap: 10px;
+            margin-top: 0px;
+            margin-bottom: 20px;
         }
 
         .pagination a {
@@ -321,76 +386,129 @@
     <a href="{% url 'blog:logout' %}" class="nav-link">Đăng xuất</a>
 </nav>
 
-<div class="container">
-    <h1 style="text-align: center;">Kết quả tìm kiếm</h1>
-    <p style="text-align: center;">Từ khóa: "<strong>{{ keyword }}</strong>"</p>
+    <h1>🔍 Kết quả tìm kiếm</h1>
 
-    <h2 class="section-title">Người dùng ({{ users.paginator.count }})</h2>
-    <div class="section">
-        {% if users %}
-            <div class="user-grid">
-                {% for user in users %}
-                    <div class="user-item">
-                        <a href="{% url 'blog:user' user.id %}">{{ user.name }}</a>
-                        <small style="color: var(--muted); font-weight: 600;">{{ user.mark }} ⭐</small>
-                    </div>
-                {% endfor %}
+    <div class="container">
+        <h2 class="section-title">🔍 Từ khóa :</h2>
+        <form method="get" action="" class="search-form">
+            {% csrf_token %}
+            <input type="text" name="keyword" value="{{ keyword }}">
+            <button type="submit" name="form" value="search" class="btn-action btn-search">Tìm kiếm</button>
+        </form>
+    </div>    
+
+    <main class="container">
+        <h2 class="section-title">✍️ Người dùng ({{ users.paginator.count }})</h2>
+        <div class="section">
+            {% if users %}
+                <div class="user-grid">
+                    {% for user in users %}
+                        <div class="user-item">
+                            <a href="{% url 'blog:user' user.id %}">{{ user.name }}</a>
+                            <small style="color: var(--muted); font-weight: 600;">{{ user.mark }} ⭐</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state"><p>😔 Không tìm thấy người dùng nào.</p></div>
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: 800; color: #1f3a5d; margin-bottom: 8px; display: block;">Loại :</label>
+            <select id="resultTypeSelector" onchange="showResult()" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border); width: 100%; cursor: pointer;">
+                <option value="articles">Bài viết ({{ articles.paginator.count }})</option>
+                <option value="tests">Bài kiểm tra ({{ tests.paginator.count }})</option>
+                <option value="practices">Thực hành ({{ practices.paginator.count }})</option>
+            </select>
+        </div>
+
+        <!-- BLOG -->
+        <div id="articles-container" class="result-container">
+            <div class="section" >
+                {% if articles %}
+                    {% for article in articles %}
+                        <div class="article-item">
+                            <h3><a href="{% url 'blog:article' article.id %}">{{ article.title }}</a></h3>
+                            <div class="article-meta">✍️ <strong>{{ article.author.name }}</strong> • 📅 {{ article.created_at|date:"d/m/Y" }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><p>😔 Không tìm thấy bài viết nào.</p></div>
+                {% endif %}
             </div>
-        {% else %}
-            <div class="empty-state"><p>😔 Không tìm thấy người dùng nào.</p></div>
-        {% endif %}
-    </div>
 
-    <div style="margin-bottom: 20px;">
-        <label style="font-weight: 800; color: #1f3a5d; margin-bottom: 8px; display: block;">Chọn loại kết quả để xem:</label>
-        <select id="resultTypeSelector" onchange="showResult()" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border); width: 100%; cursor: pointer;">
-            <option value="articles">Bài viết ({{ articles.paginator.count }})</option>
-            <option value="tests">Bài kiểm tra ({{ tests.paginator.count }})</option>
-            <option value="practices">Thực hành ({{ practices.paginator.count }})</option>
-        </select>
-    </div>
+            <!-- phân trang -->
+            <div class="pagination">
+                {% if articles.has_previous %}
+                    <a href="{{ request.get_full_path }}&page={{ articles.previous_page_number }}">← Trang trước</a>
+                {% endif %}
 
-    <div id="articles-container" class="result-container section">
-        <h2 class="section-title">Bài viết</h2>
-        {% if articles %}
-            {% for article in articles %}
-                <div class="article-item">
-                    <h3><a href="{% url 'blog:article' article.id %}">{{ article.title }}</a></h3>
-                    <div class="article-meta">✍️ <strong>{{ article.author.name }}</strong> • 📅 {{ article.created_at|date:"d/m/Y" }}</div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state"><p>😔 Không tìm thấy bài viết nào.</p></div>
-        {% endif %}
-    </div>
+                <span>Trang {{ articles.number }}/{{ articles.paginator.num_pages }}</span>
 
-    <div id="tests-container" class="result-container section" style="display: none;">
-        <h2 class="section-title">Bài kiểm tra</h2>
-        {% if tests %}
-            {% for test in tests %}
-                <div class="article-item">
-                    <h3><a href="{% url 'exam:user_test' test.id %}">{{ test.title }}</a></h3>
-                    <div class="article-meta">👤 {{ test.author.username }} • 📝 {{ test.quantity }} câu hỏi</div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state"><p>😔 Không tìm thấy bài kiểm tra nào.</p></div>
-        {% endif %}
-    </div>
+                {% if articles.has_next %}
+                    <a href="{{ request.get_full_path }}&page={{ articles.next_page_number }}">Trang sau →</a>
+                {% endif %}
+            </div>
+        </div>
 
-    <div id="practices-container" class="result-container section" style="display: none;">
-        <h2 class="section-title">Bài thực hành</h2>
-        {% if practices %}
-            {% for p in practices %}
-                <div class="article-item">
-                    <h3><a href="{% url 'practice:user_practice_list' p.id %}">{{ p.title }}</a></h3>
-                    <div class="article-meta">👤 {{ p.author }}</div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state"><p>😔 Không tìm thấy bài thực hành nào.</p></div>
-        {% endif %}
-    </div>
+        <!-- TEST -->
+        <div id="tests-container" class="result-container" >
+            <div class="section">
+                {% if tests %}
+                    {% for test in tests %}
+                        <div class="article-item">
+                            <h3><a href="{% url 'exam:user_test' test.id %}">{{ test.title }}</a></h3>
+                            <div class="article-meta">👤 {{ test.author.username }} • 📝 {{ test.quantity }} câu hỏi</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><p>😔 Không tìm thấy bài kiểm tra nào.</p></div>
+                {% endif %}
+            </div>
+
+            <div class="pagination">
+                {% if tests.has_previous %}
+                    <a href="{{ request.get_full_path }}&page={{ tests.previous_page_number }}">← Trang trước</a>
+                {% endif %}
+
+                <span>Trang {{ tests.number }}/{{ tests.paginator.num_pages }}</span>
+
+                {% if tests.has_next %}
+                    <a href="{{ request.get_full_path }}&page={{ tests.next_page_number }}">Trang sau →</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- PRACTICE -->
+        <div id="practices-container" class="result-container">
+            <div class="section">
+                {% if practices %}
+                    {% for p in practices %}
+                        <div class="article-item">
+                            <h3><a href="{% url 'practice:user_practice_list' p.id %}">{{ p.title }}</a></h3>
+                            <div class="article-meta">👤 {{ p.author }}</div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state"><p>😔 Không tìm thấy bài thực hành nào.</p></div>
+                {% endif %}
+            </div>
+
+            <div class="pagination">
+                {% if practices.has_previous %}
+                    <a href="{{ request.get_full_path }}&page={{ practices.previous_page_number }}">← Trang trước</a>
+                {% endif %}
+
+                <span>Trang {{ practices.number }}/{{ practices.paginator.num_pages }}</span>
+
+                {% if practices.has_next %}
+                    <a href="{{ request.get_full_path }}&page={{ practices.next_page_number }}">Trang sau →</a>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    
 </div>
 
 <script>
@@ -398,12 +516,12 @@
         var selectedValue = document.getElementById("resultTypeSelector").value;
         var containers = document.getElementsByClassName("result-container");
         
-        // Ẩn tất cả container
+        // ẩn tất cả <div>
         for (var i = 0; i < containers.length; i++) {
             containers[i].style.display = "none";
         }
         
-        // Hiển thị cái được chọn
+        // hiển thị <div> được chọn
         document.getElementById(selectedValue + "-container").style.display = "block";
     }
 

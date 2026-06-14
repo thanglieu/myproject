@@ -124,6 +124,37 @@
             flex: 1;
         }
 
+        /* ══ PHÂN TRANG ĐỒNG BỘ ══ */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            background: var(--green-dark);
+            color: white !important;
+            padding: 6px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 700;
+            transition: background 0.15s;
+        }
+
+
+        .pagination a:hover {
+            background: var(--green);
+        }
+
+        .pagination span {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
         /* ══ SIDEBAR CHỦ ĐỀ THU GỌN ══ */
         .sidebar {
             background: white;
@@ -247,6 +278,7 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 14px;
+            
         }
 
         .article-card {
@@ -260,24 +292,30 @@
             color: var(--dark) !important;
             box-shadow: 0 2px 6px rgba(0,0,0,0.01);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .article-card:hover {
-            transform: translateX(6px);
-            box-shadow: 0 6px 16px rgba(4, 170, 109, 0.1);
+            margin-bottom: -5px; /* tạo khoảng cách giữa các div */
         }
 
         .article-card h3 {
             margin: 0 0 6px 0;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 800;
-            color: #1f3a5d;
         }
+
+        .article-card h3 a {
+            text-decoration: none;
+            color: #1f3a5d;
+            transition: color 0.15s;
+        }   
+        
+        .article-card h3 a:hover {
+            color: var(--green-dark);
+        }    
 
         .article-meta {
             color: var(--muted);
             font-size: 13.5px;
             font-weight: 600;
+            
         }
 
         .article-meta span {
@@ -294,26 +332,6 @@
             font-size: 15px;
             font-weight: 600;
             margin: 6px 0;
-        }
-
-        /* ══ FOOTER MÀU ĐEN NHẠT QUY CHUẨN ══ */
-        footer {
-            background: var(--dark);
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #bbb;
-            margin-top: auto;
-        }
-        footer a {
-            color: var(--green);
-            text-decoration: none;
-            font-weight: 700;
-        }
-        footer a:hover {
-            color: var(--green-dark);
-            text-decoration: underline;
         }
 
         /* Responsive */
@@ -380,32 +398,127 @@
 
     <main class="content">
         <h2>📚 Kết quả lọc theo chủ đề</h2>
+
+        <div style="margin-bottom: 20px;">
+            <select id="resultTypeSelector" onchange="showResult()" style="padding: 10px; border-radius: 6px; border: 1px solid var(--border); width: 100%; cursor: pointer;">
+                <option value="articles">Bài viết ({{ articles.paginator.count }})</option>
+                <option value="tests">Bài kiểm tra ({{ tests.paginator.count }})</option>
+                <option value="practices">Thực hành ({{ practices.paginator.count }})</option>
+            </select>
+        </div>
+
         
-        {% if articles %}
-            <div class="articles-grid">
+    <!-- BLOG -->
+     <div id="articles-container" class="result-container">
+        <div class="articles-grid" >
+            {% if articles %}
                 {% for article in articles %}
-                    <a href="{% url 'blog:article' article.id %}" class="article-card">
-                        <h3>{{ article.title }}</h3>
+                    <div class="article-card">
+                        <h3><a href="{% url 'blog:article' article.id %}">{{ article.title }}</a></h3>
                         <div class="article-meta">
                             <span>✍️ <strong>{{ article.author.name }}</strong></span>
                             <span>📅 {{ article.created_at|date:"d/m/Y" }}</span>
                             <span>❤️ {{ article.likes.count }}</span>
                         </div>
-                    </a>
+                    </div>
                 {% endfor %}
-            </div>
-        {% else %}
-            <div class="empty-state">
-                <p>📭 Không có bài viết nào phù hợp với tiêu chí lọc của bạn.</p>
-                <p style="color: var(--muted); font-size: 13.5px; margin-top: 12px;">Hãy chọn chủ đề khác hoặc quay lại trang chủ.</p>
-            </div>
-        {% endif %}
+            {% else %}
+                <div class="empty-state"><p>😔 Không tìm thấy bài viết nào.</p></div>
+            {% endif %}
+        </div>
+
+        <!-- phân trang -->
+        <div class="pagination">
+            {% if articles.has_previous %}
+                <a href="{{ request.get_full_path }}&page={{ articles.previous_page_number }}">← Trang trước</a>
+            {% endif %}
+
+            <span>Trang {{ articles.number }}/{{ articles.paginator.num_pages }}</span>
+
+            {% if articles.has_next %}
+                <a href="{{ request.get_full_path }}&page={{ articles.next_page_number }}">Trang sau →</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- TEST -->
+    <div id="tests-container" class="result-container" >
+        <div class="articles-grid">
+            {% if tests %}
+                {% for test in tests %}
+                    <div class="article-card">
+                        <h3><a href="{% url 'exam:user_test' test.id %}">{{ test.title }}</a></h3>
+                        <div class="article-meta">👤 {{ test.author.username }} • 📝 {{ test.quantity }} câu hỏi</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state"><p>😔 Không tìm thấy bài kiểm tra nào.</p></div>
+            {% endif %}
+        </div>
+
+        <div class="pagination">
+            {% if tests.has_previous %}
+                <a href="{{ request.get_full_path }}&page={{ tests.previous_page_number }}">← Trang trước</a>
+            {% endif %}
+
+            <span>Trang {{ tests.number }}/{{ tests.paginator.num_pages }}</span>
+
+            {% if tests.has_next %}
+                <a href="{{ request.get_full_path }}&page={{ tests.next_page_number }}">Trang sau →</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- PRACTICE -->
+     <div id="practices-container" class="result-container">
+        <div class="articles-grid">
+            {% if practices %}
+                {% for p in practices %}
+                    <div class="article-card">
+                        <h3><a href="{% url 'practice:user_practice_list' p.id %}">{{ p.title }}</a></h3>
+                        <div class="article-meta">👤 {{ p.author }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state"><p>😔 Không tìm thấy bài thực hành nào.</p></div>
+            {% endif %}
+        </div>
+
+        <div class="pagination">
+            {% if practices.has_previous %}
+                <a href="{{ request.get_full_path }}&page={{ practices.previous_page_number }}">← Trang trước</a>
+            {% endif %}
+
+            <span>Trang {{ practices.number }}/{{ practices.paginator.num_pages }}</span>
+
+            {% if practices.has_next %}
+                <a href="{{ request.get_full_path }}&page={{ practices.next_page_number }}">Trang sau →</a>
+            {% endif %}
+        </div>
+    </div>
+
+
     </main>
 </div>
 
-<footer>
-    &copy; 2026 PTITShare &mdash; Powered by <a href="#">Django</a>
-</footer>
+
+<script>
+    function showResult() {
+        var selectedValue = document.getElementById("resultTypeSelector").value;
+        var containers = document.getElementsByClassName("result-container");
+        
+        // ẩn tất cả <div>
+        for (var i = 0; i < containers.length; i++) {
+            containers[i].style.display = "none";
+        }
+        
+        // hiển thị <div> được chọn
+        document.getElementById(selectedValue + "-container").style.display = "block";
+    }
+
+    // Chạy mặc định khi load trang
+    window.onload = showResult;
+</script>
 
 </body>
 </html>

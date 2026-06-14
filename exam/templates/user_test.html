@@ -113,6 +113,28 @@
         }
         .nav-link:hover { background: rgba(0,0,0,.15); color: #fff; }
 
+        /* Topics */
+        .topic-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .topic-tag {
+            display: inline-block;
+            background: var(--green);
+            color: white !important;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .topic-tag:hover {
+            background: var(--green-dark);
+        }
+
         /* ══ CONTAINER LAYOUT ══ */
         .container {
             max-width: 1000px;
@@ -277,9 +299,19 @@
   
     <h2>Thông tin bài viết</h2>
     <div class="info-card">
-        <p><strong>Số câu hỏi:</strong> {{ test.quantity }}</p>
-        <p><strong>Người tạo:</strong> {{ test.author.username }}</p>
-        <p><strong>Số người đã làm:</strong> {{ user_tests.count }}</p>
+        <p><strong>Số câu hỏi :</strong> {{ test.quantity }}</p>
+        <p><strong>Người tạo :</strong> {{ test.author.username }}</p>
+        <p><strong>Số người đã làm :</strong> {{ user_tests.count }}</p>
+        <p><strong>Chủ đề :</strong></p>
+        {% if test.topic.all %}
+            <div class="topic-section">
+                <div class="topic-list">
+                    {% for topic in test.topic.all %}
+                        <a href="{% url 'blog:filter' %}?topics={{ topic.id }}" class="topic-tag">{{ topic.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
     </div>
     
     <h2>Danh sách người làm Test</h2>

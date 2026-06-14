@@ -1,2 +1,1 @@
-input = '5'
-print('hi')
+print('test8')

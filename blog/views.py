@@ -84,7 +84,6 @@ def user_detail(request, pk):
 
 
 # đăng ký
-@login_required(login_url='blog:login')
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
@@ -119,24 +118,23 @@ def search(request):
         list4 = Practice.objects.none()
 
     # phân trang cho Article
+    page_number = request.GET.get('page')
+
     paginator_articles = Paginator(list1, 10)
-    page_number_articles = request.GET.get('page_articles')
-    page_obj_articles = paginator_articles.get_page(page_number_articles)
+    page_obj_articles = paginator_articles.get_page(page_number)
 
     # phân trang cho Test
     paginator_tests = Paginator(list3, 10)  # Giả sử mỗi trang 10 mục
-    page_number_tests = request.GET.get('page_tests')
-    page_obj_tests = paginator_tests.get_page(page_number_tests)
+    page_obj_tests = paginator_tests.get_page(page_number)
 
     # phân trang cho Practice
     paginator_practices = Paginator(list4, 10)
-    page_number_practices = request.GET.get('page_practices')
-    page_obj_practices = paginator_practices.get_page(page_number_practices)
+    page_obj_practices = paginator_practices.get_page(page_number)
 
     # phân trang cho User
     paginator_users = Paginator(list2, 9)  
-    page_number_users = request.GET.get('page_users')
-    page_obj_users = paginator_users.get_page(page_number_users)
+    page_number_users = request.GET.get('page')
+    page_obj_users = paginator_users.get_page(page_number)
 
 
     return render(request, 'search.html', {
@@ -186,10 +184,28 @@ def filter(request):
     selected_topics = request.GET.getlist('topics') 
 
     articles = Article.objects.filter(topic__id__in=selected_topics).distinct()
+    tests = Test.objects.filter(topic__id__in=selected_topics).distinct()
+    practices = Practice.objects.filter(topic__id__in=selected_topics).distinct()
+
+    # phân trang cho Article
+    page_number = request.GET.get('page')
+
+    paginator_articles = Paginator(articles, 10)
+    page_obj_articles = paginator_articles.get_page(page_number)
+
+    # phân trang cho Test
+    paginator_tests = Paginator(tests, 10)  # Giả sử mỗi trang 10 mục
+    page_obj_tests = paginator_tests.get_page(page_number)
+
+    # phân trang cho Practice
+    paginator_practices = Paginator(practices, 10)
+    page_obj_practices = paginator_practices.get_page(page_number)
 
     return render(request, 'filter.html', {
         'topics': topics,
-        'articles': articles,
+        'articles': page_obj_articles,
+        'tests' : page_obj_tests,
+        'practices' : page_obj_practices,
         'selected_topics': selected_topics,
     })
 
@@ -222,7 +238,7 @@ def create_article(request):
 
 # ____________ ARTICLE DETAIL, COMMENT, LIKE FUNCTIONALITY ____________
 
-# View chi tiết bài viết kèm comments
+# xem chi tiết bài viết kèm comments
 @login_required(login_url='blog:login')
 def article_detail(request, article_id):
 

@@ -5,8 +5,10 @@ from django.forms import formset_factory, inlineformset_factory
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import AnswerForm, QuestionCountForm, QuestionForm, TestForm
+from django.core.paginator import Paginator
+from .forms import AnswerForm, QuestionForm, TestForm
 from .models import Answer, Question, Test, UserAnswer, UserTest
+from blog.models import Topic
 
 User = get_user_model()
 
@@ -14,9 +16,16 @@ User = get_user_model()
 @login_required(login_url='/blog/login/')
 def create_test(request):
 
+
+    #------------------------------------------------------
+    # bổ sung thêm topic cho practice
+
+    # lấy chủ đề
+    topics = Topic.objects.all()
+
     # lấy trước số lượng câu hỏi và tiêu đề. 
     if request.GET:
-        # chú ý : trường hợp tạo Test tuy là POST request vẫn chứ query string nên vẫn có request.GET
+        # chú ý : trường hợp tạo Test tuy là POST request vẫn chứa query string nên vẫn có request.GET
         question_count = int(request.GET.get('question_count'))
         title = request.GET.get('title')
     else:
@@ -66,6 +75,7 @@ def create_test(request):
                     quantity=question_count,
                     author=request.user
                 )
+                test.topic.set(request.GET.getlist('topics'))
 
                 # dùng vòng lặp để lưu các Question trong Test, các Answer trong mỗi Question
                 for index, question_form in enumerate(question_formset):
@@ -101,17 +111,23 @@ def create_test(request):
             'question_answer_pairs': question_answer_pairs,
             'question_count': question_count,
             'title' : title,
+            'topics' : topics,
         }
     )
-
 
 
 # trang chủ - tìm kiếm
 @login_required(login_url='/blog/login/')
 def exam_home(request):
+    # lấy toàn bộ test
     tests = Test.objects.order_by('-id')
 
-    return render(request, 'exam_home.html', {'tests': tests, 'this_user_id': request.user.id })
+    # phân trang
+    paginator = Paginator(tests, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'exam_home.html', {'tests': page_obj, 'this_user_id': request.user.id })
 
 
 # làm Test
@@ -181,13 +197,15 @@ def take_test(request, test_id):
 def user_answer(request, user_test_id):
     # Hiển thị chi tiết kết quả cho một lần làm bài cụ thể
     user_test = get_object_or_404(UserTest, pk=user_test_id, user=request.user)
+    # UserAnswer ứng với câu hỏi
     answers = UserAnswer.objects.filter(test=user_test).select_related('answer__question')
+    # dict chứa cặp {Question.id : UserAnswer.answer }
     selected_by_question = {ua.answer.question.id: ua.answer for ua in answers}
 
     questions = Question.objects.filter(test=user_test.test).order_by('stt', 'id')
     question_results = []
     for question in questions:
-        answer = selected_by_question.get(question.id)
+        answer = selected_by_question.get(question.id)      # lấy Answer được chọn ứng với id
         question_results.append({'question': question, 'answer_list':Answer.objects.filter(question=question).order_by('id'), 'answer': answer})
 
     return render(

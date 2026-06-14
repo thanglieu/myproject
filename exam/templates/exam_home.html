@@ -14,6 +14,8 @@
             --gray-bg:     #f6f6f6;
             --border:      #e0e0e0;
             --muted:       #6c757d;
+            --blue-btn:    #2196F3;
+            --orange-btn:  #ff9800;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,6 +28,49 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+                
+        /* ══ PHÂN TRANG (PAGINATION) ══ */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .pagination a {
+            background: var(--green-dark);
+            color: white !important;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: background 0.15s;
+        }
+
+        .pagination a:hover {
+            background: var(--green);
+        }
+
+        .pagination span {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+
+        .topic-tag {
+            display: inline-block;
+            background: var(--green-light);
+            color: var(--green-dark);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            margin-top: 4px;
         }
 
         /* ══ NAVBAR ══ */
@@ -139,56 +184,43 @@
         .btn-action {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
             font-size: 14px;
             font-weight: 700;
             text-decoration: none;
-            padding: 10px 18px;
+            padding: 10px 20px;
+            border: none;
             border-radius: 6px;
-            transition: background .15s, border-color .15s;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.1s;
+            white-space: nowrap;
         }
-        .btn-action-primary {
-            background: var(--green-light);
-            color: var(--green-dark) !important;
-            border: 1px solid rgba(4, 170, 109, 0.25);
-        }
-        .btn-action-primary:hover {
-            background: #d4f4e8;
-            border-color: var(--green);
-        }
-        .btn-action-secondary {
-            background: #fff;
-            color: var(--dark) !important;
-            border: 1px solid var(--border);
-        }
-        .btn-action-secondary:hover {
-            background: #f1f3f5;
-            border-color: #bbb;
+        .btn-action:active {
+            transform: scale(0.98);
         }
 
         /* ══ SEARCH BAR FORM ══ */
         .search-form {
-            background: #ffffff;
-            padding: 14px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            margin-bottom: 28px;
             display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
         }
 
         .search-form input[type="text"] {
             flex: 1;
-            padding: 10px 14px;
+            min-width: 240px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
             border-radius: 6px;
-            border: 1px solid #d8dee4;
             font-size: 14.5px;
-            outline: none;
+            font-weight: 600;
+            transition: border-color 0.2s;
         }
 
         .search-form input[type="text"]:focus {
+            outline: none;
             border-color: var(--green);
         }
 
@@ -210,8 +242,11 @@
         }
 
         /* Nút Tìm kiếm */
-        .btn-search { background: var(--green); color: #1aa63b; }
-        .btn-search:hover { background: var(--green-dark); color: #fff; }
+        .btn-search { background: var(--green); color: white; }
+        .btn-search:hover { background: var(--green-dark); }
+
+        .btn-filter { background: var(--blue-btn); color: white; }
+        .btn-filter:hover { opacity: 0.9; }
 
         /* Nút Bài Test của tôi */
         .btn-my-tests { background: #3498db; color: #fff; }
@@ -240,7 +275,7 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -380,28 +415,16 @@
 <main class="container">
     <h1>📝 Danh sách bài kiểm tra mới nhất</h1>
     <br>
-    
-    <!-- gọi đến hàm search của blog -->
-    <form method="get" class="search-form" style="display: flex; align-items: center; gap: 10px; width: 100%;"
-        action="{% url 'blog:search' %}">
-        
-        <input name="keyword" type="text" placeholder="Tìm kiếm theo tiêu đề bài test..." value="{{ query }}" 
-            style="flex: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 6px; height: 42px; outline: none; box-sizing: border-box;">
-        
-        <button type="submit" style="height: 42px; padding: 0 20px; background: #04AA6D; color: #fff; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; white-space: nowrap;">
-            Tìm kiếm
-        </button>
-        
-        <a href="{% url 'blog:user' this_user_id %}" 
-        style="height: 42px; padding: 0 20px; background: #2196F3; color: #fff; border-radius: 6px; font-weight: 700; text-decoration: none; display: flex; align-items: center; white-space: nowrap;">
-            Test của tôi
-        </a>
-        
-        <a href="{% url 'exam:create_test' %}" 
-        style="height: 42px; padding: 0 20px; background: #ff9800; color: #fff; border-radius: 6px; font-weight: 700; text-decoration: none; display: flex; align-items: center; white-space: nowrap;">
-            Tạo Test mới
-        </a>
-    </form>
+
+    <div class="search-section" >
+        <form method="get" class="search-form" action="{% url 'blog:search' %}">
+            {% csrf_token %}
+            <input type="text" name="keyword" value="{{ query }}" placeholder="🔍 Tìm kiếm...">
+            <button type="submit" class="btn-action btn-search">Tìm kiếm</button>
+            <a href="{% url 'blog:filter' %}" class="btn-action btn-filter">Lọc chủ đề</a>
+            <a href="{% url 'exam:create_test' %}" class="btn-action btn-create">✏️ Tạo Test</a>
+        </form>
+    </div>
 
     {% if tests %}
         <ul class="test-list">
@@ -416,6 +439,16 @@
                             Tác giả: <a href="{% url 'blog:user' test.author.id %}" >{{ test.author.username }}</a>
                             &bull; <span class="badge-quantity">{{ test.quantity }} câu hỏi</span>
                         </div>
+
+                        {% if test.topic.all %}
+                            <div class="post-topics">
+                                {% for topic in test.topic.all %}
+                                    <a class="topic-tag" style="text-decoration: none;"
+                                        href="{% url 'blog:filter' %}?topics={{ topic.id }}">{{ topic.name }}</a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
                     </div>
                     <div style="text-align: right;">
                         <a href="{% url 'exam:take_test' test.id %}" class="btn-take-test">Làm bài</a>
@@ -425,9 +458,23 @@
         </ul>
     {% else %}
         <div class="no-result">
-            <p>Không tìm thấy bài kiểm tra nào phù hợp với từ khóa tìm kiếm của bạn.</p>
+            <p>Chưa có bài test nào.</p>
         </div>
     {% endif %}
+
+    <!-- PHÂN TRANG -->
+    <div class="pagination">
+        {% if tests.has_previous %}
+            <a href="?page={{ tests.previous_page_number }}">← Trang trước</a>
+        {% endif %}
+
+        <span>Trang {{ tests.number }}/{{ tests.paginator.num_pages }}</span>
+
+        {% if tests.has_next %}
+            <a href="?page={{ tests.next_page_number }}">Trang sau →</a>
+        {% endif %}
+    </div>
+
 </main>
 
 <footer>

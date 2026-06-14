@@ -322,40 +322,147 @@
         <p><strong>Người làm: </strong>{{ user_test.user.username }}</p>
     </div>
 
-    <h2>Chi tiết câu trả lời</h2>
     
-    {% for item in question_results %}
-        <div class="question-block">
-            <h3>Câu hỏi {{ item.question.stt }}:</h3>
-            <div class="question-text">{{ item.question.text|safe }}</div>
-            
-            <strong class="section-title">Đáp án :</strong>
-            <div class="answers-grid">
-                {% for a in item.answer_list %}
-                    <div class="answer-item">
-                        <strong>{{ a.title }}) </strong> 
-                        <span class="answer-content">{{ a.text|safe }}</span> 
-                    </div>
-                {% endfor %}
-            </div>
-
-            <strong class="section-title">Đáp án bạn chọn:</strong>
-            <div class="user-choice-box">
-                {% if item.answer.is_correct %}
-                    <div class="answer-content">{{ item.answer.title }}) ✅</div>
-                {% else %}
-                    <div class="answer-content">{{ item.answer.title }}) ❌</div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 5;">Chi tiết câu trả lời</h2>
+        <select id="resultTypeSelector" onchange="show_list()" style="padding: 0px; border-radius: 5px; border: 1px solid #ccc;">
+            <option value="all">Tất cả</option>
+            <option value="true"> Câu đúng</option>
+            <option value="false">Câu sai</option>
+        </select>
+    </div>
+    
+    <!-- TẤT CẢ -->
+    <div id="all" class="list">
+        {% for item in question_results %}
+            <div class="question-block">
+                <h3>Câu hỏi {{ item.question.stt }}:</h3>
+                <div class="question-text">{{ item.question.text|safe }}</div>
+                
+                <strong class="section-title">Đáp án :</strong>
+                <div class="answers-grid">
                     {% for a in item.answer_list %}
-                        {% if a.is_correct %}
-                            <div class="correct-hint">
-                                <span>{{ a.title }}) ✅</span>
-                            </div>
-                        {% endif %}
+                        <div class="answer-item">
+                            <strong>{{ a.title }}) </strong> 
+                            {% if a.is_correct %}
+                                <span class="answer-content">{{ a.text|safe }} ✅</span>
+                            {% elif a.id == item.answer.id %}
+                                <span class="answer-content">{{ a.text|safe }} ❌</span>
+                            {% else %}
+                                <span class="answer-content">{{ a.text|safe }}</span>
+                            {% endif %}                        
+                        </div>
                     {% endfor %}
-                {% endif %}
+                </div>
+
+                <strong class="section-title">Đáp án bạn chọn:</strong>
+                <div class="user-choice-box">
+                    {% if item.answer.is_correct %}
+                        <div class="answer-content">{{ item.answer.title }}) ✅</div>
+                    {% else %}
+                        <div class="answer-content">{{ item.answer.title }}) ❌</div>
+                        {% for a in item.answer_list %}
+                            {% if a.is_correct %}
+                                <div class="correct-hint">
+                                    <span>{{ a.title }}) ✅</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
+
+    <!-- ĐÚNG -->
+    
+    <div id="true" class="list">
+        {% for item in question_results %}
+            {% if item.answer.is_correct == True %}
+                <div class="question-block">
+                    <h3>Câu hỏi {{ item.question.stt }}:</h3>
+                    <div class="question-text">{{ item.question.text|safe }}</div>
+                    
+                    <strong class="section-title">Đáp án :</strong>
+                    <div class="answers-grid">
+                        {% for a in item.answer_list %}
+                            <div class="answer-item">
+                                <strong>{{ a.title }}) </strong> 
+                                {% if a.is_correct %}
+                                    <span class="answer-content">{{ a.text|safe }} ✅</span>
+                                {% elif a.id == item.answer.id %}
+                                    <span class="answer-content">{{ a.text|safe }} ❌</span>
+                                {% else %}
+                                    <span class="answer-content">{{ a.text|safe }}</span>
+                                {% endif %}                        
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <strong class="section-title">Đáp án bạn chọn:</strong>
+                    <div class="user-choice-box">
+                        {% if item.answer.is_correct %}
+                            <div class="answer-content">{{ item.answer.title }}) ✅</div>
+                        {% else %}
+                            <div class="answer-content">{{ item.answer.title }}) ❌</div>
+                            {% for a in item.answer_list %}
+                                {% if a.is_correct %}
+                                    <div class="correct-hint">
+                                        <span>{{ a.title }}) ✅</span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- SAI -->
+    <div id="false" class="list">
+        {% for item in question_results %}
+            {% if item.answer.is_correct == False %}
+                <div class="question-block">
+                    <h3>Câu hỏi {{ item.question.stt }}:</h3>
+                    <div class="question-text">{{ item.question.text|safe }}</div>
+                    
+                    <strong class="section-title">Đáp án :</strong>
+                    <div class="answers-grid">
+                        {% for a in item.answer_list %}
+                            <div class="answer-item">
+                                <strong>{{ a.title }}) </strong> 
+                                {% if a.is_correct %}
+                                    <span class="answer-content">{{ a.text|safe }} ✅</span>
+                                {% elif a.id == item.answer.id %}
+                                    <span class="answer-content">{{ a.text|safe }} ❌</span>
+                                {% else %}
+                                    <span class="answer-content">{{ a.text|safe }}</span>
+                                {% endif %}                        
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <strong class="section-title">Đáp án bạn chọn:</strong>
+                    <div class="user-choice-box">
+                        {% if item.answer.is_correct %}
+                            <div class="answer-content">{{ item.answer.title }}) ✅</div>
+                        {% else %}
+                            <div class="answer-content">{{ item.answer.title }}) ❌</div>
+                            {% for a in item.answer_list %}
+                                {% if a.is_correct %}
+                                    <div class="correct-hint">
+                                        <span>{{ a.title }}) ✅</span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
 
     <div class="action-container">
         <a href="{% url 'exam:user_test' user_test.test.id %}" class="back-btn back-btn-primary">Quay lại</a>
@@ -363,9 +470,20 @@
     </div>
 </main>
 
-<footer>
-    &copy; 2026 PTITShare &mdash; Powered by <a href="#">Django</a>
-</footer>
+<script>
+    function show_list(){
+        var k = document.getElementById("resultTypeSelector").value;
+        var a = document.getElementsByClassName("list");
+
+        for(var i=0; i<a.length; i++){
+            a[i].style.display = "none";
+        }
+
+        document.getElementById(k).style.display = "block";
+    }
+
+    window.onload = show_list;
+</script>
 
 </body>
 </html>

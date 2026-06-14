@@ -21,6 +21,7 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
+            /* Đã chuyển hoàn toàn về phông chữ mặc định của hệ thống */
             font-family: var(--bs-body-font-family);
             background: var(--gray-bg);
             color: var(--dark);
@@ -28,8 +29,20 @@
             display: flex;
             flex-direction: column;
         }
+                
+        .topic-tag {
+            display: inline-block;
+            background: var(--green-light);
+            color: var(--green-dark);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+            margin-top: 4px;
+        }
 
-        /* ══ NAVBAR PTITSHARE MẶC ĐỊNH ══ */
+        /* ══ NAVBAR ══ */
         .navbar {
             background: var(--green);
             height: 52px;
@@ -115,153 +128,6 @@
         }
         .nav-link:hover { background: rgba(0,0,0,.15); color: #fff; }
 
-        /* ══ CONTAINER LAYOUT ══ */
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 24px;
-            flex: 1;
-        }
-
-        h1 {
-            color: #1f3a5d;
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-
-        /* ══ THANH TÌM KIẾM & CHỨC NĂNG ══ */
-        .search-section {
-            background: white;
-            padding: 24px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            margin-bottom: 32px;
-        }
-
-        .search-form {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-form input[type="text"] {
-            flex: 1;
-            min-width: 240px;
-            padding: 10px 16px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 14.5px;
-            font-weight: 600;
-            transition: border-color 0.2s;
-        }
-
-        .search-form input[type="text"]:focus {
-            outline: none;
-            border-color: var(--green);
-        }
-
-        /* ══ NÚT BẤM ĐỒNG BỘ ══ */
-        .btn-action {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            text-decoration: none;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: opacity 0.15s, transform 0.1s;
-            white-space: nowrap;
-        }
-        .btn-action:active {
-            transform: scale(0.98);
-        }
-
-        .btn-search { background: var(--green); color: white; }
-        .btn-search:hover { background: var(--green-dark); }
-        
-        .btn-filter { background: var(--blue-btn); color: white; }
-        .btn-filter:hover { opacity: 0.9; }
-
-        .btn-create { background: var(--orange-btn); color: white; }
-        .btn-create:hover { opacity: 0.9; }
-
-        /* ══ DANH SÁCH BÀI VIẾT (POSTS) ══ */
-        .posts-list {
-            margin-bottom: 32px;
-        }
-
-        .post-card {
-            display: block;
-            background: white;
-            border: 1px solid var(--border);
-            border-left: 5px solid var(--green);
-            border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 16px;
-            text-decoration: none;
-            color: var(--dark);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .post-card:hover {
-            transform: translateX(6px);
-            box-shadow: 0 6px 16px rgba(4, 170, 109, 0.1);
-            color: var(--dark);
-        }
-
-        .post-card h3 {
-            margin: 0 0 10px 0;
-            font-size: 20px;
-            font-weight: 800;
-            color: #1f3a5d;
-        }
-
-        .post-meta {
-            color: var(--muted);
-            font-size: 13.5px;
-            font-weight: 600;
-        }
-
-        .post-meta strong {
-            color: var(--green-dark);
-        }
-
-        .post-topics {
-            margin-top: 12px;
-        }
-
-        .topic-tag {
-            display: inline-block;
-            background: var(--green-light);
-            color: var(--green-dark);
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 700;
-            margin-right: 6px;
-            margin-top: 4px;
-        }
-
-        /* Không có kết quả */
-        .empty-state {
-            text-align: center;
-            padding: 48px 24px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--muted);
-            font-weight: 600;
-        }
-
         /* ══ PHÂN TRANG (PAGINATION) ══ */
         .pagination {
             display: flex;
@@ -292,35 +158,234 @@
             color: var(--muted);
         }
 
-        /* ══ FOOTER MÀU ĐEN NHẠT QUY CHUẨN ══ */
-        footer {
-            background: var(--dark);
-            padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #bbb;
-            margin-top: auto;
+
+        /* ══ CONTAINER LAYOUT ══ */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 24px;
+            flex: 1;
         }
-        footer a {
-            color: var(--green);
+
+        h1 {
+            color: #1f3a5d;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            text-align: center; /* Đưa thẳng căn giữa vào CSS */
+        }
+
+        /* ══ KHỐI THAO TÁC QUẢN LÝ ══ */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.1s;
+            white-space: nowrap;
+        }
+        .btn-action:active {
+            transform: scale(0.98);
+        }
+
+        /* ══ SEARCH BAR FORM ══ */
+        .search-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-form input[type="text"] {
+            flex: 1;
+            min-width: 240px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14.5px;
+            font-weight: 600;
+            transition: border-color 0.2s;
+        }
+
+        .search-form input[type="text"]:focus {
+            outline: none;
+            border-color: var(--green);
+        }
+
+        /* Định dạng chung cho các nút trong form */
+        .btn-nav-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s;
+        }
+
+        /* Nút Tìm kiếm */
+        .btn-search { background: var(--green); color: white; }
+        .btn-search:hover { background: var(--green-dark); }
+
+        .btn-filter { background: var(--blue-btn); color: white; }
+        .btn-filter:hover { opacity: 0.9; }
+
+        /* Nút Bài Test của tôi */
+        .btn-my-tests { background: #3498db; color: #fff; }
+        .btn-my-tests:hover { background: #2980b9; color: #fff; }
+
+        /* Nút Tạo bài Test */
+        .btn-create { background: #ff9800; color: #fff; }
+        .btn-create:hover { background: #e68900; color: #fff; }
+
+        /* Responsive cho mobile */
+        @media (max-width: 768px) {
+            .search-form { flex-direction: column; }
+            .search-form input[type="text"] { width: 100%; }
+            .btn-nav-action { width: 100%; }
+        }
+
+        /* ══ LIST OF TESTS ══ */
+        .test-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .test-item {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+            transition: border-color 0.15s;
+        }
+        .test-item:hover {
+            border-color: #b3e2cd;
+        }
+
+        .test-info-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .test-title {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: #1f3a5d;
+        }
+
+        .test-sub-details {
+            font-size: 13.5px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .badge-author {
+            color: var(--green-dark);
             text-decoration: none;
             font-weight: 700;
+            background: var(--green-light);
+            padding: 2px 8px;
+            border-radius: 4px;
         }
-        footer a:hover {
+        .badge-author:hover {
+            background: #d0f2e4;
             color: var(--green-dark);
-            text-decoration: underline;
         }
+
+        .badge-quantity {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .btn-take-test {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--green);
+            color: #fff !important;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 8px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background 0.15s;
+            min-width: 80px;
+            text-align: center;
+        }
+        .btn-take-test:hover {
+            background: var(--green-dark);
+        }
+
+        .no-result {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* ══ FOOTER ══ */
+        footer {
+            background: var(--dark);
+            color: #888;
+            text-align: center;
+            padding: 18px;
+            font-size: 13px;
+            margin-top: auto;
+        }
+        footer a { color: var(--green); text-decoration: none; }
 
         @media (max-width: 768px) {
             .navbar { padding: 0 16px; }
             .container { padding: 0 16px; margin: 20px auto; }
-            .search-form { flex-direction: column; align-items: stretch; }
-            .search-form input[type="text"] { width: 100%; }
-            .btn-action { width: 100%; }
-            .post-card { padding: 18px; }
-            .post-card h3 { font-size: 18px; }
+            .action-bar { flex-direction: column; gap: 8px; }
+            .btn-action { width: 100%; justify-content: center; }
+            .test-item { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .test-item div[style*="text-align: right"] { width: 100%; text-align: left !important; }
+            .btn-take-test { width: 100%; }
         }
+
+        .search-form {
+            background: #ffffff;
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            margin-bottom: 28px;
+            
+            /* Flexbox giúp dàn hàng ngang */
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
+
     </style>
 </head>
 <body>
@@ -361,27 +426,39 @@
         </form>
     </div>
 
-    <div class="posts-list">
-        {% for post in posts %}
-            <a href="{% url 'blog:article' post.id %}" class="post-card">
-                <h3>{{ post.title }}</h3>
-                <div class="post-meta">
-                    <strong>{{ post.author.name }}</strong> • {{ post.created_at|date:"d/m/Y H:i" }}
-                </div>
-                {% if post.topic.all %}
-                    <div class="post-topics">
-                        {% for topic in post.topic.all %}
-                            <span class="topic-tag">{{ topic.name }}</span>
-                        {% endfor %}
+    {% if posts %}
+        <ul class="test-list">
+            {% for post in posts %}
+                <li class="test-item">
+                    <div class="test-info-meta">
+                        <a class="test-title" style="text-decoration: none; color: inherit; display: block;"
+                            href="{% url 'blog:article' post.id %}"> 
+                            {{ post.title }} 
+                        </a>
+                        <div class="test-sub-details">
+                            Tác giả: <a href="{% url 'blog:user' post.author.id %}" >{{ post.author.username }}</a>
+                            &bull; <span class="badge-quantity">{{ post.created_at|date:"d/m/Y H:i" }} </span>
+                            &bull; <span class="badge-quantity">{{ post.like }} ❤️ </span>
+                        </div>
+
+                        {% if post.topic.all %}
+                            <div class="post-topics">
+                                {% for topic in post.topic.all %}
+                                    <a class="topic-tag" style="text-decoration: none;"
+                                        href="{% url 'blog:filter' %}?topics={{ topic.id }}">{{ topic.name }}</a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
                     </div>
-                {% endif %}
-            </a>
-        {% empty %}
-            <div class="empty-state">
-                <p>📭 Chưa có bài viết nào. Hãy là người đầu tiên viết bài!</p>
-            </div>
-        {% endfor %}
-    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="no-result">
+            <p>Chưa có bài test nào.</p>
+        </div>
+    {% endif %}
 
     <div class="pagination">
         {% if posts.has_previous %}

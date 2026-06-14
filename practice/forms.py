@@ -1,10 +1,16 @@
 from django import forms
 from .models import TestCase
+from blog.models import Topic
 
 class PracticeForm(forms.Form):
     title = forms.CharField(max_length=255)
     content = forms.CharField(widget=forms.Textarea)
     code = forms.CharField(widget=forms.Textarea)
+    topic = forms.ModelMultipleChoiceField(
+        queryset=Topic.objects.all(),
+        widget=forms.SelectMultiple,   # hoặc CheckboxSelectMultiple
+        required=False
+    )
 
 
 class TestCaseForm(forms.ModelForm):

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách UserPractice – PTITShare</title>
+    <title>Danh sách người làm bài kiểm tra – PTITShare</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --green:       #04AA6D;
@@ -20,7 +19,7 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Nunito', sans-serif;
+            font-family: var(--bs-body-font-family);
             background: var(--gray-bg);
             color: var(--dark);
             min-height: 100vh;
@@ -28,7 +27,7 @@
             flex-direction: column;
         }
 
-        /* ══ NAVBAR (Copy chuẩn 100% từ file mẫu) ══ */
+        /* ══ NAVBAR PTITSHARE MẶC ĐỊNH ══ */
         .navbar {
             background: var(--green);
             height: 52px;
@@ -41,9 +40,8 @@
             box-shadow: 0 2px 8px rgba(0,0,0,.2);
         }
         .nav-logo {
-            font-family: 'Source Code Pro', monospace;
             font-size: 19px;
-            font-weight: 600;
+            font-weight: 700;
             color: #fff;
             text-decoration: none;
             margin-right: 20px;
@@ -51,6 +49,7 @@
             white-space: nowrap;
         }
         .nav-logo span { color: var(--dark); }
+
         .nav-dropdown { position: relative; }
         .nav-dropdown-btn {
             display: flex;
@@ -69,6 +68,7 @@
         .nav-dropdown:hover .nav-dropdown-btn { background: rgba(0,0,0,.15); }
         .nav-dropdown-btn svg { transition: transform .2s; }
         .nav-dropdown:hover .nav-dropdown-btn svg { transform: rotate(180deg); }
+
         .nav-dropdown-menu {
             display: none;
             position: absolute;
@@ -91,6 +91,7 @@
             transition: background .12s, color .12s;
         }
         .nav-dropdown-menu a:hover { background: var(--green); color: #fff; }
+
         .nav-spacer { flex: 1; }
         .nav-divider {
             width: 1px;
@@ -112,153 +113,160 @@
         }
         .nav-link:hover { background: rgba(0,0,0,.15); color: #fff; }
 
-        /* ══ CONTENT LAYOUT ══ */
-        .page-wrapper {
-            width: 100%;
+        /* Topics */
+        .topic-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .topic-tag {
+            display: inline-block;
+            background: var(--green);
+            color: white !important;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .topic-tag:hover {
+            background: var(--green-dark);
+        }
+
+        /* ══ CONTAINER LAYOUT ══ */
+        .container {
             max-width: 1000px;
-            margin: 36px auto;
+            margin: 40px auto;
             padding: 0 24px;
             flex: 1;
         }
 
-        .page-header {
+        h1 {
+            color: #1f3a5d;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 24px;
             text-align: center;
-            margin-bottom: 28px;
-            padding-bottom: 16px;
-            border-bottom: 3px solid var(--green);
-        }
-        .page-header h1 { 
-            font-size: 26px; 
-            font-weight: 800; 
-            color: var(--dark);
-        }
-        .page-header h1 span {
-            color: var(--green-dark);
         }
 
-        /* ══ PTIT TABLE CARD ══ */
-        .table-card {
-            background: #fff;
+        h2 {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 14px;
+            margin-top: 28px;
+        }
+
+        /* ══ KHỐI THÔNG TIN BÀI VIẾT ══ */
+        .info-card {
+            background: #ffffff;
+            padding: 20px 24px;
             border-radius: 8px;
             border: 1px solid var(--border);
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
             margin-bottom: 24px;
         }
-        .ptit-table {
+        .info-card p {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .info-card p:last-child {
+            margin-bottom: 0;
+        }
+        .info-card strong {
+            color: #1f3a5d;
+        }
+
+        /* ══ BẢNG DANH SÁCH NGƯỜI LÀM ══ */
+        .table-responsive {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
-        }
-        .ptit-table thead tr {
-            background: #f0f0f0;
-            color: #555;
-        }
-        .ptit-table thead th {
-            padding: 13px 18px;
-            font-size: 12.5px;
-            font-weight: 700;
-            letter-spacing: .5px;
-            text-transform: uppercase;
-            border-bottom: 2px solid var(--border);
-        }
-        .ptit-table tbody tr {
-            border-bottom: 1px solid var(--border);
-            transition: background .1s;
-        }
-        .ptit-table tbody tr:last-child { border-bottom: none; }
-        .ptit-table tbody tr:hover { background: var(--green-light); }
-        .ptit-table td {
-            padding: 13px 18px;
-            vertical-align: middle;
+            margin-bottom: 0;
         }
 
-        /* Thành phần trong bảng */
-        .badge-author {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--gray-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 3px 11px;
-            font-size: 12.5px;
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 14.5px;
+        }
+
+        th {
+            background: #f8f9fa;
+            color: #1f3a5d;
+            font-weight: 700;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td a {
+            color: var(--green-dark);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        td a:hover {
+            color: var(--green);
+            text-decoration: underline;
+        }
+
+        .score-cell {
             font-weight: 700;
             color: var(--dark);
-            white-space: nowrap;
-        }
-        .badge-dot {
-            width: 7px; height: 7px;
-            background: var(--green);
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .mark-display {
-            font-family: 'Source Code Pro', monospace;
-            font-weight: 700;
-            color: var(--green-dark);
-            font-size: 15px;
-        }
-
-        /* ══ NÚT BẤM ══ */
-        .btn-do {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: var(--green);
-            color: #fff !important;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 13px;
-            transition: background .15s, transform .1s;
-        }
-        .btn-do:hover { background: var(--green-dark); }
-        .btn-do:active { transform: scale(0.98); }
-
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #fff;
-            color: #555 !important;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            text-decoration: none;
-            font-size: 14px;
-            transition: all .15s ease;
-        }
-        .btn-back:hover {
-            background: #f3f3f3;
-            color: var(--dark) !important;
-            border-color: #bbb;
         }
 
         /* Trạng thái trống */
-        .no-result {
+        .no-results {
+            padding: 32px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid var(--border);
             text-align: center;
-            padding: 40px 20px;
             color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 24px;
         }
-        .no-result svg { color: #ddd; margin-bottom: 12px; }
 
-        /* ══ FOOTER ══ */
-        footer {
-            background: var(--dark);
-            color: #888;
-            text-align: center;
-            padding: 18px;
-            font-size: 13px;
-            margin-top: auto;
+        /* ══ BUTTON NỀN TẢNG ══ */
+        .action-container {
+            margin-top: 28px;
         }
-        footer a { color: var(--green); text-decoration: none; }
 
-        @media (max-width: 640px) {
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14.5px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            background: var(--green);
+            color: #fff !important;
+            transition: background .15s;
+        }
+        .back-btn:hover {
+            background: var(--green-dark);
+        }
+
+        @media (max-width: 768px) {
             .navbar { padding: 0 16px; }
-            .page-wrapper { padding: 0 12px; margin: 20px auto; }
+            .container { padding: 0 16px; margin: 20px auto; }
+            th, td { padding: 10px 12px; font-size: 13.5px; }
+            .back-btn { width: 100%; }
         }
     </style>
 </head>
@@ -286,66 +294,61 @@
     <a href="{% url 'blog:logout' %}" class="nav-link">Đăng xuất</a>
 </nav>
 
-<div class="page-wrapper">
-
-    <div class="page-header">
-        <h1>Danh sách nộp bài cho: <span>{{ practice.title }}</span></h1>
+<main class="container">
+    <h1>📝 Bài Test: {{ practice.title }}</h1>
+  
+    <h2>Thông tin bài viết</h2>
+    <div class="info-card">
+        <p><strong>Người tạo:</strong> {{ practice.author.username }}</p>
+        <p><strong>Nội dung:</strong> <br> {{ practice.content }}</p>
+        <p><strong>Số người đã làm:</strong> {{ user_practices.count }}</p>
+        <p><strong>Chủ đề :</strong></p>
+        {% if practice.topic.all %}
+            <div class="topic-section">
+                <div class="topic-list">
+                    {% for topic in practice.topic.all %}
+                        <a href="{% url 'blog:filter' %}?topics={{ topic.id }}" class="topic-tag">{{ topic.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
     </div>
+    
+    <h2>Danh sách người làm Test</h2>
+    {% if user_practices %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Người làm</th>
+                        <th>Điểm</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in user_practices %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ item.user.username }}</td>
+                            <td class="score-cell">{{ item.mark }}</td>
+                            <td><a href="{% url 'practice:user_practice' item.practice.id item.user.id %}">Xem chi tiết</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="no-results">
+            <p>Chưa có ai hoàn thành bài kiểm tra này.</p>
+        </div>
+    {% endif %}
 
-    <div class="table-card">
-        <table class="ptit-table">
-            <thead>
-                <tr>
-                    <th style="width: 60px; text-align: center;">#</th>
-                    <th>Sinh viên</th>
-                    <th style="width: 150px; text-align: center;">Điểm số</th>
-                    <th style="width: 160px; text-align: center;">Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for up in user_practices %}
-                <tr>
-                    <td style="color:#bbb; font-size:13px; text-align:center;">{{ forloop.counter }}</td>
-                    <td>
-                        <span class="badge-author">
-                            <span class="badge-dot"></span>{{ up.user.username }}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <span class="mark-display">{{ up.mark }}</span>
-                    </td>
-                    <td style="text-align: center;">
-                        <a href="{% url 'practice:user_practice' practice.id up.user.id %}" class="btn-do">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-                                <path d="M0 8s3-5.5 8-5.5s8 5.5 8 5.5s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-                            </svg>
-                            Xem 
-                        </a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4">
-                        <div class="no-result">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.868-3.833zm-5.242 1.406a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/>
-                            </svg>
-                            <p class="mb-0">Chưa có thành viên nào nộp bài cho Practice này.</p>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="action-container">
+        <a href="{% url 'blog:user' practice.author.id %}" class="back-btn">Quay lại</a>
+        <a href="{% url 'practice:take_practice' practice.id %}" class="back-btn">Làm</a>
     </div>
-
-    <div class="mt-2">
-        <a href="{% url 'practice:practice_list' %}" class="btn-do">Về trang chủ</a>
-        <a href="{% url 'practice:take_practice' practice.id %}" class="btn-do">Làm</a>
-    </div>
-
-</div>
+</main>
 
 <footer>
     &copy; 2026 PTITShare &mdash; Powered by <a href="#">Django</a>

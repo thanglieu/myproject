@@ -6,15 +6,7 @@ from .models import Test, Question, Answer
 class TestForm(forms.ModelForm):
     class Meta:
         model = Test
-        fields = ["title", "quantity"]
-
-
-class QuestionCountForm(forms.Form):
-    question_count = forms.IntegerField(
-        min_value=1,
-        max_value=20,
-    )
-    title = forms.CharField()
+        fields = ["title", "quantity", "topic"]
 
 
 class QuestionForm(forms.ModelForm):

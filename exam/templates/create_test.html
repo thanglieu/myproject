@@ -326,11 +326,24 @@
                 <input type="text" name="title" value="{{ title|default:'' }}" 
                     style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none;">
             </div>
+            
             <div>
                 <label class="field-label">Số lượng câu hỏi</label>
                 <input type="number" name="question_count" value="{{ question_count|default:'' }}" 
                     style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none;">
             </div>
+
+            <div>
+                <label class="field-label">Chủ đề</label>
+                <select name="topics" multiple 
+                    style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; outline: none;">
+                    {% for t in topics %}
+                        <option value="{{ t.id }}">{{ t.name }}</option>
+                    {% endfor %}
+                </select>
+            
+            </div>         
+        
         </div>
         <div style="margin-top: 20px; text-align: right;">
             <button type="submit">Khởi tạo câu hỏi</button>
@@ -344,8 +357,11 @@
 
         {% for question_form, answer_formset in question_answer_pairs %}
             <fieldset>
+                <!-- nếu dùng {{ question_form.stt }} sẽ hiện ra thẻ <input>. Thay vào đó dùng {{ question_form.stt.value }} -->
                 <h3>Câu hỏi {{ question_form.stt.value }}</h3>
                 
+                <!-- tuy đã có {{ question_form.stt.value }} nhưng vẫn phải có đầy đủ các dield khai báo trong form
+                 Do đó, ta đặt forms.HiddenInput() để ẩn field này để tránh lặp lại -->
                 {{ question_form.stt }}
 
                 <div class="mb-3">

@@ -1,11 +1,13 @@
 from django.db import models
-from blog.models import User
+from blog.models import User, Topic
 from ckeditor.fields import RichTextField
 
 class Test(models.Model):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
+    topic = models.ManyToManyField(Topic, blank=True)
+    
     '''
     chỉ cho làm Test trong thời gian quy định
     started_at = models.DateTimeField(auto_now_add=True)
@@ -17,6 +19,7 @@ class Question(models.Model):
     test = models.ForeignKey(Test, on_delete=models.CASCADE)
     text = RichTextField()
     stt = models.PositiveIntegerField(default=0)
+    # explain = RichTextField()
 
 
 class Answer(models.Model):
